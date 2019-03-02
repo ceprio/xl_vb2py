@@ -4,6 +4,7 @@ import unittest
 import sys
 import re
 import time
+import vb2py.utils
 
 ok = re.compile(r".*Ran\s(\d+).*", re.DOTALL+re.MULTILINE)
 fail = re.compile(r".*Ran\s(\d+).*\w+=(\d+)", re.DOTALL+re.MULTILINE)
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     try:
         for file in files:
             if file not in (r"test/testall.py", r"test/testframework.py", "test/testparser.py"):
-                fname = os.path.join(r"python /usr/local/lib/python2.6/dist-packages/vb2py", file)
+                fname = os.path.join((r"python %s" % vb2py.utils.rootPath()), file)
                 print "Running '%s' ... " % file,
                 pi, po, pe = os.popen3(fname)
                 result = pe.read()
