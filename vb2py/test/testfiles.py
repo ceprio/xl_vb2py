@@ -416,4 +416,10 @@ TestClass = addTestsTo(BasicTest, tests)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        #
+        # Remove the dead files
+        os.remove('__f1.txt')
+        os.remove('__f2.txt')
