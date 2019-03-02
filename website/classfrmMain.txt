@@ -1,0 +1,226 @@
+class vbobj_frmMain(resource.Form):
+   Caption         =   "Test form in VB"
+   ClientHeight    =   6075
+   ClientLeft      =   165
+   ClientTop       =   855
+   ClientWidth     =   10695
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   6075
+   ScaleWidth      =   10695
+   StartUpPosition =   3  #Windows Default
+   class vbobj_Command1(resource.CommandButton):
+      Caption         =   "Show radio"
+      Height          =   375
+      Left            =   6960
+      TabIndex        =   21
+      Top             =   4320
+      Width           =   1215
+
+   class vbobj_btnDirectHide(resource.CommandButton):
+      Caption         =   "Hide me direct"
+      Height          =   375
+      Left            =   3240
+      TabIndex        =   20
+      Top             =   5400
+      Width           =   1215
+
+   class vbobj_btnZeroIt(resource.CommandButton):
+      Caption         =   "Zero it!"
+      Height          =   375
+      Left            =   480
+      TabIndex        =   19
+      Top             =   4920
+      Width           =   1095
+
+   class vbobj_btnHideMe(resource.CommandButton):
+      Caption         =   "Hide me (late bound)"
+      Height          =   375
+      Left            =   4320
+      TabIndex        =   18
+      Top             =   4800
+      Width           =   1815
+
+   class vbobj_chkSub(resource.CheckBox):
+      Caption         =   "Sub"
+      Height          =   255
+      Left            =   1560
+      TabIndex        =   17
+      Top             =   4080
+      Width           =   855
+
+   class vbobj_chkAdd(resource.CheckBox):
+      Caption         =   "Add"
+      Height          =   255
+      Left            =   1560
+      TabIndex        =   16
+      Top             =   3720
+      Value           =   1  #Checked
+      Width           =   855
+
+   class vbobj_txtValue(resource.TextBox):
+      Height          =   375
+      Left            =   480
+      TabIndex        =   15
+      Text            =   "0"
+      Top             =   4440
+      Width           =   1455
+
+   class vbobj_btnChange(resource.CommandButton):
+      Caption         =   "Change"
+      Height          =   375
+      Left            =   480
+      TabIndex        =   14
+      Top             =   3720
+      Width           =   975
+
+   class vbobj_Check2(resource.CheckBox):
+      Caption         =   "Check2"
+      Height          =   495
+      Left            =   3360
+      TabIndex        =   12
+      Top             =   3720
+      Value           =   1  #Checked
+      Width           =   1575
+
+   class vbobj_Check1(resource.CheckBox):
+      Caption         =   "Check1"
+      Height          =   255
+      Left            =   3360
+      TabIndex        =   11
+      Top             =   3360
+      Width           =   1575
+
+   class vbobj_List2(resource.ListBox):
+      Height          =   1425
+      Left            =   6480
+      TabIndex        =   10
+      Top             =   2520
+      Width           =   3495
+
+   class vbobj_List1(resource.ListBox):
+      Height          =   1425
+      ItemData        =   "vb/test1/frmMain.frx@0000"
+      Left            =   6480
+      List            =   "vb/test1/frmMain.frx@0019"
+      TabIndex        =   9
+      Top             =   720
+      Width           =   3495
+
+   class vbobj_Combo3(resource.ComboBox):
+      Height          =   315
+      Left            =   360
+      TabIndex        =   8
+      Text            =   "Combo3"
+      Top             =   3000
+      Width           =   2655
+
+   class vbobj_Combo2(resource.ComboBox):
+      Height          =   315
+      ItemData        =   "vb/test1/frmMain.frx@0047"
+      Left            =   3600
+      List            =   "vb/test1/frmMain.frx@004E"
+      TabIndex        =   7
+      Text            =   "Combo2"
+      Top             =   2640
+      Width           =   2535
+
+   class vbobj_Combo1(resource.ComboBox):
+      Height          =   315
+      ItemData        =   "vb/test1/frmMain.frx@0059"
+      Left            =   3600
+      List            =   "vb/test1/frmMain.frx@0072"
+      TabIndex        =   6
+      Text            =   "Combo1"
+      Top             =   2160
+      Width           =   2535
+
+   class vbobj_cmbChoose(resource.ComboBox):
+      Height          =   315
+      ItemData        =   "vb/test1/frmMain.frx@00B4"
+      Left            =   3600
+      List            =   "vb/test1/frmMain.frx@00C7"
+      TabIndex        =   5
+      Text            =   "Combo1"
+      Top             =   1560
+      Width           =   2655
+
+   class vbobj_txtSecond(resource.TextBox):
+      Height          =   375
+      Left            =   2160
+      TabIndex        =   4
+      Text            =   "Text1"
+      Top             =   720
+      Width           =   2055
+
+   class vbobj_btnSecond(resource.CommandButton):
+      Caption         =   "Second Form"
+      Height          =   375
+      Left            =   1560
+      TabIndex        =   3
+      Top             =   2400
+      Width           =   1695
+
+   class vbobj_txtName(resource.TextBox):
+      Height          =   375
+      Left            =   360
+      TabIndex        =   1
+      Text            =   "Text1"
+      Top             =   240
+      Width           =   1695
+
+   class vbobj_btnDoIt(resource.CommandButton):
+      Caption         =   "Do it"
+      Height          =   375
+      Left            =   1680
+      TabIndex        =   0
+      Top             =   1800
+      Width           =   1575
+
+   class vbobj_Label1(resource.Label):
+      Caption         =   "More static text"
+      Height          =   255
+      Left            =   4320
+      TabIndex        =   13
+      Top             =   240
+      Width           =   1695
+
+   class vbobj_lblLabel(resource.Label):
+      Caption         =   "My text"
+      Height          =   255
+      Left            =   360
+      TabIndex        =   2
+      Top             =   1080
+      Width           =   1455
+
+   class vbobj_mnuFile(resource.Menu):
+      Caption         =   "File"
+      class vbobj_mnuOpen(resource.Menu):
+         Caption         =   "Open"
+
+      class vbobj_mnuSave(resource.Menu):
+         Caption         =   "Save"
+
+      class vbobj_mnuSep1(resource.Menu):
+         Caption         =   "-"
+
+      class vbobj_mnuExit(resource.Menu):
+         Caption         =   "Exit"
+
+
+   class vbobj_mnuEdit(resource.Menu):
+      Caption         =   "Edit"
+      class vbobj_mnuCopy(resource.Menu):
+         Caption         =   "&Copy"
+
+      class vbobj_mnuPaste(resource.Menu):
+         Caption         =   "Paste"
+
+      class vbobj_mnuUndo(resource.Menu):
+         Caption         =   "Undo"
+
+
+   class vbobj_mnuHelp(resource.Menu):
+      Caption         =   "Help"
+      class vbobj_mnuAbout(resource.Menu):
+         Caption         =   "About"
+

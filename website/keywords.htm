@@ -1,0 +1,940 @@
+<html><!-- #BeginTemplate "/Templates/main.dwt" -->
+<head>
+<!-- #BeginEditable "doctitle" --> 
+<title>Untitled Document</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<div align="left"><img src="gifs/rule1.gif" width="870" height="8" align="baseline"><br>
+</div>
+<table width="872" border="0" cellspacing="0">
+  <tr> 
+    <td width="178" valign="top" height="94"> 
+      <div align="center"><a href="/index.html"><br>
+        </a><a href="/index.html"><img src="gifs/vb2pylogosm.jpg" width="158" height="92" align="top" border="0" alt="vb2Py"></a></div>
+    </td>
+    <td valign="top" height="94" align="top" rowspan="5" width="2"> 
+      <p align="center"></p>
+    </td>
+    <td valign="top" height="94" width="11" align="top" rowspan="5">&nbsp;</td>
+    <td valign="top" height="94" bgcolor="#FFFFFF" align="top" width="442"><!-- #BeginEditable "TopPanel" --><font face="Verdana, Arial, Helvetica, sans-serif" size="5" color="#000066">VB 
+        Keywords</font><font face="Verdana, Arial, Helvetica, sans-serif" size="5" color="#000066"><br>
+        <font size="4">Visual Basic keywords and their Python equivalents</font></font><!-- #EndEditable --></td>
+    <td valign="top" height="94" bgcolor="#FFFFFF" align="top" rowspan="4" width="229"> 
+      <br>
+      <table width="209" border="1" cellspacing="0" align="center" bgcolor="#F3F9FE" cellpadding="8" bordercolor="#B8DBFE">
+        <tr> 
+          <td valign="top"><!-- #BeginEditable "RightSidePanel" --> 
+      <p align="center"><font size="4"><b><font face="Geneva, Arial, Helvetica, san-serif" color="#000066">Quick 
+        Links </font></b></font></p>
+      <p align="center"><a href="controlstructures.htm"><font size="2" face="Geneva, Arial, Helvetica, san-serif">VB 
+        Control Structures</font></a></p>
+      <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" size="2"><a href="subsandfunctions.htm">Subroutines 
+        and Functions</a></font></p>
+      <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" size="2"><a href="classes.htm">Classes</a></font></p>
+      <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" size="2"><a href="errorhandling.htm">Error 
+        Handling</a> </font></p>
+      <p align="center">&nbsp;</p>
+      <!-- #EndEditable --></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td width="178"><br>
+    </td>
+    <td width="442">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="178" valign="top" height="243">
+	
+<style>
+a:link {
+  text-decoration: none;
+  font-family: "Arial";
+  font-size: 12;
+  font-weight: bold;
+  color=#000066;
+  }
+a:visited {
+  text-decoration: none;
+  font-family: "Arial";
+  font-size: 12;
+  font-weight: bold;
+  color=#000066;
+  }
+
+a:hover {
+  text-decoration: none;
+  font-family: "Arial";
+  font-size: 12;
+  font-weight: bold;
+  color=#ff0000;
+  }
+  
+</style>
+      <table width="0" border="0" cellspacing="0" cellpadding="2">
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/index.html">Home</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/news.htm">News</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/downloads.htm">Downloads</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/documentation.htm">Documentation</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/screenshots.htm">Screenshots</a></td>
+        </tr>
+        <tr>
+          <td width="10">&nbsp;</td>
+          <td><a href="/demo.htm">Online Version</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/links.htm">Links</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/contribute.htm">Contribute</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/cgi-bin/wiki/moin.cgi">Wiki</a></td>
+        </tr>
+        <tr> 
+          <td width="10">&nbsp;</td>
+          <td><a href="/phpbb/index.php">Forum</a></td>
+        </tr>
+      </table>
+    </td>
+    <td valign="top" rowspan="2" width="442"><!-- #BeginEditable "MainBody" --> 
+      <p><font color="#000040">The VB part of the following table was obtained 
+        from HTML goodies website (www.htmlgoodies.com). Some of the Python equivalents 
+        are not simple one-liners!</font></p>
+      <table border="1" width="455">
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><b>Keyword/Feature</b></font></td>
+          <td align="LEFT" width="154"><font color="#000040"><b>Description</b></font></td>
+          <td align="LEFT" width="155"><font color="#000040"><b>Python Equivalent</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Array handling</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsArray</tt></font></td>
+          <td width="154"><font color="#000040">Returns <tt>True</tt> if a variable 
+            is an array</font></td>
+          <td width="155"><font color="#000040">hasattr(obj, 'len') ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Erase</tt></font></td>
+          <td width="154"><font color="#000040">Reinitilizes a fixed-size array</font></td>
+          <td width="155">&nbsp;</td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>LBound</tt></font></td>
+          <td width="154"><font color="#000040">Returns the lower bound of an 
+            array</font></td>
+          <td width="155"><font color="#000040">0</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>UBound</tt></font></td>
+          <td width="154"><font color="#000040">Returns the upper bound of an 
+            array</font></td>
+          <td width="155"><font color="#000040">len(obj)</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Assignments</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>=</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Assigns a value to 
+            a variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">=</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Let</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Assigns a value to 
+            a variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">Not required</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Set</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Assigns an object 
+            to a variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">Not required</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Comments</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>`</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Includes inline comments 
+            in your script</font></td>
+          <td align="LEFT" width="155"><font color="#000040">#</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Rem</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Includes comments 
+            in your script</font></td>
+          <td align="LEFT" width="155"><font color="#000040">#</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Constants/Literals</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Empty</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Indicates an uninitialized 
+            variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">None</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Nothing</tt></font></td>
+          <td width="154"><font color="#000040">Disassociates a variable with 
+            an object</font></td>
+          <td width="155"><font color="#000040">None</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Null</tt></font></td>
+          <td width="154"><font color="#000040">Indicates a variable with no data</font></td>
+          <td width="155"><font color="#000040">None</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>True</tt></font></td>
+          <td width="154"><font color="#000040">Boolean <tt>True</tt></font></td>
+          <td width="155"><font color="#000040">True (1 pre Python 2.3)</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>False</tt></font></td>
+          <td width="154"><font color="#000040">Boolean <tt>False</tt></font></td>
+          <td width="155"><font color="#000040">False (0 pre Python 2.3)</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Control flow</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Do...Loop</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Repeats a block of 
+            statements</font></td>
+          <td align="LEFT" width="155"><font color="#000040">while</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128" height="24"><font color="#000040"><tt>For...Next</tt></font></td>
+          <td align="LEFT" width="154" height="24"><font color="#000040">Repeats 
+            a block of statements</font></td>
+          <td align="LEFT" width="155" height="24"><font color="#000040">for</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>For Each...Next</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Repeats a block of 
+            statements</font></td>
+          <td align="LEFT" width="155"><font color="#000040">for</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>If...Then...Else</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Conditionally executes 
+            statements</font></td>
+          <td align="LEFT" width="155"><font color="#000040">if: ... else: ...</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Select Case</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Conditionally executes 
+            statements</font></td>
+          <td align="LEFT" width="155"><font color="#000040">if: ... else: ...</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>While...Wend</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Repeats a block of 
+            statements</font></td>
+          <td align="LEFT" width="155"><font color="#000040">while</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Conversions</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Abs</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns absolute 
+            value of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">abs</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Asc</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the ASCII 
+            code of a character</font></td>
+          <td align="LEFT" width="155"><font color="#000040">ord</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>AscB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the ASCII 
+            code of a character</font></td>
+          <td align="LEFT" width="155"><font color="#000040">ord ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>AscW</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the ASCII 
+            code of a character</font></td>
+          <td align="LEFT" width="155"><font color="#000040">ord ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Chr</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a character 
+            from an ASCII code</font></td>
+          <td align="LEFT" width="155"><font color="#000040">chr</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>ChrB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a character 
+            from an ASCII code</font></td>
+          <td align="LEFT" width="155"><font color="#000040">chr ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>ChrW</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a character 
+            from an ASCII code</font></td>
+          <td align="LEFT" width="155"><font color="#000040">chr ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CBool</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a boolean</font></td>
+          <td align="LEFT" width="155"><font color="#000040">bool (Python 2.3)</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CByte</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a byte</font></td>
+          <td align="LEFT" width="155"><font color="#000040">int</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CDate</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time.ctime ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CDbl</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a double</font></td>
+          <td align="LEFT" width="155"><font color="#000040">float</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Cint</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to an integer</font></td>
+          <td align="LEFT" width="155"><font color="#000040">int</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CLng</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a long</font></td>
+          <td align="LEFT" width="155"><font color="#000040">long</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CSng</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a single</font></td>
+          <td align="LEFT" width="155"><font color="#000040">float</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CStr</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">str</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>DateSerial</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time.ctime ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>DateValue</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time.ctime ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Hex</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a hex string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">hex</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Oct</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to an octal string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">oct</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Fix</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a fixed string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&quot;%x.yd&quot; 
+            % n</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Int</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to an integer string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">int</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Sgn</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a single string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>TimeSerial</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>TimeValue</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a variant 
+            to a time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Dates/Times</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Date</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the current 
+            date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Time</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the current 
+            time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>DateSerial</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a date from 
+            its parts</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>DateValue</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a date from 
+            its value</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Day</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns day from 
+            a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Month</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns month from 
+            a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Weekday</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns weekday from 
+            a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Year</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns year from 
+            a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Hour</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns hour from 
+            a time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Minute</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns minute from 
+            a time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Second</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns seconds from 
+            a time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Now</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns current date 
+            and time</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>TimeSerial</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a time from 
+            its parts</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>TimeValue</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a time from 
+            its value</font></td>
+          <td align="LEFT" width="155"><font color="#000040">time module</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Declarations</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Dim</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares a variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">Not possible</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Private</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares script-level 
+            private variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">__name</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Public</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares public-level 
+            public variable</font></td>
+          <td align="LEFT" width="155"><font color="#000040">not __name</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>ReDim</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Reallocates an array</font></td>
+          <td align="LEFT" width="155"><font color="#000040">array</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Function</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares a function</font></td>
+          <td align="LEFT" width="155"><font color="#000040">def</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Sub</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares a subprocedure</font></td>
+          <td align="LEFT" width="155"><font color="#000040">def</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Error Handling</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>On Error</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Enables error handling</font></td>
+          <td align="LEFT" width="155"><font color="#000040">try</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Err</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Contains information 
+            about last error</font></td>
+          <td align="LEFT" width="155"><font color="#000040">except Exception, 
+            err</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Input/Output</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>InputBox</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Prompts the user 
+            for input</font></td>
+          <td align="LEFT" width="155"><font color="#000040">raw_input / depends 
+            on GUI</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>MsgBox</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Displays a message 
+            to the user</font></td>
+          <td align="LEFT" width="155"><font color="#000040">depends on GUI</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Math</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Atn</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the Arctangent 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.atan</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Cos</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the cosine 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.cos</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Sin</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the sine 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.sin</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Tan</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the tangent 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.tan</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Exp</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the exponent 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.exp</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Log</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the logarithm 
+            of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.log / math.log10</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Sqr</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the square 
+            root of a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">math.sqrt</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Randomize</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Reseeds the randomizer</font></td>
+          <td align="LEFT" width="155"><font color="#000040">random.seed</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Rnd</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns a random 
+            number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">random.random</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Operators</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>+</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Addition</font></td>
+          <td align="LEFT" width="155"><font color="#000040">+</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>-</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Subtraction</font></td>
+          <td align="LEFT" width="155"><font color="#000040">-</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>^</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Exponentiation</font></td>
+          <td align="LEFT" width="155"><font color="#000040">**</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Mod</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Modulus arithmetic</font></td>
+          <td align="LEFT" width="155"><font color="#000040">divmod(x, y)[1]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>*</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Multiplication</font></td>
+          <td align="LEFT" width="155"><font color="#000040">*</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>/</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Division</font></td>
+          <td align="LEFT" width="155"><font color="#000040">/</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>\</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Integer Division</font></td>
+          <td align="LEFT" width="155"><font color="#000040">divmod(x, y)[0]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>-</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Negation</font></td>
+          <td align="LEFT" width="155"><font color="#000040">-</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&amp;</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">String concatenation</font></td>
+          <td align="LEFT" width="155"><font color="#000040">+</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>=</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Equality</font></td>
+          <td align="LEFT" width="155"><font color="#000040">==</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&lt;&gt;</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Inequality</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&lt;&gt; or !=</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&lt;</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Less Than</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&lt;</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&lt;=</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Less Than or Equal 
+            To</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&lt;=</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&gt;</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Greater Than</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&gt;</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>&gt;=</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Greater Than or Equal 
+            To</font></td>
+          <td align="LEFT" width="155"><font color="#000040">&gt;=</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Is</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">is</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>And</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">and</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Or</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">or</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Xor</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">No equivalent</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Eqv</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Imp</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares expressions</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Objects</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>CreateObject</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Creates reference 
+            to an OLE object</font></td>
+          <td align="LEFT" width="155"><font color="#000040">win32com.client.dis-patch</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsObject</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if object is valid</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Options</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Option Explicit</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Forces explicit variable 
+            declaration</font></td>
+          <td align="LEFT" width="155"><font color="#000040">No equivalent</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Procedures</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Call</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Invokes a subprocedure</font></td>
+          <td align="LEFT" width="155"><font color="#000040">name()</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Function</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares a function</font></td>
+          <td align="LEFT" width="155"><font color="#000040">def</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Sub</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Declares a subprocedure</font></td>
+          <td align="LEFT" width="155"><font color="#000040">def</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Strings</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Instr</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns index of 
+            a string in another</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.find</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>InStrB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns index of 
+            a string in another</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.find</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Len</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the length 
+            of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">len</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>LenB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the length 
+            of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">len</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Lcase</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a string 
+            to lowercase</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.lower</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Ucase</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Converts a string 
+            to uppercase</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.upper</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Left</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the left 
+            portion of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[:n]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>LeftB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the left 
+            portion of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[:n]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Mid</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the mid portion 
+            of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[n:m]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>MidB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the mid portion 
+            of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[n:m]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Right</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the right 
+            portion of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[m:]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>RightB</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns the right 
+            portion of a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s[m:]</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Space</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Pads a string with 
+            spaces</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.ljust</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>StrComp</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Compares two strings</font></td>
+          <td align="LEFT" width="155"><font color="#000040">==</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>String</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Pads a string with 
+            a character</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s += char*n</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Ltrim</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Removes leading spaces 
+            from a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Rtrim</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Removes trailing 
+            spaces from a string</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>Trim</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Removes leading and 
+            trailing spaces</font></td>
+          <td align="LEFT" width="155"><font color="#000040">s.strip</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" colspan="3"><font color="#000040"><b>Variants</b></font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsArray</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if variable is an array</font></td>
+          <td align="LEFT" width="155"><font color="#000040">hasattr(obj, 'len') 
+            ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsDate</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True 
+            </tt>if variable is a date</font></td>
+          <td align="LEFT" width="155"><font color="#000040">??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsEmpty</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if variable is empty</font></td>
+          <td align="LEFT" width="155"><font color="#000040">is None</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsNull</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if variable is null.</font></td>
+          <td align="LEFT" width="155"><font color="#000040">is None</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsNumeric</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if variable is a number</font></td>
+          <td align="LEFT" width="155"><font color="#000040">try: float(x) ??</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>IsObject</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Returns <tt>True</tt> 
+            if variable is an object</font></td>
+          <td align="LEFT" width="155"><font color="#000040">No equivalent</font></td>
+        </tr>
+        <tr align="LEFT" valign="TOP"> 
+          <td align="LEFT" width="128"><font color="#000040"><tt>VarType</tt></font></td>
+          <td align="LEFT" width="154"><font color="#000040">Indicates a variable's 
+            type</font></td>
+          <td align="LEFT" width="155"><font color="#000040">No equivalent</font></td>
+        </tr>
+      </table>
+      <!-- #EndEditable --></td>
+  </tr>
+  <tr> 
+    <td width="178" valign="top"><!-- #BeginEditable "LeftSidePanel" --><!-- #EndEditable --></td>
+  </tr>
+  <tr> 
+    <td width="178">&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=79297&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a><!-- #BeginEditable "BottomLPanel" --><!-- #EndEditable --></td>
+    <td width="442"><!-- #BeginEditable "BottomCPanel" --><!-- #EndEditable --></td>
+    <td width="229"><!-- #BeginEditable "BottomRPanel" --><!-- #EndEditable --></td>
+  </tr>
+</table>
+</body>
+<!-- #EndTemplate --></html>

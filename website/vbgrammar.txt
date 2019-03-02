@@ -1,0 +1,292 @@
+identifier ::= 
+	    (letter/("_", letter)), (letter / digit / "_")*
+  
+NEWLINE ::=
+	    "\n"
+
+<wsp> ::=
+            (" "/"\t")
+ 
+<letter> ::= 
+             lowercase / uppercase
+  
+lowercase ::= 
+             [a-z]
+  
+uppercase ::= 
+             [A-Z]
+  
+<digit> ::= 
+             [0-9]
+
+stringliteral ::=  
+             '"', stringitem*, '"'
+  
+<stringitem> ::= 
+             stringchar / escapeseq
+  
+stringchar ::= -('"' / NEWLINE)+
+
+#lowercase / uppercase / digit / symbols
+
+
+  
+escapeseq ::= 
+             "\\", stringchar
+
+longinteger ::= 
+             integer, ("l" / "L")
+  
+integer ::= 
+             "-"?, decimalinteger
+  
+decimalinteger ::= 
+             digit+
+  
+octinteger ::= 
+             "0", octdigit+
+  
+hexinteger ::= 
+             "0", ("x" / "X"), hexdigit+
+  
+<nonzerodigit> ::= 
+             [1-9]
+  
+<octdigit> ::= 
+             [0-7]
+  
+<hexdigit> ::= 
+             digit / [a-f] / [A-F]
+
+floatnumber ::= 
+             "-"?, (exponentfloat / pointfloat)
+  
+<pointfloat> ::= 
+             (intpart?, fraction) / (intpart, ".")
+  
+<exponentfloat> ::= 
+             (pointfloat / intpart), 
+              exponent
+  
+<intpart> ::= 
+             digit+
+  
+<fraction> ::= 
+             ".", digit+
+  
+<exponent> ::= 
+             ("e" / "E"), ("+" / "-")?, digit+
+
+atom ::= 
+             object / literal
+ 
+literal ::= 
+             stringliteral / floatnumber / integer / longinteger
+
+expression ::= 
+             par_expression, (operation, par_expression)*
+
+par_expression ::= 
+             (wsp*, "(", par_expression, ")", wsp*) / base_expression
+
+base_expression ::= 
+             simple_expr, (operation, par_expression)* 
+             
+simple_expr ::= 
+             wsp*, (call / atom), wsp*
+
+operation ::=
+             "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / compare
+
+compare ::= 
+             "or" / "OR" / "and" / "AND" / "=" / "<" / ">" / "<=" / ">="
+
+list ::= 
+             "(", bare_list, ")"
+
+bare_list ::=
+             (expression, (",", expression)*)?
+
+call ::=
+             object, parameter_list
+
+parameter_list ::=
+             list
+
+object ::=
+             primary, ((".", attribute) / parameter_list)*
+
+primary ::= 
+             identifier
+
+attribute ::=
+             identifier
+
+statement ::=  
+             ( comment_statement /
+               inline_if_statement /
+               const_statement /
+               dim_statement /
+               exit_statement /
+               assignment_statement
+             )
+
+compound_statement ::= 
+             for_statement /
+             select_statement / 
+             while_statement /
+             if_statement /
+             sub_definition /
+             fn_definition 
+
+
+             
+dim_statement ::=
+             unscoped_dim / scoped_dim
+
+unscoped_dim ::=
+             "Dim", wsp+, basic_dim
+
+scoped_dim ::=
+             scope, wsp+, ("Dim", wsp+)?, basic_dim
+              
+basic_dim ::=
+             object_definition, (",", wsp*, object_definition)*
+
+object_definition ::=
+             identifier, size_definition?, type_definition?
+
+type_definition ::=
+             (wsp+, "As", wsp+, type)
+
+size_definition ::=
+             "(", size?, (",", wsp*, size)*, ")"
+
+size ::=
+             literal / identifier
+
+type ::=
+             primary, (".", attribute)*
+
+scope ::=
+             "Global" / "Private" / "Public"
+
+const_statement ::=
+             (scope, wsp+)?, "Const", wsp+, identifier, wsp*, "=", wsp*, value
+
+value ::= 
+             literal
+
+
+
+
+
+inline_if_statement ::= 
+             "If", condition, "Then", wsp+, (statement / expression)
+
+if_statement ::= 
+             "If", condition, "Then", NEWLINE, if_block, 
+             else_if_statement*,
+             else_statement?,
+             "End If"
+
+if_block ::= 
+             block
+
+else_if_statement ::=
+             ("ElseIf Blk", condition, "Then", NEWLINE, else_if_block)
+
+else_statement ::=
+             ("Else Blk", wsp*, NEWLINE, else_block)
+
+else_block ::= block
+else_if_block ::= block
+condition ::= expression
+
+
+
+sub_definition ::=
+             (scope, wsp*)?, "Sub", wsp+, name, 
+             formal_param_list, NEWLINE, block?, "End Sub"
+
+formal_param_list ::=
+             "(", formal_param?, (",", wsp*, formal_param)*, ")"
+
+formal_param ::=
+             identifier, type_definition?
+
+exit_statement ::=
+             "Exit", wsp+, ("Sub" / "Function")
+
+fn_definition ::=
+             (scope, wsp*)?, "Function", wsp+, name, 
+             formal_param_list, type_definition?, NEWLINE, block?, "End Function"
+
+
+
+
+assignment_statement ::=
+             object, wsp*, "=", wsp*, expression
+
+
+comment_statement ::=
+             "'", comment_body
+
+comment_body ::=
+             (stringitem / '"')*
+
+
+
+
+for_statement ::=
+                "For", wsp+, identifier, wsp*, "=", wsp+, 
+                expression, "To", wsp+, expression, line_end,
+                block,
+                "Next", (wsp+, identifier)?
+
+
+select_statement ::=
+                "Select", wsp+, "Case", wsp+, expression, line_end,
+                case_else_block?,
+                case_item_block*,
+                "End Select"
+
+case_item_block ::=
+                "Case", wsp+, expression, line_end, block
+
+case_else_block ::=
+                "Case", wsp+, "Else", line_end, block
+
+
+
+
+
+while_statement ::=
+                "While", wsp+, expression, line_end, block, "End While"
+
+
+
+call_statement ::=
+                object, wsp+, (list / bare_list)
+
+
+block ::= 
+             line+
+
+tline ::= 
+             (compound_statement / statement / expression)
+
+line ::= 
+             (compound_statement / statement / expression), line_end
+
+line_end ::=
+             comment_statement?, NEWLINE
+
+name ::= 
+             identifier
+
+compound_line ::=
+             block
+
+file ::= 
+             block+

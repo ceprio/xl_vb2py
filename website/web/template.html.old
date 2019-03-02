@@ -1,0 +1,29 @@
+<html>
+<head>	<title>vb2Py Wiki! - $title</title>
+	<style>
+		body {    
+			background-color: #FFFFFF;
+			color: #000000;
+			font-family: arial;
+		}
+
+		input, select, textarea {	
+			background-color: #89A790;
+			border: solid 1px #000000;
+		}
+	</style>
+</head>
+
+<body>
+	<img src="/gifs/topbar.gif">
+ 	<table>
+	  <tr><td width="20%"><img src="../vb2py.gif"</td>
+              <td width="80%">$title</td>
+          </tr>
+          <tr><td>$menubar</td>
+	      <td>$node</td>
+          </tr>
+	  <tr><td></td><td><tt>$bar</tt></td></tr>
+        </table>
+</body>
+</html>
