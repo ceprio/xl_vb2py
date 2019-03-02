@@ -421,5 +421,5 @@ if __name__ == "__main__":
     finally:
         #
         # Remove the dead files
-        os.remove('__f1.txt')
-        os.remove('__f2.txt')
+        os.remove(os.path.join(vb2py.utils.relativePath('__f1.txt')))
+        os.remove(os.path.join(vb2py.utils.relativePath('__f2.txt')))
