@@ -8,6 +8,18 @@
 
 <!-- Standard libraries -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
+
+<style type="text/css" media="screen">
+    #vbcode {
+      width: 500px;
+      height: 300px;
+    }
+    #pycode {
+      width: 500px;
+      height: 300px;
+    }
+</style>
 
 <body bgcolor="#FFFFFF" text="#000000">
 <div align="left"><img src="gifs/rule1.gif" width="870" height="8" align="baseline"><br>
@@ -72,6 +84,7 @@ a:hover {
   }
   
 </style>
+
       <table width="0" border="0" cellspacing="0" cellpadding="2">
         <tr> 
           <td width="10">&nbsp;</td>
@@ -125,7 +138,7 @@ a:hover {
         VB.Form</font> and the <font face="Courier New, Courier, mono">End<font face="Geneva, Arial, Helvetica, san-serif">).</font></font></font></p>
       <form name="convert">
         <p align="center"> 
-          <textarea name="code" rows="20" cols="100" id="vbcode"></textarea>
+          <div id="vbcode"></div>
         </p>
         <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion 
           context (where this code lives) </font> 
@@ -139,7 +152,7 @@ a:hover {
           <input type="button" name="Do" value="Convert to Python" onclick="convert_code();">
         </p>
         <p align="center">
-          <textarea name="code" rows="20" cols="100" id="pycode"></textarea>
+          <div id="pycode"></div>
         </p>
       </form>
       <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
@@ -149,6 +162,8 @@ a:hover {
         3. Your code is sent in plain text - do not send commercially sensitive 
         code!</font></b></font></p>
       <p>&nbsp;</p>
+
+      </div>
 
       <!-- #EndEditable --></td>
   </tr>
@@ -164,16 +179,25 @@ a:hover {
 </table>
 </body>
 <!-- #EndTemplate -->
+<script>
+    var vbeditor = ace.edit("vbcode");
+    vbeditor.setTheme("ace/theme/monokai");
+    vbeditor.session.setMode("ace/mode/vbscript");
+    var pyeditor = ace.edit("pycode");
+    pyeditor.setTheme("ace/theme/monokai");
+    pyeditor.session.setMode("ace/mode/python");
+
+</script>
 
 <script>
-  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
-  var HOST = 'http://localhost:8090';
+  var HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  // var HOST = 'http://localhost:8090';
 
   function convert_code() {
-      var vbtext = $('#vbcode')[0].value;
+      var vbtext = vbeditor.getValue();
       $.post(HOST + '/single_module', {'text': vbtext}, function(data) {
           if (data.status == 'OK') {
-            $('#pycode')[0].value = data.result;
+            pyeditor.session.setValue(data.result);
           } else {
               alert('Came back ' + data.status + ': ' + data.result);
           }
