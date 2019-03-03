@@ -12,11 +12,11 @@
 
 <style type="text/css" media="screen">
     #vbcode {
-      width: 500px;
+      width: 640px;
       height: 300px;
     }
     #pycode {
-      width: 500px;
+      width: 640px;
       height: 300px;
     }
 </style>
@@ -123,22 +123,19 @@ a:hover {
       </table>
     </td>
     <td valign="top" rowspan="2" width="442"><!-- #BeginEditable "MainBody" --> 
-      <p><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">
-        This page is current being revamped - the conversion capability is not available at this time!
-      </font></p>
 
-
-      <p><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">You
-        can convert Visual Basic code directly to Python using the text box below. 
-        Simply paste your code and hit <b>Convert</b> - your Python code will 
-        appear ...</font></p>
-      <p><b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066">Note:</font></b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"> 
+      <p><b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066">Note:</font></b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066">
         if you are pasting <i>form code</i>, please only paste the VB Code not 
         the form definition (ie remove the bit between the <font face="Courier New, Courier, mono">Begin 
         VB.Form</font> and the <font face="Courier New, Courier, mono">End<font face="Geneva, Arial, Helvetica, san-serif">).</font></font></font></p>
       <form name="convert">
-        <p align="center"> 
-          <div id="vbcode"></div>
+        <p align="center">
+          <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
+            VB Code
+          </font>
+        </p>
+        <p align="center">
+            <div id="vbcode"></div>
         </p>
         <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion 
           context (where this code lives) </font> 
@@ -148,8 +145,13 @@ a:hover {
             <option>Form module</option>
           </select>
         </p>
-        <p align="center"> 
+        <p align="center">
           <input type="button" name="Do" value="Convert to Python" onclick="convert_code();">
+        </p>
+        <p align="center">
+          <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
+            Python Equivalent
+          </font>
         </p>
         <p align="center">
           <div id="pycode"></div>
@@ -157,10 +159,7 @@ a:hover {
       </form>
       <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
       <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">1. 
-        Please be patient - this is a cgi-script and it can take a while<br>
-        2. There's a limit of 500 LOC to prevent memory/CPU overload on the server.<br>
-        3. Your code is sent in plain text - do not send commercially sensitive 
-        code!</font></b></font></p>
+        Please note - your code is sent in plain text - do not send anything commercially sensitive!</font></b></font></p>
       <p>&nbsp;</p>
 
       </div>
@@ -195,6 +194,7 @@ a:hover {
 
   function convert_code() {
       var vbtext = vbeditor.getValue();
+      pyeditor.session.setValue('# Converting code now ...');
       $.post(HOST + '/single_module', {'text': vbtext}, function(data) {
           if (data.status == 'OK') {
             pyeditor.session.setValue(data.result);
