@@ -5,13 +5,14 @@ import SimpleHTTPServer
 import SocketServer
 import json
 from flask import Flask, request
+from flask_cors import CORS
 
 
 class ConversionError(Exception): """There was an error converting a line of text"""
 
 
 app = Flask('VB2PY')
-
+CORS(app)
 
 class ConversionHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     """A server to convert files"""

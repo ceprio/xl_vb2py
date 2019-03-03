@@ -6,6 +6,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
+<!-- Standard libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <body bgcolor="#FFFFFF" text="#000000">
 <div align="left"><img src="gifs/rule1.gif" width="870" height="8" align="baseline"><br>
 </div>
@@ -111,7 +114,7 @@ a:hover {
         This page is current being revamped - the conversion capability is not available at this time!
       </font></p>
 
-<!--
+
       <p><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">You
         can convert Visual Basic code directly to Python using the text box below. 
         Simply paste your code and hit <b>Convert</b> - your Python code will 
@@ -120,9 +123,9 @@ a:hover {
         if you are pasting <i>form code</i>, please only paste the VB Code not 
         the form definition (ie remove the bit between the <font face="Courier New, Courier, mono">Begin 
         VB.Form</font> and the <font face="Courier New, Courier, mono">End<font face="Geneva, Arial, Helvetica, san-serif">).</font></font></font></p>
-      <form name="convert" method="post" action="/cgi-bin/convert.py">
+      <form name="convert">
         <p align="center"> 
-          <textarea name="code" rows="20" cols="100"></textarea>
+          <textarea name="code" rows="20" cols="100" id="vbcode"></textarea>
         </p>
         <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion 
           context (where this code lives) </font> 
@@ -133,7 +136,10 @@ a:hover {
           </select>
         </p>
         <p align="center"> 
-          <input type="submit" name="Do" value="Convert to Python">
+          <input type="button" name="Do" value="Convert to Python" onclick="convert_code();">
+        </p>
+        <p align="center">
+          <textarea name="code" rows="20" cols="100" id="pycode"></textarea>
         </p>
       </form>
       <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
@@ -143,7 +149,7 @@ a:hover {
         3. Your code is sent in plain text - do not send commercially sensitive 
         code!</font></b></font></p>
       <p>&nbsp;</p>
-      -->
+
       <!-- #EndEditable --></td>
   </tr>
   <tr> 
@@ -157,4 +163,23 @@ a:hover {
   </tr>
 </table>
 </body>
-<!-- #EndTemplate --></html>
+<!-- #EndTemplate -->
+
+<script>
+  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  var HOST = 'http://localhost:8090';
+
+  function convert_code() {
+      var vbtext = $('#vbcode')[0].value;
+      $.post(HOST + '/single_module', {'text': vbtext}, function(data) {
+          if (data.status == 'OK') {
+            $('#pycode')[0].value = data.result;
+          } else {
+              alert('Came back ' + data.status + ': ' + data.result);
+          }
+      }, 'json');
+  }
+
+</script>
+
+</html>
