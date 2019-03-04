@@ -146,6 +146,33 @@ class TestServer(unittest.TestCase):
         self.assertFalse(hasattr(obj, 'a'))
         self.assertFalse(hasattr(obj, 'doIt'))
 
+    def testClearServerHistory(self):
+        """testClearServerHistory: history of the server should be removed"""
+        code = '''
+        
+        Sub doIt(X)
+            Select Case A
+                Case 1
+                    B = 10
+            End Select
+        End Sub
+        Sub doIt2(X)
+            Select Case A
+                Case 1
+                    B = 10
+            End Select
+        End Sub        
+        
+        '''
+        py1 = self.c(code)
+        py2 = self.c(code)
+        #
+        self.assertIn('_select', py1)
+        self.assertIn('_select1', py1)
+        self.assertIn('_select', py2)
+        self.assertIn('_select1', py2)
+        self.assertNotIn('_select2', py2)
+
 
 if __name__ == '__main__':
     main()

@@ -55,6 +55,9 @@ class ConversionHandler(object):
         and so this clears them out to ensure that each call gets a unique context.
 
         """
+        parserclasses.VBSelect._select_variable_index = 0
+        parserclasses.VBFor._for_variable_index = 0
+        parserclasses.VBWith._with_variable_index = 0
 
 
 @app.route('/test', methods=['GET', 'POST'])
