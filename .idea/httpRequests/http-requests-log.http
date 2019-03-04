@@ -1,3 +1,43 @@
+POST http://localhost:8090/single_class_module?text=a = 10&style=vb
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-03T092444.200.html
+
+###
+
+POST http://localhost:8090/single_class_module?text=a = 10b = 20&style=vb
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-03T092350.200.html
+
+###
+
+POST http://localhost:8090/single_class_module?text=a = 10b = 20
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-03T092325.200.html
+
+###
+
+POST http://localhost:8090/single_class_module?text=a = 10b = 20
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-03T092314.200.html
+
+###
+
+POST http://localhost:8090/single_module?text=a = 10b = 20
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-03T092305.404.html
+
+###
+
 POST http://localhost:8090/single_module?text=a = 10b = 20
 Accept: */*
 Cache-Control: no-cache

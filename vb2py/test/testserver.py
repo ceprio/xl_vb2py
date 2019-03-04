@@ -2,6 +2,8 @@
 
 from testframework import *
 import vb2py.conversionserver
+import vb2py.parserclasses
+import vb2py.config
 import os
 import urllib
 import threading
@@ -9,9 +11,11 @@ import json
 import vb2py.utils
 from flask import request
 import pytest
+from vb2py.vbfunctions import Integer
 
 
 PATH = vb2py.utils.rootPath()
+Config = vb2py.config.VB2PYConfig()
 
 
 class TestServer(unittest.TestCase):
@@ -71,7 +75,7 @@ class TestServer(unittest.TestCase):
         """testJSONOK: server JSON should return OK"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_module', data={'text': 'a=10\nb=20\nc=a+b'})
+        result = client.post('/single_code_module', data={'text': 'a=10\nb=20\nc=a+b'})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'OK')
         py = data['result']
@@ -85,7 +89,7 @@ class TestServer(unittest.TestCase):
         """testJSONFAIL: server JSON failure should work OK"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_module', data={'textNOTTHERE': 'a='})
+        result = client.post('/single_code_module', data={'textNOTTHERE': 'a='})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'FAILED')
         self.assertIn('text', data['result'].lower())
@@ -94,10 +98,53 @@ class TestServer(unittest.TestCase):
         """testJSONERROR: server JSON error should work OK"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_module', data={'text': 'a='})
+        result = client.post('/single_code_module', data={'text': 'a='})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'ERROR')
         self.assertIn('parsing', data['result'].lower())
+
+    def testCanDoClassModule(self):
+        """testCanDoClassModule: should be able to do a class module"""
+        vb2py.conversionserver.app.config['TESTING'] = True
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': 'a=10'})
+        data = json.loads(result.data)
+        self.assertEqual(data['status'], 'OK')
+        d = {}
+        exec(data['result'], globals(), d)
+        obj = d['MyClass']()
+        self.assertEqual(10, obj.a)
+
+    def testCanDoPythonicConversion(self):
+        """testCanDoPythonicConversion: should be able to do pythonic conversion"""
+        Config.setLocalOveride("General", "RespectPrivateStatus", "Yes")
+        vb2py.conversionserver.app.config['TESTING'] = True
+        client = vb2py.conversionserver.app.test_client()
+
+        code = '''
+        Private a as Integer
+        b = 20
+        
+        Sub doIt(X)
+            ' Do something
+        End Sub
+        
+        
+        '''
+        py = self.c(code, container=vb2py.parserclasses.VBClassModule(), style='pythonic')
+        d = {'Integer': Integer}
+        exec(py, globals(), d)
+        obj = d['MyClass']()
+        self.assertTrue(hasattr(obj, 'a'))
+        self.assertTrue(hasattr(obj, 'doIt'))
+        #
+        # Now try non-pythonic
+        py = self.c(code, container=vb2py.parserclasses.VBClassModule(), style='vb')
+        d = {'Integer': Integer}
+        exec(py, globals(), d)
+        obj = d['MyClass']()
+        self.assertFalse(hasattr(obj, 'a'))
+        self.assertFalse(hasattr(obj, 'doIt'))
 
 
 if __name__ == '__main__':

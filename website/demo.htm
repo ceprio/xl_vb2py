@@ -136,7 +136,25 @@ a:hover {
           </font>
         </p>
         <p align="center">
-            <div id="vbcode"></div>
+            <div id="vbcode">
+Dim A as Integer
+B = 20
+
+Sub DotIt(X as Double)
+  Select Case A
+        Case 1
+          B = B + X
+        Case 2
+          B = B - X
+        Case Else
+          B = 0
+  End Select
+End Sub
+
+Function GetHalfB() As Integer
+  GetHalfB = B / 2
+End Function
+            </div>
         </p>
 
         <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion Type</font>
@@ -200,8 +218,8 @@ a:hover {
 </script>
 
 <script>
-  var HOST = 'http://perpetualpyramid.dyndns.org:8090';
-  // var HOST = 'http://localhost:8090';
+  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  var HOST = 'http://localhost:8090';
 
   function convert_code() {
       var vbtext = vbeditor.getValue();
@@ -209,7 +227,20 @@ a:hover {
       var context = $('#context')[0].value;
       var type = $('#type')[0].value;
 
-      $.post(HOST + '/single_module', {'text': vbtext}, function(data) {
+      var url;
+      if (context == 'code') {
+        url = '/single_code_module';
+      } else {
+        url = '/single_class_module';
+      }
+      var conversion_style;
+      if (type == 'exact') {
+        conversion_style = 'vb';
+      } else {
+        conversion_style = 'pythonic';
+      }
+
+      $.post(HOST + url, {'text': vbtext, 'style': conversion_style}, function(data) {
           if (data.status == 'OK') {
             pyeditor.session.setValue(data.result);
           } else {
