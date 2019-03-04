@@ -246,7 +246,11 @@ End Function
           } else {
               alert('Came back ' + data.status + ': ' + data.result);
           }
-      }, 'json');
+      }, 'json')
+          .fail(function(data, status, error) {
+              pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
+                      status + '\n' + 'Error=' + error);
+          });
   }
 
 </script>
