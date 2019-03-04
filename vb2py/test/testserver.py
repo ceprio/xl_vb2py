@@ -75,7 +75,7 @@ class TestServer(unittest.TestCase):
         """testJSONOK: server JSON should return OK"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_code_module', data={'text': 'a=10\nb=20\nc=a+b'})
+        result = client.post('/single_code_module', data={'text': 'a=10\nb=20\nc=a+b', 'style': 'vb'})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'OK')
         py = data['result']
@@ -98,7 +98,7 @@ class TestServer(unittest.TestCase):
         """testJSONERROR: server JSON error should work OK"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_code_module', data={'text': 'a='})
+        result = client.post('/single_code_module', data={'text': 'a=', 'style': 'vb'})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'ERROR')
         self.assertIn('parsing', data['result'].lower())
@@ -107,7 +107,7 @@ class TestServer(unittest.TestCase):
         """testCanDoClassModule: should be able to do a class module"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_class_module', data={'text': 'a=10'})
+        result = client.post('/single_class_module', data={'text': 'a=10', 'style': 'vb'})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'OK')
         d = {}

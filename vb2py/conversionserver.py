@@ -25,6 +25,7 @@ class ConversionHandler(object):
         if container is None:
             container = parserclasses.VBModule()
         ConversionHandler.setPythonic(style)
+        ConversionHandler.clearHistory()
         try:
             return vbparser.convertVBtoPython(text, container)
         except vbparser.VBParserError, err:
@@ -45,6 +46,15 @@ class ConversionHandler(object):
             Config.setLocalOveride("Functions", "ReturnVariableName", "fn_return_value")
             Config.setLocalOveride("Select", "SelectVariablePrefix", "select_variable")
             Config.setLocalOveride("With", "WithVariablePrefix", "with_variable")
+
+    @staticmethod
+    def clearHistory():
+        """Reset any history in the parser
+
+        The parser stores counters for things like select and with unique values
+        and so this clears them out to ensure that each call gets a unique context.
+
+        """
 
 
 @app.route('/test', methods=['GET', 'POST'])
