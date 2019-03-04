@@ -45,6 +45,7 @@
           <td valign="top"><!-- #BeginEditable "RightSidePanel" -->
             <p align="center"><font size="3"><b><font face="Geneva, Arial, Helvetica, san-serif" color="#000066">Help</font></b></font></p>
             <p align="center"><font size="2" face="Arial, Helvetica, sans-serif"><a href="/onlinelimits.htm"><b>Limitations/Disclaimer</b></a></font></p>
+            <p align="center"><b><font face="Arial, Helvetica, sans-serif" size="2"><a href="/downloads/vb2py.zip">Runtime Files</a></font></b></p>
             <p align="center"><b><font face="Arial, Helvetica, sans-serif" size="2"><a href="/helpdemo.htm">Help</a></font></b></p>
             <!-- #EndEditable --></td>
         </tr>
@@ -137,12 +138,20 @@ a:hover {
         <p align="center">
             <div id="vbcode"></div>
         </p>
-        <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion 
+
+        <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion Type</font>
+          <select id="type">
+            <option selected value="exact">Match VB exactly</option>
+            <option value="pythonic">Pythonic code</option>
+          </select>
+        </p>
+
+        <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion
           context (where this code lives) </font> 
-          <select name="context">
-            <option selected>Code module</option>
-            <option>Class module</option>
-            <option>Form module</option>
+          <select id="context">
+            <option selected value="code">Code module</option>
+            <option value="class">Class module</option>
+           <!-- <option>Form module</option> -->
           </select>
         </p>
         <p align="center">
@@ -160,6 +169,8 @@ a:hover {
       <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
       <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">1. 
         Please note - your code is sent in plain text - do not send anything commercially sensitive!</font></b></font></p>
+      <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">2. You
+        need the runtime files to run these. Click <a href="/downloads/vb2py.zip">here</a> to download them.</font></b></font></p>
       <p>&nbsp;</p>
 
       </div>
@@ -195,6 +206,9 @@ a:hover {
   function convert_code() {
       var vbtext = vbeditor.getValue();
       pyeditor.session.setValue('# Converting code now ...');
+      var context = $('#context')[0].value;
+      var type = $('#type')[0].value;
+
       $.post(HOST + '/single_module', {'text': vbtext}, function(data) {
           if (data.status == 'OK') {
             pyeditor.session.setValue(data.result);
