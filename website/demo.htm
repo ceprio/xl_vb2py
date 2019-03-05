@@ -169,7 +169,7 @@ End Function
           <select id="context">
             <option selected value="code">Code module</option>
             <option value="class">Class module</option>
-           <!-- <option>Form module</option> -->
+            <option value="form">Form module</option>
           </select>
         </p>
         <p align="center">
@@ -218,8 +218,8 @@ End Function
 </script>
 
 <script>
-  var HOST = 'http://perpetualpyramid.dyndns.org:8090';
-  // var HOST = 'http://localhost:8090';
+  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  var HOST = 'http://localhost:8090';
 
   function convert_code() {
       var vbtext = vbeditor.getValue();
@@ -230,8 +230,10 @@ End Function
       var url;
       if (context == 'code') {
         url = '/single_code_module';
-      } else {
+      } else if (context == 'class') {
         url = '/single_class_module';
+      } else {
+        url = '/single_form_module';
       }
       var conversion_style;
       if (type == 'exact') {
