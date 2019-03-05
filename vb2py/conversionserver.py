@@ -119,8 +119,8 @@ def singleModule(module_type):
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
-        app.logger.info('Starting conversion (%s) - %d lines' % (
-            conversion_style, len(text),
+        app.logger.info('Starting conversion (%s) - %d lines from %s' % (
+            conversion_style, len(text), request.remote_addr
         ))
         try:
             result = ConversionHandler.convertSingleFile(
