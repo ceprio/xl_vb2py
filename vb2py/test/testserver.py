@@ -1,3 +1,5 @@
+# -*- coding: latin-1 -*-
+
 """Test the conversion server"""
 
 from testframework import *
@@ -172,6 +174,18 @@ class TestServer(unittest.TestCase):
         self.assertIn('_select', py2)
         self.assertIn('_select1', py2)
         self.assertNotIn('_select2', py2)
+
+    def testUnicodeCharacters(self):
+        """testUnicodeCharacters: should be able to handle unicode characters"""
+        vb2py.conversionserver.app.config['TESTING'] = True
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': u'a="Ä"', 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(data['status'], 'OK')
+        d = {}
+        exec(data['result'], globals(), d)
+        obj = d['MyClass']()
+        self.assertEqual(2, len(obj.a))
 
 
 if __name__ == '__main__':

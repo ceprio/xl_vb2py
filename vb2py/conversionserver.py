@@ -119,7 +119,7 @@ def singleModule(module_type):
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
-        app.logger.info('Starting conversion (%s) - %d lines from %s' % (
+        app.logger.info('Starting conversion (%s) - %d bytes from %s' % (
             conversion_style, len(text), request.remote_addr
         ))
         try:
@@ -138,6 +138,6 @@ def singleModule(module_type):
     return json.dumps({
         'status': status,
         'result': result,
-    })
+    }, encoding='latin1')
 
 
