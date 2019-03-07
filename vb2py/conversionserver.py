@@ -4,6 +4,7 @@ import vbparser
 import parserclasses
 import config
 import json
+import re
 from flask import Flask, request
 from flask_cors import CORS
 import time
@@ -43,14 +44,14 @@ class ConversionHandler(object):
     """A server to convert files"""
 
     @staticmethod
-    def convertSingleFile(text, container=None, style='vb'):
+    def convertSingleFile(text, container=None, style='vb', returnpartial=True):
         """Convert a single file of text"""
         if container is None:
             container = parserclasses.VBModule()
         ConversionHandler.setPythonic(style)
         ConversionHandler.clearHistory()
         try:
-            return vbparser.convertVBtoPython(text, container)
+            return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial)
         except vbparser.VBParserError, err:
             raise ConversionError('Error converting VB. %s' % err)
 
@@ -112,6 +113,12 @@ def singleFormModule():
 def singleModule(module_type):
     """Convert a single module"""
     start_time = time.time()
+    #
+    # Failure information
+    parsing_failed = False
+    parsing_stopped_vb = None
+    parsing_stopped_py = None
+    #
     try:
         text = request.values['text']
         conversion_style = request.values['style']
@@ -132,12 +139,30 @@ def singleModule(module_type):
         except Exception, err:
             result = str(err)
             status = 'ERROR'
+        else:
+            #
+            # Check for errors and store them
+            match = re.match(".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
+            if match:
+                parsing_failed = True
+                parsing_stopped_vb = getLineMatch(match.groups()[0], text)
+                parsing_stopped_py = getLineMatch('(ParserError)', result)
     #
     app.logger.info('Completed with status %s. Time took %5.2fs' % (status, time.time() - start_time))
     #
     return json.dumps({
         'status': status,
         'result': result,
+        'parsing_failed': parsing_failed,
+        'parsing_stopped_vb': parsing_stopped_vb,
+        'parsing_stopped_py': parsing_stopped_py,
     }, encoding='latin1')
 
 
+def getLineMatch(search, text):
+    """Return the line partially matching the text"""
+    for idx, line in enumerate(text.splitlines()):
+        if search in line:
+            return idx
+    else:
+        return 0

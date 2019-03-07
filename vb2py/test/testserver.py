@@ -25,6 +25,7 @@ class TestServer(unittest.TestCase):
 
     def setUp(self):
         """Set up the tests"""
+        Config["General", "ReportPartialConversion"] == "Yes"
         self.c = vb2py.conversionserver.ConversionHandler.convertSingleFile
 
     def tearDown(self):
@@ -54,7 +55,7 @@ class TestServer(unittest.TestCase):
     def testCanReportAnError(self):
         """testCanReportAnError: should be able to report an error"""
         vb = 'a = '
-        self.assertRaises(vb2py.conversionserver.ConversionError, self.c, vb)
+        self.assertRaises(vb2py.conversionserver.ConversionError, self.c, vb, returnpartial=False)
 
     def _getResult(self, url):
         """Return a result from a URL"""
@@ -102,7 +103,7 @@ class TestServer(unittest.TestCase):
         client = vb2py.conversionserver.app.test_client()
         result = client.post('/single_code_module', data={'text': 'a=', 'style': 'vb'})
         data = json.loads(result.data)
-        self.assertEqual(data['status'], 'ERROR')
+        self.assertEqual(data['status'], 'OK')
         self.assertIn('parsing', data['result'].lower())
 
     def testCanDoClassModule(self):
@@ -186,6 +187,29 @@ class TestServer(unittest.TestCase):
         exec(data['result'], globals(), d)
         obj = d['MyClass']()
         self.assertEqual(2, len(obj.a))
+
+    def testDetectsParserFailure(self):
+        """testDetectsParserFailure: should detect parser failure"""
+        code = '''
+        Sub doIt(X)
+            Select Case A
+                Case 1
+                    B = 10
+            End Select
+        End Sub
+        Sub doIt2(X)
+            Select Case A
+                Case 1
+                    B = 10
+
+        End Sub        
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(7, data['parsing_stopped_vb'])
+        self.assertEqual(10, data['parsing_stopped_py'])
 
 
 if __name__ == '__main__':

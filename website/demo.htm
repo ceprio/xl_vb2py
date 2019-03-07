@@ -10,6 +10,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
 
+<link rel="stylesheet" type="text/css" href="main.css">
+
 <style type="text/css" media="screen">
     #vbcode {
       width: 640px;
@@ -60,7 +62,7 @@
   <tr> 
     <td width="178" valign="top" height="243">
 	
-<style>
+<style type="text/css" media="screen">
 a:link {
   text-decoration: none;
   font-family: "Arial";
@@ -83,7 +85,7 @@ a:hover {
   font-weight: bold;
   color=#ff0000;
   }
-  
+
 </style>
 
       <table width="0" border="0" cellspacing="0" cellpadding="2">
@@ -175,14 +177,22 @@ End Function
         <p align="center">
           <input type="button" name="Do" value="Convert to Python" onclick="convert_code();">
         </p>
+
+        <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#660000">
+          <p align="center">
+              <div id="error_message">&nbsp;</div>
+          </p>
+        </font>
+
+        <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
         <p align="center">
-          <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
             Python Equivalent
-          </font>
         </p>
         <p align="center">
-          <div id="pycode"></div>
+            <div id="pycode"></div>
         </p>
+
+        </font>
       </form>
       <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
       <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">1. 
@@ -214,12 +224,14 @@ End Function
     var pyeditor = ace.edit("pycode");
     pyeditor.setTheme("ace/theme/monokai");
     pyeditor.session.setMode("ace/mode/python");
+    var vb_marker = null;
+    var py_marker = null;
 
 </script>
 
 <script>
-  var HOST = 'http://perpetualpyramid.dyndns.org:8090';
-  // var HOST = 'http://localhost:8090';
+  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  var HOST = 'http://localhost:8090';
 
   function convert_code() {
       var vbtext = vbeditor.getValue();
@@ -242,9 +254,30 @@ End Function
         conversion_style = 'pythonic';
       }
 
+      // Clear old markers and errors
+      if (vb_marker != null) {
+        vbeditor.session.removeMarker(vb_marker);
+      }
+      if (py_marker != null) {
+        pyeditor.session.removeMarker(py_marker);
+      }
+      $('#error_message')[0].innerHTML = '&nbsp;';
+
       $.post(HOST + url, {'text': vbtext, 'style': conversion_style}, function(data) {
           if (data.status == 'OK') {
             pyeditor.session.setValue(data.result);
+            // Watch for parsing failure
+            if (data.parsing_failed) {
+              var Range = ace.require('ace/range').Range;
+              vb_marker = vbeditor.session.addMarker(new Range(data.parsing_stopped_vb, 0, data.parsing_stopped_vb, 100),
+                      "errorMarker", "line", true);
+              vbeditor.scrollToLine(data.parsing_stopped_vb);
+              py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
+                      "errorMarker", "line", true);
+              pyeditor.scrollToLine(data.parsing_stopped_py);
+              $('#error_message')[0].innerHTML = 'There was a parsing error in, or just after, the highlighted block.';
+            }
+
           } else {
               alert('Came back ' + data.status + ': ' + data.result);
           }
