@@ -179,9 +179,12 @@ End Function
         </p>
 
         <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#660000">
-          <p align="center">
-              <div id="error_message">&nbsp;</div>
-          </p>
+              <div>&nbsp;
+                <div id="error_message" style="display: none" align="center">
+                  There was a parsing error in, or just after, the highlighted block.
+                  <input type="button" value="Help the project by submitting this code as a test file" onclick="submit_file();"/>
+                </div>
+              </div>
         </font>
 
         <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
@@ -261,7 +264,7 @@ End Function
       if (py_marker != null) {
         pyeditor.session.removeMarker(py_marker);
       }
-      $('#error_message')[0].innerHTML = '&nbsp;';
+      $('#error_message')[0].style = 'display: none';
 
       $.post(HOST + url, {'text': vbtext, 'style': conversion_style}, function(data) {
           if (data.status == 'OK') {
@@ -275,7 +278,7 @@ End Function
               py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
                       "errorMarker", "line", true);
               pyeditor.scrollToLine(data.parsing_stopped_py);
-              $('#error_message')[0].innerHTML = 'There was a parsing error in, or just after, the highlighted block.';
+              $('#error_message')[0].style = '';
             }
 
           } else {
@@ -286,6 +289,13 @@ End Function
               pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
                       status + '\n' + 'Error=' + error);
           });
+  }
+
+  function submit_file() {
+      var vbtext = vbeditor.getValue();
+      $.post(HOST + '/submit_file', {'text': vbtext}, function(data) {
+      });
+      alert('Thanks for submitting the file! This helps to make vb2py better.');
   }
 
 </script>

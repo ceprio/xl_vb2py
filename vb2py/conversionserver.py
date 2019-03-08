@@ -5,6 +5,8 @@ import parserclasses
 import config
 import json
 import re
+import os
+import utils
 from flask import Flask, request
 from flask_cors import CORS
 import time
@@ -106,6 +108,11 @@ def singleFormModule():
     """Return a form module converted"""
     return singleModule(parserclasses.VBFormModule())
 
+@app.route('/submit_file', methods=['POST'])
+def submitFile():
+    """Submit a file as a test"""
+    return storeSubmittedFile()
+
 
 def singleModule(module_type):
     """Convert a single module"""
@@ -169,3 +176,17 @@ def getLineMatch(search, text):
             return idx
     else:
         return 0
+
+
+def storeSubmittedFile():
+    """Store a file that was submitted"""
+    vb = request.values['text']
+    filename = time.strftime('%Y-%m-%d %H:%M:%S code.vb')
+    full_path = os.path.join(utils.rootPath(), 'submitted_files', filename)
+    app.logger.info('Storing file for testing as %s' % filename)
+    with open(full_path, 'w') as f:
+        f.write(vb)
+    return json.dumps({
+        'status': 'OK',
+        'result': 'File stored for testing',
+    })
