@@ -92,21 +92,18 @@ def testResult():
 @app.route('/single_code_module', methods=['POST'])
 def singleCodeModule():
     """Return a code module converted"""
-    app.logger.info('Code module conversion')
     return singleModule(parserclasses.VBModule())
 
 
 @app.route('/single_class_module', methods=['POST'])
 def singleClassModule():
     """Return a class module converted"""
-    app.logger.info('Class module conversion')
     return singleModule(parserclasses.VBClassModule())
 
 
 @app.route('/single_form_module', methods=['POST'])
 def singleFormModule():
     """Return a form module converted"""
-    app.logger.info('Form module conversion')
     return singleModule(parserclasses.VBFormModule())
 
 
@@ -119,16 +116,17 @@ def singleModule(module_type):
     parsing_stopped_vb = None
     parsing_stopped_py = None
     #
+    conversion_style = 'unknown'
+    extra = ''
+    lines = -1
     try:
-        text = request.values['text']
         conversion_style = request.values['style']
+        text = request.values['text']
+        lines = len(text.splitlines())
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
-        app.logger.info('Starting conversion (%s) - %d bytes from %s' % (
-            conversion_style, len(text), request.remote_addr
-        ))
         try:
             result = ConversionHandler.convertSingleFile(
                 text,
@@ -147,8 +145,13 @@ def singleModule(module_type):
                 parsing_failed = True
                 parsing_stopped_vb = getLineMatch(match.groups()[0], text)
                 parsing_stopped_py = getLineMatch('(ParserError)', result)
+                extra = ' (parser failure after %5.2f%% of lines)' % (100.0 * parsing_stopped_vb / lines)
     #
-    app.logger.info('Completed with status %s. Time took %5.2fs' % (status, time.time() - start_time))
+    app.logger.info('[%s] Completed %d lines %s %s with status %s. Time took %5.2fs%s' % (
+        request.remote_addr,
+        lines, module_type.__class__.__name__, conversion_style,
+        status, time.time() - start_time, extra
+    ))
     #
     return json.dumps({
         'status': status,
