@@ -125,15 +125,16 @@ def singleModule(module_type):
     #
     conversion_style = 'unknown'
     extra = ''
-    lines = -1
+    line_count = -1
     try:
         conversion_style = request.values['style']
         text = request.values['text']
-        lines = len(text.splitlines())
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
+        lines = text.splitlines()
+        line_count = len(lines)
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -156,11 +157,15 @@ def singleModule(module_type):
                 parsing_failed = True
                 parsing_stopped_vb = getLineMatch(match.groups()[0], text)
                 parsing_stopped_py = getLineMatch('(ParserError)', result)
-                extra = ' (parser failure after %5.2f%% of lines)' % (100.0 * parsing_stopped_vb / lines)
+                parsing_stopped_vb += locateBadLine(text, parsing_stopped_vb)
+                extra = ' (parser failure after %5.2f%% of lines): [%s]' % (
+                        100.0 * parsing_stopped_vb / line_count,
+                        lines[parsing_stopped_vb]
+                )
     #
     app.logger.info('[%s] Completed %d lines %s %s with status %s. Time took %5.2fs%s' % (
         request.remote_addr,
-        lines, module_type.__class__.__name__, conversion_style,
+        line_count, module_type.__class__.__name__, conversion_style,
         status, time.time() - start_time, extra
     ))
     #
@@ -205,3 +210,18 @@ def removeFormCruft(text):
         return stripped
     else:
         return text
+
+
+def locateBadLine(vb, error_line):
+    """Given some vb with a parsing error at the line number, try to zoom in and get more precise
+
+    We do this by parsing each line starting at the error to see which one fails.
+
+    """
+    for idx, line in enumerate(vb.splitlines()[error_line:]):
+        try:
+            parsed = vbparser.buildParseTree(line, 'isolated_single_line', returnpartial=False)
+        except:
+            return idx
+    else:
+        return 0

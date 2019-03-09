@@ -239,6 +239,66 @@ class TestServer(unittest.TestCase):
         self.assertEqual(True, data['parsing_failed'])
         self.assertEqual(3, data['parsing_stopped_vb'])
 
+    def testWhileBlockFailure(self):
+        """testWhileBlockFailure: can get to failing line in while block"""
+        code = '''
+        Sub doIt(X)
+            While A > 10
+                A =
+            End While
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(3, data['parsing_stopped_vb'])
+
+    def testDoBlockFailure(self):
+        """testDoBlockFailure: can get to failing line in do block"""
+        code = '''
+        Sub doIt(X)
+            Do
+                A = A + 
+            Loop Until A = 10
+        End Sub          
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(3, data['parsing_stopped_vb'])
+
+    def testWithBlockFailure(self):
+        """testWithBlockFailure: can get to failing line in with block"""
+        code = '''
+        Sub doIt(X)
+            With This.A
+                This.A = 
+            End With
+        End Sub   
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(3, data['parsing_stopped_vb'])
+
+    def testParserInBlockStartFailure(self):
+        """testParserInBlockStartFailure: can get to failing line in subroutine at start"""
+        code = '''
+        Sub doIt(X
+            If X > 10 Then
+                A =
+            End If 
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(1, data['parsing_stopped_vb'])
+
     def testStripsOutForm(self):
         """testStripsOutForm: should strip out form section"""
         code = '''

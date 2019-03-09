@@ -192,6 +192,32 @@ compound_statement ::=
              non_vb_block
 
 
+isolated_single_line ::=
+            for_start_line /
+            for_end_line /
+            select_start_statement /
+            case_item_start /
+            case_else_start /
+            select_end_statement /
+            while_start_statement /
+            while_end_statement /
+            do_start_statement /
+            do_end_statement /
+            if_start_statement /
+            if_end_statement /
+            sub_start_definition /
+            sub_end_definition /
+            fn_start_definition /
+            fn_end_definition /
+            with_start_statement /
+            with_end_statement /
+            # user_type
+            # enumeration
+            # property
+            # non_vb
+            single_statement
+
+
 multi_statement_line ::=
              ((single_statement, colon) / label_statement), (wsp+, (compound_statement / statement))?
 #@+node:pap.120703001453.166: *3* Keywords
@@ -534,10 +560,21 @@ event_definition ::=
 #@+node:pap.120703001453.185: ** Compound statements
 #@+node:pap.120703001453.186: *3* Do/While etc
 while_statement ::=
-                c"While", wsp+, expression, line_end, block, label_definition?, (c"End While" / c"Wend")
+                while_start_statement, block, while_end_statement
+
+while_start_statement ::=
+                c"While", wsp+, expression, line_end
+
+while_end_statement ::=
+                label_definition?, (c"End While" / c"Wend")
 
 do_statement ::=
-                c"Do", (while_clause / until_clause)?, line_end, block, 
+                do_start_statement, block, do_end_statement
+
+do_start_statement ::=
+                c"Do", (while_clause / until_clause)?, line_end
+
+do_end_statement ::=
                 label_definition?, c"Loop", (post_until_clause / post_while_clause)?
 
 while_clause ::=
@@ -553,17 +590,29 @@ post_while_clause ::=
                 while_clause
 #@+node:pap.120703001453.187: *3* Select case
 select_statement ::=
-                c"Select", wsp+, c"Case", wsp+, expression, line_end,
+                select_start_statement,
 				case_comment_block?,
                 case_item_block*,
                 case_else_block?,
+                select_end_statement
+
+select_start_statement ::=
+                c"Select", wsp+, c"Case", wsp+, expression, line_end
+
+select_end_statement ::=
                 label_definition?, c"End Select"
 
 case_item_block ::=
-                label_definition?, c"Case", wsp+, case_list, case_body
+                case_item_start, case_body
+
+case_item_start ::=
+                label_definition?, c"Case", wsp+, case_list
 
 case_else_block ::=
-                label_definition?, c"Case", wsp+, c"Else", case_body
+                case_else_start, case_body
+
+case_else_start ::=
+                label_definition?, c"Case", wsp+, c"Else"
 
 case_body ::=
 				(colon, line_end, block?) / ((line_end / colon), block?) 
@@ -585,9 +634,15 @@ inline_if_statement ::=
              (wsp*, hash?, c"Else", wsp+, inline_else_block)?
 
 if_statement ::= 
-             hash?, c"If", condition, hash?, c"Then", line_end, if_block?, 
+             if_start_statement, if_block?,
              else_if_statement*,
              else_statement?,
+             if_end_statement
+
+if_start_statement ::=
+             hash?, c"If", condition, hash?, c"Then", line_end
+
+if_end_statement ::=
              label_definition?, hash?, c"End If"
 
 if_block ::= 
@@ -615,9 +670,15 @@ inline_block ::=
 
 #@+node:pap.120703001453.189: *3* For and for each
 for_statement ::=
-                c"For", wsp+, object, wsp*, "=", wsp*, 
-                expression, c"To", wsp+, expression, for_stepping?, line_end,
+                for_start_line,
                 block?,
+                for_end_line
+
+for_start_line ::=
+                c"For", wsp+, object, wsp*, "=", wsp*,
+                expression, c"To", wsp+, expression, for_stepping?, line_end
+
+for_end_line ::=
                 label_definition?, c"Next", (wsp+, object)?
 
 for_stepping ::=
@@ -638,8 +699,14 @@ body ::=
 			    (implicit_call_statement / (single_statement, colon))*
 #@+node:pap.120703001453.190: *3* Subs and functions
 sub_definition ::=
+             sub_start_definition, block?, sub_end_definition
+
+sub_start_definition ::=
              label_definition?, (scope, wsp*)?, (static, wsp*)?, c"Sub", wsp+, identifier, wsp*,
-             formal_param_list, line_end, block?, label_definition?, c"End Sub"
+             formal_param_list, line_end
+
+sub_end_definition ::=
+             label_definition?, c"End Sub"
 
 formal_param_list ::=
              "(", wsp*, formal_param?, (wsp*, ",", wsp*, formal_param)*, ")"
@@ -657,8 +724,14 @@ parameter_list ::=
              list
 
 fn_definition ::=
+             fn_start_definition, block?, fn_end_definition
+
+fn_start_definition ::=
              label_definition?, (scope, wsp*)?, c"Function", wsp+, identifier, wsp*,
-             formal_param_list, type_definition?, line_end, block?, label_definition?, c"End Function"
+             formal_param_list, type_definition?, line_end
+
+fn_end_definition ::=
+             label_definition?, c"End Function"
 
 default_value ::=
             wsp*, "=", expression            
@@ -679,7 +752,14 @@ user_type_definition ::=
              (scope, wsp+)?, c"Type", wsp+, identifier, line_end, ((object_definition / comment_statement), line_end)*, label_definition?, c"End Type"
 #@+node:pap.120703001453.193: *3* With
 with_statement ::=
-    label_definition?, c"With", wsp+, expression, line_end, block?, label_definition?, c"End With"
+    with_start_statement, block?, with_end_statement
+
+with_start_statement ::=
+    label_definition?, c"With", wsp+, expression, line_end
+
+with_end_statement ::=
+    label_definition?, c"End With"
+
 #@+node:pap.120703001453.194: *3* Enumerations
 enumeration_definition ::=
         (scope, wsp+)?, c"Enum", wsp, identifier, line_end, (enumeration_item, line_end)*, c"End Enum"
