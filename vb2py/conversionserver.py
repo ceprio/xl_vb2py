@@ -200,6 +200,7 @@ def removeFormCruft(text):
     """Remove form stuff if it is there"""
     match = re.match('.*?^Begin.*?^End$(.*)', text, re.DOTALL + re.MULTILINE)
     if match:
+        app.logger.debug('Removed form information')
         return match.groups()[0]
     else:
         return text
