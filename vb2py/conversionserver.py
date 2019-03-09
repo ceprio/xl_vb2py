@@ -136,11 +136,11 @@ def singleModule(module_type):
     else:
         #
         # Remove form stuff if it is there
-        text = removeFormCruft(text)
+        stripped_text = removeFormCruft(text)
         #
         try:
             result = ConversionHandler.convertSingleFile(
-                text,
+                stripped_text,
                 module_type,
                 conversion_style,
             )
@@ -201,6 +201,7 @@ def removeFormCruft(text):
     match = re.match('.*?^Begin.*?^End$(.*)', text, re.DOTALL + re.MULTILINE)
     if match:
         app.logger.debug('Removed form information')
-        return match.groups()[0]
+        stripped = match.groups()[0]
+        return stripped
     else:
         return text
