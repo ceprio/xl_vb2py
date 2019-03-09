@@ -134,6 +134,10 @@ def singleModule(module_type):
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
+        #
+        # Remove form stuff if it is there
+        text = removeFormCruft(text)
+        #
         try:
             result = ConversionHandler.convertSingleFile(
                 text,
@@ -190,3 +194,12 @@ def storeSubmittedFile():
         'status': 'OK',
         'result': 'File stored for testing',
     })
+
+
+def removeFormCruft(text):
+    """Remove form stuff if it is there"""
+    match = re.match('.*?^Begin.*?^End$(.*)', text, re.DOTALL + re.MULTILINE)
+    if match:
+        return match.groups()[0]
+    else:
+        return text
