@@ -175,7 +175,9 @@ End Function
           </select>
         </p>
         <p align="center">
-          <input type="button" name="Do" value="Convert to Python" onclick="convert_code();">
+          <input type="button" name="Do" value="Convert file to Python" onclick="convert_code();">
+            &nbsp;&nbsp;
+          <input type="button" name="Do" value="Just convert selection to Python" onclick="convert_selection();">
         </p>
 
         <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#660000">
@@ -236,8 +238,25 @@ End Function
   // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
   var HOST = 'http://localhost:8090';
 
+  function convert_selection() {
+      let range = vbeditor.selection.getRange();
+      let selected_text = vbeditor.getSession().doc.getTextRange(range);
+      //
+      // If nothing was selected then just do the current line
+      if (selected_text.length == 0) {
+        range.start.column = 0;
+        range.end.column = 1000;
+        selected_text = vbeditor.getSession().doc.getTextRange(range);
+      }
+      convert_text(selected_text, range.start.row);
+  }
+
   function convert_code() {
-      var vbtext = vbeditor.getValue();
+      let vbtext = vbeditor.getValue();
+      convert_text(vbtext, 0);
+  }
+
+  function convert_text(vbtext, selection_offset) {
       pyeditor.session.setValue('# Converting code now ...');
       var context = $('#context')[0].value;
       var type = $('#type')[0].value;
@@ -271,14 +290,15 @@ End Function
             pyeditor.session.setValue(data.result);
             // Watch for parsing failure
             if (data.parsing_failed) {
-              var Range = ace.require('ace/range').Range;
-              vb_marker = vbeditor.session.addMarker(new Range(data.parsing_stopped_vb, 0, data.parsing_stopped_vb, 100),
+                let vb_offset = data.parsing_stopped_vb + selection_offset;
+                let Range = ace.require('ace/range').Range;
+                vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                       "errorMarker", "line", true);
-              vbeditor.scrollToLine(data.parsing_stopped_vb);
-              py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
+                vbeditor.scrollToLine(data.parsing_stopped_vb);
+                py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
                       "errorMarker", "line", true);
-              pyeditor.scrollToLine(data.parsing_stopped_py);
-              $('#error_message')[0].style = '';
+                pyeditor.scrollToLine(data.parsing_stopped_py);
+                $('#error_message')[0].style = '';
             }
 
           } else {
