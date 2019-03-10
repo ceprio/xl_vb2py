@@ -717,6 +717,10 @@ tests.extend([
     "10: Seek #filenum, value",
     "10: Seek #filenum, value ' comment",
     "Seek #filenum, value ' comment",
+    "Seek filenum, value",
+    "10: Seek filenum, value",
+    "10: Seek filenum, value ' comment",
+    "Seek filenum, value ' comment",
 ])
 
 tests.extend([

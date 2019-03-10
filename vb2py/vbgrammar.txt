@@ -453,7 +453,7 @@ print_statement ::=
         label_statement?, c"Print", (wsp+, channel_id, wsp*, ",", wsp*)?, print_list?
 
 channel_id ::=
-        "#", expression     
+        "#"?, expression
 
 hold_cr ::=
         ";"

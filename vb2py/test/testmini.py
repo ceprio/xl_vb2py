@@ -15,12 +15,16 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Using New in a call
+# Seek
 tests.extend([
-    'fn(New A)',
-    'fn(a, b, New C, New D)',
-    'a = fn(New A)',
-    'b = fn(a, b, New C, New D)',
+    "Seek #filenum, value",
+    "10: Seek #filenum, value",
+    "10: Seek #filenum, value ' comment",
+    "Seek #filenum, value ' comment",
+    "Seek filenum, value",
+    "10: Seek filenum, value",
+    "10: Seek filenum, value ' comment",
+    "Seek filenum, value ' comment",
 ])
 
 
