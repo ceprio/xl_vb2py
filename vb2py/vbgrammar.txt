@@ -761,7 +761,10 @@ with_end_statement ::=
 
 
 enumeration_definition ::=
-        (scope, wsp+)?, c"Enum", wsp, identifier, line_end, (enumeration_item, line_end)*, c"End Enum"
+        (scope, wsp+)?, c"Enum", wsp, identifier, line_end, (enumeration_line, line_end)*, c"End Enum"
+
+enumeration_line ::=
+        (enumeration_item / comment_statement)
 
 enumeration_item ::=
         ?-c"End", identifier, (wsp*, "=", wsp*, expression)?

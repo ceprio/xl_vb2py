@@ -2332,6 +2332,22 @@ Enum MyEnum ' yeah
     five
 End Enum
 """)
+
+# Simple enumeration with whole line comments
+tests.append("""
+Enum MyEnum ' yeah
+    one 
+    ' this 
+    two 
+    ' is 
+    three
+    four 
+    ' neat
+    ' oh
+    five
+End Enum
+""")
+
 # << Parsing tests >> (61 of 61)
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",

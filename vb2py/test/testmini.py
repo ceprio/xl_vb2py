@@ -15,20 +15,65 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-
-# One line comments with Rem
+# << Parsing tests >> (60 of 61)
+# Simple enumeration
 tests.append("""
-a = 10
-Rem b = 20+30
-Rem not needed c = "hello there"
-Rem opps oneVal = 10
-twoVals = Array(10,20)
-Rem dont do this anymore functioncall = myfunction.mymethod(10)
+Enum MyEnum
+    one
+    two
+    three
+    four
+    five
+End Enum
 """)
 
-tests.append('REM')
-tests.append('1 REM')
-tests.append("If a = 10 Then Remove X")
+
+# Scoped enumeration
+tests.append("""
+Public Enum MyEnum
+    one
+    two
+    three
+    four
+    five
+End Enum
+""")
+
+tests.append("""
+Private Enum MyEnum
+    one
+    two
+    three
+    four
+    five
+End Enum
+""")
+
+# Simple enumeration with comments
+tests.append("""
+Enum MyEnum ' yeah
+    one ' this 
+    two ' is 
+    three
+    four ' neat
+    five
+End Enum
+""")
+
+# Simple enumeration with whole line comments
+tests.append("""
+Enum MyEnum ' yeah
+    one 
+    ' this 
+    two 
+    ' is 
+    three
+    four 
+    ' neat
+    ' oh
+    five
+End Enum
+""")
 
 
 
