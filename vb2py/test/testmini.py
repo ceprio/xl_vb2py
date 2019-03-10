@@ -18,23 +18,7 @@ tests = []
 
 
 tests.extend([
-'a = fn(ByVal b)',
-'a = fn(x, y, z, ByVal b)',
-'a = fn(x, y, z, ByVal b, 10, 20, 30)',
-'a = fn(ByVal a, ByVal b, ByVal c)',
-'a = fn(ByRef b)',
-'a = fn(x, y, z, ByRef b)',
-'a = fn(x, y, z, ByRef b, 10, 20, 30)',
-'a = fn(ByRef a, ByRef b, ByRef c)',
-'fn ByVal b',
-'fn x, y, z, ByVal b',
-'fn x, y, z, ByVal b, 10, 20, 30',
-'fn ByVal a, ByVal b, ByVal c',
-'fn ByRef b',
-'fn x, y, z, ByRef b',
-'fn x, y, z, ByRef b, 10, 20, 30',
-'fn ByRef a, ByRef b, ByRef c',
-
+'if a = 10 then remove a',
 ])
 
 

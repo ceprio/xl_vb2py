@@ -339,7 +339,7 @@ comment_body ::=
              (stringitem / '"')*
 
 comment_start ::=
-			 "'"	/ c"Rem"		 
+			 "'"	/ (c"Rem", wsp)
 
 
 
@@ -666,8 +666,6 @@ inline_else_block ::=
 
 inline_block ::=
               (statement / inline_implicit_call)
-
-
 
 for_statement ::=
                 for_start_line,
