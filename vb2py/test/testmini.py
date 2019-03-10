@@ -15,17 +15,20 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Seek
-tests.extend([
-    "Seek #filenum, value",
-    "10: Seek #filenum, value",
-    "10: Seek #filenum, value ' comment",
-    "Seek #filenum, value ' comment",
-    "Seek filenum, value",
-    "10: Seek filenum, value",
-    "10: Seek filenum, value ' comment",
-    "Seek filenum, value ' comment",
-])
+# Empty Do's
+tests.append("""
+        Do  
+        Loop
+""")
+tests.append("""
+        Do Until A And B  
+        Loop
+""")
+# Simple do  loop
+tests.append("""
+        Do  
+        Loop Until A And B
+""")
 
 
 class ParsingTest(unittest.TestCase):

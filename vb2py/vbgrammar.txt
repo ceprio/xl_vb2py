@@ -560,7 +560,7 @@ event_definition ::=
 
 
 while_statement ::=
-                while_start_statement, block, while_end_statement
+                while_start_statement, block?, while_end_statement
 
 while_start_statement ::=
                 c"While", wsp+, expression, line_end
@@ -569,7 +569,7 @@ while_end_statement ::=
                 label_definition?, (c"End While" / c"Wend")
 
 do_statement ::=
-                do_start_statement, block, do_end_statement
+                do_start_statement, block?, do_end_statement
 
 do_start_statement ::=
                 c"Do", (while_clause / until_clause)?, line_end

@@ -2111,6 +2111,21 @@ tests.append("""
         Loop
 """)
 
+# Empty Do's
+tests.append("""
+        Do  
+        Loop
+""")
+tests.append("""
+        Do Until A And B  
+        Loop
+""")
+# Simple do  loop
+tests.append("""
+        Do  
+        Loop Until A And B
+""")
+
 # Simple do  with exit
 tests.append("""
         a = 0
