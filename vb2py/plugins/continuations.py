@@ -3,6 +3,9 @@ try:
 except ImportError:
     import extensions
 
+import re
+commented_continuation = re.compile(".*'[^\"]*_$")
+
 
 class LineContinuations(extensions.SystemPlugin):
     """Plugin to handle line continuations
@@ -20,7 +23,16 @@ class LineContinuations(extensions.SystemPlugin):
         """Convert continuation markers by joining adjacent lines"""
 
         txt_lines = txt.split("\n")
-        txtout = "\n".join([lne.strip() for lne in txt_lines if lne.strip()])
+        stripped_lines = [lne.strip() for lne in txt_lines if lne.strip()]
+        #
+        # Continuations should be ignored if they are on a comment line
+        for idx, line in enumerate(stripped_lines):
+            if line.endswith('_') and commented_continuation.match(line):
+                #
+                # This is commented out, so remove the continuation marker
+                stripped_lines[idx] = line[:-1]
+        #
+        txtout = "\n".join(stripped_lines)
         txtout = txtout.replace(" _\n", " ")
         txtout += "\n\n"
         self.log.info("Line continuation:\nConverted '%s'\nTo '%s'" % (txt, txtout))
