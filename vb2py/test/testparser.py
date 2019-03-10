@@ -1,3 +1,5 @@
+# -*- coding: latin-1 -*-
+
 #
 # Turn off logging in extensions (too loud!)
 import vb2py.extensions
@@ -10,6 +12,8 @@ from vb2py.vbparser import buildParseTree, VBParserError
 import vb2py.config
 Config = vb2py.config.VB2PYConfig()
 Config.setLocalOveride("General", "ReportPartialConversion", "No")
+
+import unittest
 
 
 tests = []
@@ -901,15 +905,15 @@ tests.extend([
 # << Parsing tests >> (28 of 61)
 # Unicode
 tests.extend([
-'cIÃ…  = 10',
-'a = cIÃ… + 30',
-'a = "cIÃ… there"',
+'cIÅ  = 10',
+'a = cIÅ + 30',
+'a = "cIÅ there"',
 
 ])
 
 # Unicode sub
 tests.append("""
-Sub cIÃ…()
+Sub cIÅ()
 a=10
 n=20
 c="hello"
@@ -2323,7 +2327,7 @@ failures = [
 ]
 # -- end -- << Parsing tests >>
 
-class ParsingTest(TestCase):
+class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
 
 
@@ -2343,4 +2347,4 @@ for idx in range(len(tests)):
 
 
 if __name__ == "__main__":
-    main()
+    unittest.main()

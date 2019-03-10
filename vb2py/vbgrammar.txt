@@ -517,14 +517,13 @@ list ::=
              "(", bare_list, ")"
 
 bare_list ::=
-#             (wsp*, bare_list_item?, (list_separator, wsp*, bare_list_item?)*)?
               (wsp*, positional_item*, bare_list_item?)
 
 call ::=
              ?-keyword, object, parameter_list?
 
 positional_item ::=
-             (bare_list_item / missing_positional), list_separator
+             (bare_list_item / missing_positional), list_separator, wsp*
 
 missing_positional ::=
              wsp*             

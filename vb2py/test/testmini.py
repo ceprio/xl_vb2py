@@ -15,37 +15,31 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# << Parsing tests >>
-# open statements
+
+
 tests.extend([
-    "Open fn For Output As 12",
-    "Open fn For Output As #12",
-    "Open fn For Input As 12",
-    "Open fn For Input As #12",
-    "Open fn.gk.gl() For Input As #NxtChn()",
-    "Open fn For Append Lock Write As 23",
-    "Open fn For Random As 23 Len = 1234",
-    "Close 1",
-    "Close #1",
-    "Close channel",
-    "Close #channel",
-    "Close",
-    "Close\na=1",
-    "Closet = 10",
+'a = fn(ByVal b)',
+'a = fn(x, y, z, ByVal b)',
+'a = fn(x, y, z, ByVal b, 10, 20, 30)',
+'a = fn(ByVal a, ByVal b, ByVal c)',
+'a = fn(ByRef b)',
+'a = fn(x, y, z, ByRef b)',
+'a = fn(x, y, z, ByRef b, 10, 20, 30)',
+'a = fn(ByRef a, ByRef b, ByRef c)',
+'fn ByVal b',
+'fn x, y, z, ByVal b',
+'fn x, y, z, ByVal b, 10, 20, 30',
+'fn ByVal a, ByVal b, ByVal c',
+'fn ByRef b',
+'fn x, y, z, ByRef b',
+'fn x, y, z, ByRef b, 10, 20, 30',
+'fn ByRef a, ByRef b, ByRef c',
+
 ])
 
 
-# Bug #810968 Close #1, #2 ' fails to parse 
-tests.extend([
-    "Close #1, #2, #3, #4",
-    "Close 1, 2, 3, 4",
-    "Close #1, 2, #3, 4",
-    "Close #one, #two, #three, #four",
-    "Close one, two, three, four",
-    "Close #1,#2,#3,#4",
-    "Close   #1   ,   #2   ,   #3   ,   #4   ",
-])
-# -- end -- << Parsing tests >>
+
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

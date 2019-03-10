@@ -5,6 +5,9 @@ We just import a lot of useful things with short names so they are easy to type!
 """
 
 
+import sys
+sys.path.append('..')
+
 from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
 import vb2py.vbparser
 
