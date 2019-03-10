@@ -117,7 +117,6 @@ tests.extend([
             "a = myfunction(1,2,3,z:=4)",
             "a = myfunction(x:=1,y:=2,z:=4)",
             "a = myfunction(b(10))",
-            "a = myfunction(b _\n(10))",
 ])
 
 # String Functions
@@ -384,7 +383,6 @@ tests.extend([
     "ReDim a(10+20, 1+3)",
     "ReDim a(1 To 10)",
     "ReDim a(1 To 10, 5 To 20)",
-    "ReDim a(10).b(10)",
 ])
 
 

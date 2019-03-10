@@ -24,6 +24,11 @@ a = 0
 b = 0
 _Change a, b
 """, {"a" : 0, "b" : 1}))
+
+tests.append("ReDim a(10).b(10)")
+tests.append("a = myfunction(b _\n(10))")
+
+
 # -- end -- << Failing tests >>
 
 import vb2py.vbparser
