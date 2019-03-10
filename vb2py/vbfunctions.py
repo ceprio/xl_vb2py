@@ -612,6 +612,13 @@ def UBound(obj, dimension=1):
     try:
         return obj.__ubound__(dimension)
     except AttributeError:
+        #
+        # Might have been called for a list so give this a try
+        if dimension == 1:
+            try:
+                return len(obj)
+            except TypeError:
+                pass
         raise ValueError("UBound called for invalid object")
 
 

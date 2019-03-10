@@ -1,5 +1,7 @@
 from testframework import *
 
+
+
 # << Sub tests >> (1 of 5)
 # Simple subroutine - use "global" to see results of the subroutine
 tests.append(("""
@@ -144,7 +146,58 @@ a = _vals(0)
 b = _vals(1)
 
 """, {"a" : 30, "b" : 123}))
-# -- end -- << Sub tests >>
+
+
+# Parameter arrays at the end
+tests.append(("""
+Dim a As Double
+a = _calcSum(4, 3, 2, 1)
+Dim b As Double
+b = _calcSum()
+
+Function _calcSum(ParamArray args() as Double) as Double
+    _calcSum = 0
+    sum = 0
+    If UBound(args, 1) <= 0 Then Exit Function
+    For i = 0 to UBound(args, 1) - 1
+        sum = sum + args(i)
+    Next i
+    _calcSum = sum
+End Function
+
+""", {"a": 10, "b": 0}))
+#
+tests.append(("""
+Dim a As Double
+a = _calcSum(10, 4, 3, 2, 1)
+Dim b As Double
+b = _calcSum(10)
+
+Function _calcSum(StartValue As Double, ParamArray args() as Double) as Double
+    sum = StartValue
+    _calcSum = sum
+    If UBound(args, 1) <= 0 Then Exit Function
+    For i = 0 to UBound(args, 1) - 1
+        sum = sum + args(i)
+    Next i
+    _calcSum = sum
+End Function
+
+""", {"a": 20, "b": 10}))
+#
+tests.append(("""
+Dim result(3) As Double
+_calcSum(result, 4, 3, 2, 1)
+
+Sub _calcSum(results() as Double, ParamArray args() as Double)
+    If UBound(args, 1) <= 0 Then Exit Function
+    For i = 0 to UBound(args, 1) - 1
+        results(i) = args(i)
+    Next i
+End Sub
+
+""", {"result": [4, 3, 2, 1]}))
+#
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff

@@ -15,27 +15,30 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Conditional expressions
-tests.extend(["a = a = 1",
-              "a = a <> 10",
-              "a = a > 10",
-              "a = a < 10",
-              "a = a <= 10",
-              "a = a >= 10",
-              "a = a = 1 And b = 2",
-              "a = a = 1 Or b = 2",
-              "a = a Or b",
-              "a = a Or Not b",
-              "a = Not a = 1",
-              "a = Not a",
-              "a = a Xor b",
-              "a = b Is Nothing",
-              "a = b \ 2",
-              "a = b Like c",
-              'a = "hello" Like "goodbye"',
-              'a = x Imp b',
-])
+# Subroutines and functions with ParamArray
+tests.append('''
+Sub A(X, Y, ParamArray Z() As String)
+    DoIt(Z)
+End Sub
+''')
 
+tests.append('''
+Sub A(X, Y, ParamArray Z() As Integer)
+    DoIt(Z)
+End Sub
+''')
+
+tests.append('''
+Sub A(X, Y, ByVal ParamArray Z() As Integer)
+    DoIt(Z)
+End Sub
+''')
+
+tests.append('''
+Function A(X, Y, ByVal ParamArray Z() As Integer)
+    DoIt(Z)
+End Function
+''')
 #
 
 class ParsingTest(unittest.TestCase):

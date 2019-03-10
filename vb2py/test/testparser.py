@@ -491,6 +491,31 @@ tests.extend([
         "subr 10, , , , 5",
 ])
 
+# Subroutines and functions with ParamArray
+tests.append('''
+Sub A(X, Y, ParamArray Z() As String)
+    DoIt(Z)
+End Sub
+''')
+
+tests.append('''
+Sub A(X, Y, ParamArray Z() As Integer)
+    DoIt(Z)
+End Sub
+''')
+
+tests.append('''
+Sub A(X, Y, ByVal ParamArray Z() As Integer)
+    DoIt(Z)
+End Sub
+''')
+
+tests.append('''
+Function A(X, Y, ByVal ParamArray Z() As Integer)
+    DoIt(Z)
+End Sub
+''')
+
 # labels
 tests.extend([
     "label:",

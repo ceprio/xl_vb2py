@@ -549,6 +549,7 @@ class VBVariable(VBNamespace):
             "new_keyword",
             "preserve_keyword",
             "implicit_object",
+            "param_array",
     ]
 
     skip_handlers = [
@@ -571,6 +572,7 @@ class VBVariable(VBNamespace):
         self.string_size_indicator = None
         self.object = None
         self.implicit_object = None
+        self.param_array = None
         self.unsized_definition = None
 
         self.auto_class_handlers = {
@@ -584,11 +586,15 @@ class VBVariable(VBNamespace):
         """We can use this opportunity to now determine if we are a global"""
         if self.amGlobal(self.scope):
             self.registerAsGlobal()
+        if self.param_array:
+            self.getParentProperty('registerParamArraysVariable')(self.identifier)
     # << VBVariable methods >> (3 of 3)
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.optional:
             return "%s=%s" % (self.identifier, self.expression.renderAsCode())
+        elif self.param_array:
+            return '*%s' % self.identifier
         else:
             return self.identifier
     # -- end -- << VBVariable methods >>
@@ -1968,6 +1974,7 @@ class VBSubroutine(VBCodeBlock):
         self.globals_required = {} # A list of objects required in a global statement
         self.type = None
         self.static = None
+        self.param_arrays_name = None
         #
         self.auto_class_handlers.update({
             "formal_param" : (VBVariable, self.parameters),
@@ -1993,11 +2000,12 @@ class VBSubroutine(VBCodeBlock):
         locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
         if self.static:
             log.warn("Static function detected - static is not supported")
-        ret = "\n%sdef %s(%s):\n%s%s%s" % (
+        ret = "\n%sdef %s(%s):\n%s%s%s%s" % (
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self),
                     self.renderParameters(),
                     self.renderGlobalStatement(indent+1),
+                    self.renderParamArraysStatement(indent+1),
                     "\n".join(locals),
                     code_block)
         return ret
@@ -2043,6 +2051,25 @@ class VBSubroutine(VBCodeBlock):
             if self.parent.amGlobal(self.scope):
                 self.registerAsGlobal()
     # -- end -- << VBSubroutine methods >>
+    def renderParamArraysStatement(self, indent):
+        """Render the param arrays line
+
+        Needed to make the param arrays variable into a VB array and not just
+        a list
+
+        """
+        if self.param_arrays_name:
+            return "%s%s = VBArray.createFromData(%s)\n" % (
+                self.getIndent(indent),
+                self.param_arrays_name,
+                self.param_arrays_name,
+            )
+        else:
+            return ""
+
+    def registerParamArraysVariable(self, name):
+        """Register a variable needing to handle the parameter arrays"""
+        self.param_arrays_name = name
 # << Classes >> (55 of 75)
 class VBFunction(VBSubroutine):
     """Represents a function"""
@@ -2072,11 +2099,12 @@ class VBFunction(VBSubroutine):
         else:
             pre_init = ""
 
-        ret = "\n%sdef %s(%s):\n%s%s%s%s%sreturn %s\n" % (
+        ret = "\n%sdef %s(%s):\n%s%s%s%s%s%sreturn %s\n" % (
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self), 
                     self.renderParameters(),
                     self.renderGlobalStatement(indent+1),
+                    self.renderParamArraysStatement(indent+1),
                     pre_init,
                     "\n".join(locals),
                     block,

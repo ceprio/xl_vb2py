@@ -240,7 +240,7 @@ normal_keyword ::=
 
 
 expression ::= 
-             (pre_named_argument?, passing_semantics?, pre_operator?, sign?, par_expression, 
+             (pre_named_argument?, passing_semantics?, pre_operator?, sign?, par_expression,
              (operation, par_expression)*) / line_expression
 
 par_expression ::= 
@@ -708,13 +708,16 @@ formal_param_list ::=
              "(", wsp*, formal_param?, (wsp*, ",", wsp*, formal_param)*, ")"
 
 formal_param ::=
-             optional?, passing_semantics?, (object / identifier), array_indicator?, type_definition?, default_value?
+             optional?, passing_semantics?, param_array?, (object / identifier), array_indicator?, type_definition?, default_value?
 
 optional ::=
              c"Optional", wsp+
 
 passing_semantics ::=
              (c"ByVal" / c"ByRef"), wsp+           
+
+param_array ::=
+            c"ParamArray", wsp+
 
 parameter_list ::=
              list
