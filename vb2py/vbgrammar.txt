@@ -1,9 +1,9 @@
-#@+leo-ver=5-thin
-#@+node:pap.120703001453.161: * @file vbgrammar.txt
 
-#@+others
-#@+node:pap.120703001453.162: ** Basic building blocks
-#@+node:pap.120703001453.163: *3* Basic elements
+
+
+
+
+
 identifier ::= 
         (safe_letter/("_", safe_letter)), (safe_letter / digit / "_")*, type_marker?
 
@@ -103,7 +103,7 @@ colon ::=
 
 hash ::=
 			 "#"
-#@+node:pap.120703001453.164: *3* Blocks and lines
+
 block ::= 
              block_content+
 
@@ -138,7 +138,7 @@ block_terminator ::=
 
 end_terminator ::=
 			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine")) / "END"
-#@+node:pap.120703001453.165: *3* Statements
+
 statement ::=
                multi_statement_line / single_statement
 
@@ -220,7 +220,7 @@ isolated_single_line ::=
 
 multi_statement_line ::=
              ((single_statement, colon) / label_statement), (wsp+, (compound_statement / statement))?
-#@+node:pap.120703001453.166: *3* Keywords
+
 keyword ::= 
             normal_keyword / block_terminator
 
@@ -236,7 +236,7 @@ normal_keyword ::=
 				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet"
             ), (wsp / line_end)
 
-#@+node:pap.120703001453.167: *3* Expressions
+
 
 expression ::= 
              (pre_named_argument?, passing_semantics?, pre_operator?, sign?, par_expression, 
@@ -284,14 +284,14 @@ pre_typeof ::=
 
 channelid ::=
 			"#", atom
-#@+node:pap.120703001453.168: *3* Line (connecting points)
+
 line_expression ::=
         point, wsp*, "-", wsp*, point
 
 point ::=       
         (l_bracket, expression, wsp*, ",", wsp*, expression, r_bracket)
-#@+node:pap.120703001453.169: *3* Single statements
-#@+node:pap.120703001453.170: *4* Assigment
+
+
 
 assignment_statement ::=
              (c"Let", wsp+)?, assignment_body
@@ -330,7 +330,7 @@ lset_statement ::=
 
 rset_statement ::=
 			c"RSet", wsp+, assignment_body
-#@+node:pap.120703001453.171: *4* Comment
+
 comment_statement ::=
              wsp*, comment_start, (vb2py_directive  / comment_body)
 
@@ -342,14 +342,14 @@ comment_start ::=
 
 
 
-#@+node:pap.120703001453.172: *4* External libraries
+
 external_declaration ::=
         (scope, wsp+)?, c"Declare", wsp+, (c"Sub" / c"Function"), wsp+, identifier, wsp+, c"Lib", wsp+, 
         stringliteral, wsp+, (c"Alias", wsp+, stringliteral, wsp+)?, formal_param_list, type_definition?
 
 
 
-#@+node:pap.120703001453.173: *4* Labels and GoTo
+
 label_definition ::=
         label_statement, (wsp+ / line_end)
 
@@ -361,7 +361,7 @@ label ::=
 
 goto_statement ::=
         c"GoTo", wsp+, label
-#@+node:pap.120703001453.174: *4* Dim
+
 dim_statement ::=
   unscoped_dim / scoped_dim
 
@@ -426,7 +426,7 @@ string_size_indicator ::=
 
 with_events ::=
 			  wsp*, c"WithEvents", wsp+
-#@+node:pap.120703001453.175: *4* On Error Goto
+
 on_statement ::=
         (on_error_goto / on_error_resume / on_goto)
 
@@ -447,7 +447,7 @@ on_variable ::=
 
 local ::=
 		c"Local", wsp+		
-#@+node:pap.120703001453.176: *4* Print / Get
+
 print_statement ::= 
         label_statement?, c"Print", (wsp+, channel_id, wsp*, ",", wsp*)?, print_list?
 
@@ -474,10 +474,10 @@ print_list ::=
 
 print_separator ::=
         "," / ";"
-#@+node:pap.120703001453.177: *4* Seek
+
 seek_statement ::=
 			label_statement?, c"Seek", wsp+, channel_id, wsp*, ",", wsp*, expression
-#@+node:pap.120703001453.178: *4* Open/Close
+
 open_statement ::=
         label_definition?, c"Open", wsp+, filename, c"For", wsp+, open_mode+, c"As", wsp+, "#"?, channel,
         (wsp*, c"Len", wsp*, "=", wsp*, access_length)?
@@ -499,7 +499,7 @@ close_statement ::=
 
 channel_number ::=
 		(channel_id   / expression)
-#@+node:pap.120703001453.179: *4* Calls
+
 
 call_statement ::=
             label_definition?, (c"Call", wsp+, object, list?) 
@@ -537,28 +537,28 @@ addressof ::=
 
 list_separator ::=
         "," / ";"			 
-#@+node:pap.120703001453.180: *4* Resume statement
+
 resume_statement ::=
         label_definition?, c"Resume", (wsp+, resume_location)?
 
 resume_location ::=
         c"Next" / label
-#@+node:pap.120703001453.181: *4* Exit statement
+
 
 exit_statement ::=
              c"Exit", wsp+, (c"Sub" / c"Function" / c"For" / c"Do" / c"Loop" / c"Property")
 
-#@+node:pap.120703001453.182: *4* Name statement
+
 name_statement ::=
         label_definition?, c"Name", wsp+, expression, c"As", expression
-#@+node:pap.120703001453.183: *4* End statement
+
 end_statement ::=
         c"End"
-#@+node:pap.120703001453.184: *4* Event definition
+
 event_definition ::=
 			label_statement?, (scope, wsp+)?, c"Event", wsp+, object, formal_param_list?
-#@+node:pap.120703001453.185: ** Compound statements
-#@+node:pap.120703001453.186: *3* Do/While etc
+
+
 while_statement ::=
                 while_start_statement, block, while_end_statement
 
@@ -588,7 +588,7 @@ post_until_clause ::=
 
 post_while_clause ::=
                 while_clause
-#@+node:pap.120703001453.187: *3* Select case
+
 select_statement ::=
                 select_start_statement,
 				case_comment_block?,
@@ -628,7 +628,7 @@ to_keyword ::=
 
 case_comment_block ::=
 				  block
-#@+node:pap.120703001453.188: *3* If
+
 inline_if_statement ::= 
              label_definition?, hash?, c"If", condition, hash?, c"Then", wsp+, inline_if_block,
              (wsp*, hash?, c"Else", wsp+, inline_else_block)?
@@ -668,7 +668,7 @@ inline_block ::=
               (statement / inline_implicit_call)
 
 
-#@+node:pap.120703001453.189: *3* For and for each
+
 for_statement ::=
                 for_start_line,
                 block?,
@@ -697,7 +697,7 @@ inline_for_statement ::=
 
 body ::=
 			    (implicit_call_statement / (single_statement, colon))*
-#@+node:pap.120703001453.190: *3* Subs and functions
+
 sub_definition ::=
              sub_start_definition, block?, sub_end_definition
 
@@ -740,17 +740,17 @@ default_value ::=
 static ::=
 			"Static"
 
-#@+node:pap.120703001453.191: *3* Properties
+
 property_definition ::=
              label_definition?, (scope, wsp*)?, c"Property", wsp+, property_decorator_type, wsp+, identifier, 
              formal_param_list, type_definition?, line_end, block?, label_definition?, c"End Property"
 
 property_decorator_type ::=
              c"Get" / c"Set" / c"Let"
-#@+node:pap.120703001453.192: *3* User Types
+
 user_type_definition ::=
              (scope, wsp+)?, c"Type", wsp+, identifier, line_end, ((object_definition / comment_statement), line_end)*, label_definition?, c"End Type"
-#@+node:pap.120703001453.193: *3* With
+
 with_statement ::=
     with_start_statement, block?, with_end_statement
 
@@ -760,25 +760,25 @@ with_start_statement ::=
 with_end_statement ::=
     label_definition?, c"End With"
 
-#@+node:pap.120703001453.194: *3* Enumerations
+
 enumeration_definition ::=
         (scope, wsp+)?, c"Enum", wsp, identifier, line_end, (enumeration_item, line_end)*, c"End Enum"
 
 enumeration_item ::=
         ?-c"End", identifier, (wsp*, "=", wsp*, expression)?
-#@+node:pap.120703001453.195: ** Non VB stuff
+
 non_vb_statement ::=
         class_header_statement / attribute_statement
 
 non_vb_block ::=
         class_header_block
-#@+node:pap.120703001453.196: *3* Class file headers
+
 class_header_statement ::=
         c"VERSION", wsp+, floatnumber, wsp+, c"CLASS"
 
 class_header_block ::=
         "BEGIN", line_end, block, "END"
-#@+node:pap.120703001453.197: *3* vb2py Directives
+
 vb2py_directive ::=
             wsp*, c"VB2PY-", directive_type, wsp*, ":", wsp*, directive_body
 
@@ -790,11 +790,11 @@ directive_body ::=
 
 config_section ::= identifier
 config_name ::= identifier
-#@+node:pap.120703001453.198: *3* attribute statement
+
 attribute_statement ::=
         c"Attribute", wsp+, object, wsp*, "=", wsp*, expression, (wsp*, ",", wsp*, expression)*
-#@+node:pap.120703001453.199: *3* option_statement
+
 option_statement ::=
 		c"Option", wsp+, atom, (wsp*, atom)*, comment_statement?
-#@-others
-#@-leo
+
+
