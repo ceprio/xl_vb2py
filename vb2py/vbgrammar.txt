@@ -204,6 +204,7 @@ isolated_single_line ::=
             do_start_statement /
             do_end_statement /
             if_start_statement /
+            else_statement /
             if_end_statement /
             sub_start_definition /
             sub_end_definition /
