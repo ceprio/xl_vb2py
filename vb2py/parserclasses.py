@@ -934,7 +934,7 @@ class VBExpressionPart(VBConsumer):
 
             """
         ending = self.element.text[-1:] or " "
-        if ending in "#$%&":
+        if ending in "#$%&@":
             log.info("Removed type identifier from '%s'" % self.element.text)
             self.element.text = self.element.text[:-1]
     # -- end -- << VBExpressionPart methods >>

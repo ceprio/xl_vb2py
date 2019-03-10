@@ -316,6 +316,45 @@ class TestServer(unittest.TestCase):
         self.assertEqual(True, data['parsing_failed'])
         self.assertEqual(5, data['parsing_stopped_vb'])
 
+    def testParserDirectiveFailure(self):
+        """testDirectiveFailure: can get to failing line in directives"""
+        code = '''
+        Sub doIt(X)
+            #If Win32 Then
+                If X > 10 Then
+                    A = 12
+                Else
+                    A =
+                End If
+            #End If 
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(6, data['parsing_stopped_vb'])
+
+    def testParserWithFailure(self):
+        """testWithFailure: can get to failing line in with"""
+        code = '''
+        Sub doIt(X)
+            With Obj
+                .X = 10
+                If X > 10 Then
+                    A = 12
+                Else
+                    A =
+                End If
+            End Onj
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(7, data['parsing_stopped_vb'])
+
     def testStripsOutForm(self):
         """testStripsOutForm: should strip out form section"""
         code = '''

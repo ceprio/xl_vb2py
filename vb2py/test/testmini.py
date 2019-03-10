@@ -15,31 +15,28 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Subroutines and functions with ParamArray
-tests.append('''
-Sub A(X, Y, ParamArray Z() As String)
-    DoIt(Z)
-End Sub
-''')
-
-tests.append('''
-Sub A(X, Y, ParamArray Z() As Integer)
-    DoIt(Z)
-End Sub
-''')
-
-tests.append('''
-Sub A(X, Y, ByVal ParamArray Z() As Integer)
-    DoIt(Z)
-End Sub
-''')
-
-tests.append('''
-Function A(X, Y, ByVal ParamArray Z() As Integer)
-    DoIt(Z)
-End Function
-''')
-#
+# Constants with different types
+tests.extend([
+    "Const a = 10",
+    'Const a = "Hello"',
+    "Const a = &HA1",
+    "Const a = 1#",
+    "Const a = 1%",
+    "Const a = 1&",
+    "Const a = 1@",
+    "Public Const a = 10",
+    'Public Const a = "Hello"',
+    "Public Const a = &HA1",
+    "Public Const a = 1#",
+    "Public Const a = 1%",
+    "Public Const a = 1&",
+    "Private Const a = 10",
+    'Private Const a = "Hello"',
+    "Private Const a = &HA1",
+    "Private Const a = 1#",
+    "Private Const a = 1%",
+    "Private Const a = 1&",
+])
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
