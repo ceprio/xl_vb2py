@@ -294,7 +294,7 @@ End Function
                 let Range = ace.require('ace/range').Range;
                 vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                       "errorMarker", "line", true);
-                vbeditor.scrollToLine(data.parsing_stopped_vb);
+                vbeditor.scrollToLine(vb_offset);
                 py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
                       "errorMarker", "line", true);
                 pyeditor.scrollToLine(data.parsing_stopped_py);
