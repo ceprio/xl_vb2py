@@ -339,9 +339,7 @@ comment_body ::=
              (stringitem / '"')*
 
 comment_start ::=
-			 "'"	/ (c"Rem", wsp)
-
-
+			 "'"	/ (c"Rem", (wsp / ?line_end))
 
 
 external_declaration ::=

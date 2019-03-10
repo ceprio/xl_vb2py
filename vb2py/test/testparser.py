@@ -190,6 +190,8 @@ Rem opps oneVal = 10
 twoVals = Array(10,20)
 Rem dont do this anymore functioncall = myfunction.mymethod(10)
 """)
+tests.append('REM')
+tests.append('1 REM')
 
 # In-line comments
 tests.append("""

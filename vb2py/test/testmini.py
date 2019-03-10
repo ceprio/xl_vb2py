@@ -16,15 +16,19 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-# Type with keyword names
+# One line comments with Rem
 tests.append("""
-Private Type myType
-    To As Integer
-    From As String
-    Message As MyClass.MyType
-End Type
+a = 10
+Rem b = 20+30
+Rem not needed c = "hello there"
+Rem opps oneVal = 10
+twoVals = Array(10,20)
+Rem dont do this anymore functioncall = myfunction.mymethod(10)
 """)
 
+tests.append('REM')
+tests.append('1 REM')
+tests.append("If a = 10 Then Remove X")
 
 
 
