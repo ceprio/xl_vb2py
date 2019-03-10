@@ -216,7 +216,9 @@ isolated_single_line ::=
             # enumeration
             # property
             # non_vb
-            single_statement
+            single_statement /
+            call_statement /
+            implicit_call_statement
 
 
 multi_statement_line ::=
