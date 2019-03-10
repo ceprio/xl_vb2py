@@ -1927,7 +1927,7 @@ class VBUserType(VBCodeBlock):
         #
         self.auto_class_handlers = {
             "identifier" : (VBConsumer, "identifier"),
-            "object_definition" : (VBVariable, self.variables),
+            "type_property_definition" : (VBVariable, self.variables),
         }
     # << VBUserType methods >> (2 of 2)
     def renderAsCode(self, indent=0):

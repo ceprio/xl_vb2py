@@ -16,10 +16,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-
-tests.extend([
-'if a = 10 then remove a',
-])
+# Type with keyword names
+tests.append("""
+Private Type myType
+    To As Integer
+    From As String
+    Message As MyClass.MyType
+End Type
+""")
 
 
 

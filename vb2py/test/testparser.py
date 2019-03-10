@@ -1173,6 +1173,7 @@ tests.extend([
         "If a = 10 Then DoIt Else Exit Function",
         "If a = 10 Then DoIt=1 Else Exit Function",
         "If a = 10 Then DoIt 1,2,34 Else Exit Function",
+        "If a = 10 Then Remove X",
 ])
 
 # Weird inline if followed by assignment that failed once
@@ -2206,6 +2207,15 @@ Private Type myType
     A As Integer
     B As String
     C As MyClass.MyType
+End Type
+""")
+
+# Type with keyword names
+tests.append("""
+Private Type myType
+    To As Integer
+    From As String
+    Message As MyClass.MyType
 End Type
 """)
 

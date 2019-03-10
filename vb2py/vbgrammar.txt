@@ -747,7 +747,10 @@ property_decorator_type ::=
              c"Get" / c"Set" / c"Let"
 
 user_type_definition ::=
-             (scope, wsp+)?, c"Type", wsp+, identifier, line_end, ((object_definition / comment_statement), line_end)*, label_definition?, c"End Type"
+             (scope, wsp+)?, c"Type", wsp+, identifier, line_end, ((type_property_definition / comment_statement), line_end)*, label_definition?, c"End Type"
+
+type_property_definition ::=
+  with_events?, identifier, (unsized_definition / size_definition)?, type_definition?
 
 with_statement ::=
     with_start_statement, block?, with_end_statement
