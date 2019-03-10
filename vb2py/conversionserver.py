@@ -203,7 +203,7 @@ def storeSubmittedFile():
 
 def removeFormCruft(text):
     """Remove form stuff if it is there"""
-    match = re.match('.*?^Begin.*?^End$(.*)', text, re.DOTALL + re.MULTILINE)
+    match = re.match('.*?^Begin.*?^End\s*$(.*)', text, re.DOTALL + re.MULTILINE)
     if match:
         app.logger.debug('Removed form information')
         stripped = match.groups()[0]

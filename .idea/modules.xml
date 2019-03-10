@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/vb2py.iml" filepath="$PROJECT_DIR$/.idea/vb2py.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../sandbox/vb2py-git-files/.idea/vb2py-git-files.iml" filepath="$PROJECT_DIR$/../../sandbox/vb2py-git-files/.idea/vb2py-git-files.iml" />
     </modules>
   </component>
 </project>
