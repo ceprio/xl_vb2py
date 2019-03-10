@@ -26,11 +26,11 @@ class LineContinuations(extensions.SystemPlugin):
         stripped_lines = [lne.strip() for lne in txt_lines if lne.strip()]
         #
         # Continuations should be ignored if they are on a comment line
-        for idx, line in enumerate(stripped_lines):
-            if line.endswith('_') and commented_continuation.match(line):
-                #
-                # This is commented out, so remove the continuation marker
-                stripped_lines[idx] = line[:-1]
+        # for idx, line in enumerate(stripped_lines):
+        #     if line.endswith('_') and commented_continuation.match(line):
+        #         #
+        #         # This is commented out, so remove the continuation marker
+        #         stripped_lines[idx] = line[:-1]
         #
         txtout = "\n".join(stripped_lines)
         txtout = txtout.replace(" _\n", " ")

@@ -791,11 +791,16 @@ class VBMissingPositional(VBCodeBlock):
 class VBExpression(VBNamespace):
     """Represents an comment"""
 
+    auto_handlers = [
+            "new_keyword",
+    ]
+
     # << VBExpression methods >> (1 of 3)
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBExpression, self).__init__(scope)
         self.parts = []
+        self.new_keyword = None
         self.auto_class_handlers.update({
             "sign"	: (VBExpressionPart, self.parts),
             "pre_not" : (VBExpressionPart, self.parts),
@@ -810,7 +815,16 @@ class VBExpression(VBNamespace):
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.checkForOperatorGroupings()
-        return " ".join([item.renderAsCode(indent) for item in self.parts])
+        code = " ".join([item.renderAsCode(indent) for item in self.parts])
+        #
+        # Try to handle the "New" keyword - this is tough and the following
+        # code is very brittle but it might be a reasonable 80/20 solution.
+        # We basically look to see if their has been a call
+        if self.new_keyword:
+            if not code.strip().endswith(')'):
+                code += '()'
+        #
+        return code
     # << VBExpression methods >> (3 of 3)
     def checkForOperatorGroupings(self):
         """Look for operators who requested regrouping

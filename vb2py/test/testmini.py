@@ -15,28 +15,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Constants with different types
+# Using New in a call
 tests.extend([
-    "Const a = 10",
-    'Const a = "Hello"',
-    "Const a = &HA1",
-    "Const a = 1#",
-    "Const a = 1%",
-    "Const a = 1&",
-    "Const a = 1@",
-    "Public Const a = 10",
-    'Public Const a = "Hello"',
-    "Public Const a = &HA1",
-    "Public Const a = 1#",
-    "Public Const a = 1%",
-    "Public Const a = 1&",
-    "Private Const a = 10",
-    'Private Const a = "Hello"',
-    "Private Const a = &HA1",
-    "Private Const a = 1#",
-    "Private Const a = 1%",
-    "Private Const a = 1&",
+    'fn(New A)',
+    'fn(a, b, New C, New D)',
+    'a = fn(New A)',
+    'b = fn(a, b, New C, New D)',
 ])
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

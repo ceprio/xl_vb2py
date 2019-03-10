@@ -240,7 +240,7 @@ normal_keyword ::=
 
 
 expression ::= 
-             (pre_named_argument?, passing_semantics?, pre_operator?, sign?, par_expression,
+             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,
              (operation, par_expression)*) / line_expression
 
 par_expression ::= 

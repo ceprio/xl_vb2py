@@ -199,6 +199,58 @@ End Sub
 """, {"result": [4, 3, 2, 1]}))
 #
 
+# New keyword in the call
+tests.append(("""
+
+a = _ReturnLength(New list)
+
+Function _ReturnLength(Item() As String) As Integer
+    ReDim Item(1)
+    Item(0) = 10
+    _ReturnLength = Item(0)
+End Function
+
+
+""", {'a': 10}))
+
+tests.append(("""
+
+_ReturnLength(New list)
+
+Sub _ReturnLength(Item() As String) 
+    ReDim Item(1)
+    Item(0) = 10
+End Sub
+
+
+""", {}))
+
+# This one is not really VB but helps in the testing
+tests.append(("""
+
+Set a = _ReturnLength(New list)
+
+Function _ReturnLength(Item() As String) as Object 
+    Item.append(20)
+    Set _ReturnLength = Item
+End Function
+
+
+""", {'a': [20]}))
+
+
+tests.append(("""
+
+Set a = _ReturnLength(New VBArray(0))
+
+Function _ReturnLength(Item() As String) as Object 
+    Item.append(20)
+    Set _ReturnLength = Item
+End Function
+
+
+""", {'a': [20]}))
+
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff
 TestClass = addTestsTo(BasicTest, tests)

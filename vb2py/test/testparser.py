@@ -168,7 +168,14 @@ tests.extend([
 'fn x, y, z, ByRef b',
 'fn x, y, z, ByRef b, 10, 20, 30',
 'fn ByRef a, ByRef b, ByRef c',
+])
 
+# Using New in a call
+tests.extend([
+    'fn(New A)',
+    'fn(a, b, New C, New D)',
+    'a = fn(New A)',
+    'b = fn(a, b, New C, New D)',
 ])
 
 # One line comments
@@ -514,7 +521,7 @@ End Sub
 tests.append('''
 Function A(X, Y, ByVal ParamArray Z() As Integer)
     DoIt(Z)
-End Sub
+End Function
 ''')
 
 # labels
@@ -1509,6 +1516,10 @@ n=20
 c="hello"
 End Sub
 """)
+
+# Continuation using a comment
+tests.append("' This is a comment a _\n= 1 /")
+tests.append("B = 10 ' This is a comment a _\n= 1 /")
 
 # simple fn
 tests.append("""
