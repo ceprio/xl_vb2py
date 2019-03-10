@@ -15,68 +15,28 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# << Parsing tests >> (60 of 61)
-# Simple enumeration
-tests.append("""
-Enum MyEnum
-    one
-    two
-    three
-    four
-    five
-End Enum
-""")
+# Conditional expressions
+tests.extend(["a = a = 1",
+              "a = a <> 10",
+              "a = a > 10",
+              "a = a < 10",
+              "a = a <= 10",
+              "a = a >= 10",
+              "a = a = 1 And b = 2",
+              "a = a = 1 Or b = 2",
+              "a = a Or b",
+              "a = a Or Not b",
+              "a = Not a = 1",
+              "a = Not a",
+              "a = a Xor b",
+              "a = b Is Nothing",
+              "a = b \ 2",
+              "a = b Like c",
+              'a = "hello" Like "goodbye"',
+              'a = x Imp b',
+])
 
-
-# Scoped enumeration
-tests.append("""
-Public Enum MyEnum
-    one
-    two
-    three
-    four
-    five
-End Enum
-""")
-
-tests.append("""
-Private Enum MyEnum
-    one
-    two
-    three
-    four
-    five
-End Enum
-""")
-
-# Simple enumeration with comments
-tests.append("""
-Enum MyEnum ' yeah
-    one ' this 
-    two ' is 
-    three
-    four ' neat
-    five
-End Enum
-""")
-
-# Simple enumeration with whole line comments
-tests.append("""
-Enum MyEnum ' yeah
-    one 
-    ' this 
-    two 
-    ' is 
-    three
-    four 
-    ' neat
-    ' oh
-    five
-End Enum
-""")
-
-
-
+#
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
@@ -88,7 +48,7 @@ def getTestMethod(vb):
         try:
             buildParseTree(vb)
         except VBParserError:
-            raise "Unable to parse ...\n%s" % vb
+            raise Exception("Unable to parse ...\n%s" % vb)
     return testMethod
 
 #

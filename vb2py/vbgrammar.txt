@@ -259,7 +259,7 @@ r_bracket ::=
              wsp*, ")", wsp*
 
 operation ::=
-             "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / "\\" / c"Not" / c"Mod" / compare
+             "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / "\\" / c"Not" / c"Mod" / c"Imp" / compare
 
 compare ::= 
              c"Or" / c"And" / c"Xor" / "=" / "<=" / ">=" / "<>" / "<" / ">" / c"Is" / c"Like"

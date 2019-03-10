@@ -255,6 +255,47 @@ def Like(text, pattern):
 
     """
     return fnmatch.fnmatch(text, pattern)
+
+def Imp(x, y):
+    """Return True if X implies Y
+
+    Performs a bitwise comparison of identically positioned bits
+    and sets corresponding bit in the output.
+
+    This amounts to the following truth table:
+
+        X       Y       Output
+        F       F       T
+        T       F       F
+        F       T       T
+        T       T       T
+
+    https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/imp-operator
+
+    """
+    ix, iy = int(x), int(y)
+    if not (ix or iy):
+        result = 1
+    else:
+        result = 0
+        while ix or iy:
+            # Shift result by one bit
+            result = result << 1
+            #
+            # Get the bits for comparison
+            x_bit1 = ix & 1
+            y_bit1 = iy & 1
+            if not (x_bit1 and not y_bit1):
+                result = result | 1
+            #
+            ix = ix >> 1
+            iy = iy >> 1
+    #
+    if isinstance(x, bool) and isinstance(y, bool):
+        return bool(result)
+    else:
+        return result
+
 # << VBFunctions >> (24 of 57)
 from PythonCard.graphic import Bitmap
 

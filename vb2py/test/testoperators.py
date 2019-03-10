@@ -30,6 +30,21 @@ tests.extend([
     ('a = 100 Xor 254', {"a" : 154}),
 
 ])
+
+# The Imp operator - which is a weird one
+tests.extend([
+
+    ('a = 0 Imp 0', {'a': 1}),
+    ('a = 0 Imp 1', {'a': 1}),
+    ('a = 1 Imp 0', {'a': 0}),
+    ('a = 1 Imp 1', {'a': 1}),
+
+    ('a = False Imp False', {'a': 1}),
+    ('a = False Imp True', {'a': 1}),
+    ('a = True Imp False', {'a': 0}),
+    ('a = True Imp True', {'a': 1}),
+
+])
 # -- end -- << Operators tests >>
 
 import vb2py.vbparser

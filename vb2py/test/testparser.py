@@ -98,6 +98,7 @@ tests.extend(["a = a = 1",
               "a = b \ 2",
               "a = b Like c",
               'a = "hello" Like "goodbye"',
+              'a = x Imp b',
 ])
 
 # Things that failed
@@ -2363,7 +2364,7 @@ def getTestMethod(vb):
         try:
             buildParseTree(vb)
         except VBParserError:
-            raise "Unable to parse ...\n%s" % vb
+            raise Exception("Unable to parse ...\n%s" % vb)
     return testMethod
 
 #

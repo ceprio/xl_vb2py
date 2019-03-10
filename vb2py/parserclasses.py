@@ -907,6 +907,8 @@ class VBExpressionPart(VBConsumer):
                                  self.element.text)
         elif self.element.text.lower() == "like":
             return "Like(%s, %s)" % (self.lh.renderAsCode(), self.rh.renderAsCode())
+        elif self.element.text.lower() == "imp":
+            return "Imp(%s, %s)" % (self.lh.renderAsCode(), self.rh.renderAsCode())
         elif self.element.name == "pre_named_argument":
             return "%s=" % (self.element.text.split(":=")[0],)
         elif self.element.name == "pre_not":
@@ -956,7 +958,7 @@ class VBOperation(VBExpressionPart):
     # << VBOperation methods >> (2 of 2)
     def finalizeObject(self):
         """Finalize the object"""
-        if self.element.text.lower() in ("like", ):
+        if self.element.text.lower() in ("like", "imp"):
             log.info("Found regrouping operator, reversing order of operands")
             self.parent.operator_groupings.append(self)
     # -- end -- << VBOperation methods >>
