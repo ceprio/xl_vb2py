@@ -964,6 +964,7 @@ class VBOperation(VBExpressionPart):
         "is" : "is",
         "or" : "or",
         "and" : "and", # TODO: are there any more?
+        "and not": "and not",
         "xor" : "^",
         "mod" : "%", 
     }

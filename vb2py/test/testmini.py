@@ -16,11 +16,8 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 # Empty Do's
-tests.append("""
-For i = 1 To 10: DoIt
-    DoIt2 = 1
-Next i
-""")
+tests.append("a = This And Not (That)")
+tests.append("a = This And Not (That Or Other)")
 
 
 class ParsingTest(unittest.TestCase):

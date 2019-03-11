@@ -1201,6 +1201,10 @@ Else
 End If
 """)
 
+# And Not
+tests.append("a = This And Not (That)")
+tests.append("a = This And Not (That Or Other)")
+
 # Inline ifs
 tests.extend([
         "If a = 10 Then b = 20",
