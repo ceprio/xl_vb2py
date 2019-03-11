@@ -17,17 +17,9 @@ tests = []
 
 # Empty Do's
 tests.append("""
-        Do  
-        Loop
-""")
-tests.append("""
-        Do Until A And B  
-        Loop
-""")
-# Simple do  loop
-tests.append("""
-        Do  
-        Loop Until A And B
+For i = 1 To 10: DoIt
+    DoIt2 = 1
+Next i
 """)
 
 

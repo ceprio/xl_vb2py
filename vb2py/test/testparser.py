@@ -633,6 +633,13 @@ tests.extend([
     "If a > b Then a = 10: b = 20"
 ])
 
+# For with something on the line and a block following
+tests.append("""
+For i = 1 To 10: DoIt
+    DoIt2 = 1
+Next i
+""")
+
 
 # Bug #809979 - Line ending with a colon fails 
 tests.extend([

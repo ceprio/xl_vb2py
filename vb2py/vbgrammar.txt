@@ -205,6 +205,7 @@ isolated_single_line ::=
             do_end_statement /
             if_start_statement /
             else_statement /
+            else_if_statement /
             if_end_statement /
             sub_start_definition /
             sub_end_definition /
@@ -615,7 +616,7 @@ case_else_start ::=
                 label_definition?, c"Case", wsp+, c"Else"
 
 case_body ::=
-				(colon, line_end, block?) / ((line_end / colon), block?) 
+				(colon, line_end, block?) / ((line_end / colon), block?)
 
 case_list ::=
                  ?-c"Else", (case_expression, (",", case_expression)*)?
@@ -691,7 +692,7 @@ for_each_statement ::=
 inline_for_statement ::=				
                 c"For", wsp+, object, wsp*, "=", wsp*,
 				expression, c"To", wsp+, expression, for_stepping?, 
-				colon, body, c"Next", (wsp+, object)?	
+				colon, block, c"Next", (wsp+, object)?
 
 body ::=
 			    (implicit_call_statement / (single_statement, colon))*
