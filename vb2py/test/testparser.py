@@ -1837,6 +1837,18 @@ tests.extend(["""
 """
 ])
 
+# Property all on one line
+tests.append("Property Get Position() As Long: Position = Loc(mFileNumber): End Property")
+tests.append("""
+Property Get Position() As Long: Position = Loc(mFileNumber)
+End Property
+""")
+tests.append("""
+Property Get Position() As Long
+Position = Loc(mFileNumber): End Property
+""")
+
+
 # Simple case
 tests.append("""
 Select Case x
