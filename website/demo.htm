@@ -1,5 +1,17 @@
 <html><!-- #BeginTemplate "/Templates/main.dwt" -->
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23654340-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23654340-2');
+
+</script>
+
+
 <!-- #BeginEditable "doctitle" --> 
 <title>vb2Py Online</title>
 <!-- #EndEditable -->
@@ -235,10 +247,17 @@ End Function
 </script>
 
 <script>
-  // var HOST = 'http://perpetualpyramid.dyndns.org:8090';
-  var HOST = 'http://localhost:8090';
+
+  var DEVELOPMENT = true;
+  var HOST;
+  if (DEVELOPMENT) {
+      HOST = 'http://localhost:8090';
+  } else {
+      HOST = 'http://perpetualpyramid.dyndns.org:8090';
+  }
 
   function convert_selection() {
+      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_selection.html');
       let range = vbeditor.selection.getRange();
       let selected_text = vbeditor.getSession().doc.getTextRange(range);
       //
@@ -252,6 +271,7 @@ End Function
   }
 
   function convert_code() {
+      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_file.html');
       let vbtext = vbeditor.getValue();
       convert_text(vbtext, 0);
   }
