@@ -257,23 +257,23 @@ End Function
   }
 
   function convert_selection() {
-      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_selection.html');
       let range = vbeditor.selection.getRange();
       let selected_text = vbeditor.getSession().doc.getTextRange(range);
       //
       // If nothing was selected then just do the current line
       if (selected_text.length == 0) {
-        range.start.column = 0;
-        range.end.column = 1000;
-        selected_text = vbeditor.getSession().doc.getTextRange(range);
+          range.start.column = 0;
+          range.end.column = 1000;
+          selected_text = vbeditor.getSession().doc.getTextRange(range);
       }
       convert_text(selected_text, range.start.row);
+      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_selection.html');
   }
 
   function convert_code() {
-      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_file.html');
       let vbtext = vbeditor.getValue();
       convert_text(vbtext, 0);
+      if (!DEVELOPMENT) ga('send', 'pageview', 'convert_file.html');
   }
 
   function convert_text(vbtext, selection_offset) {
