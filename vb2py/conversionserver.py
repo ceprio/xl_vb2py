@@ -6,6 +6,7 @@ import config
 import json
 import re
 import os
+import tempfile
 import utils
 from flask import Flask, request
 from flask_cors import CORS
@@ -133,6 +134,10 @@ def singleModule(module_type):
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
+        #
+        # Temporarily log file contents to try to debug server crashes
+        temp_path = log_request(text)
+        #
         lines = text.splitlines()
         line_count = len(lines)
         #
@@ -163,6 +168,9 @@ def singleModule(module_type):
                         lines[parsing_stopped_vb]
                 )
     #
+    # Remove temp log
+    os.remove(temp_path)
+    #
     app.logger.info('[%s] Completed %d lines %s %s with status %s. Time took %5.2fs%s' % (
         request.remote_addr,
         line_count, module_type.__class__.__name__, conversion_style,
@@ -176,6 +184,19 @@ def singleModule(module_type):
         'parsing_stopped_vb': parsing_stopped_vb,
         'parsing_stopped_py': parsing_stopped_py,
     }, encoding='latin1')
+
+
+def log_request(text):
+    """Log the request
+
+    A short term measure to debug server crashes.
+
+    """
+    handle, path = tempfile.mkstemp(prefix='vb2py_', suffix='.txt', dir='/tmp')
+    f = os.fdopen(handle, 'w')
+    f.write(text)
+    f.close()
+    return path
 
 
 def getLineMatch(search, text):
