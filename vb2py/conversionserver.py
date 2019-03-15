@@ -71,7 +71,7 @@ class ConversionHandler(object):
             Config.setLocalOveride("General", "RespectPrivateStatus", "No")
             Config.setLocalOveride("Functions", "PreInitializeReturnVariable", "No")
             Config.setLocalOveride("Functions", "ReturnVariableName", "fn_return_value")
-            Config.setLocalOveride("Select", "SelectVariablePrefix", "select_variable")
+            Config.setLocalOveride("Select", "SelectVariablePrefix", "select_variable_")
             Config.setLocalOveride("With", "WithVariablePrefix", "with_variable")
 
     @staticmethod

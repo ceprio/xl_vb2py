@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23654340-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-23654340-2');
+
+    </script>
+
+    <title>vb2py Online Conversion</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script type="text/javascript" src="split.js"></script>
+    <link rel="stylesheet" type="text/css" href="split.css"/>
+
+</head>
+
+
+<body>
+
+<table  border="0" cellspacing="0" width="100%">
+    <tr>
+        <td valign="top" height="94" align="left">
+            <div align="left"><a href="/index.html"><br>
+            </a><a href="/index.html"><img src="gifs/vb2pylogosm.jpg" width="158" height="92" align="top" border="0"
+                                           alt="vb2Py"></a></div>
+        </td>
+        <td valign="top" height="94" align="top" rowspan="5" width="2">
+            <p align="center"></p>
+        </td>
+        <td valign="top" height="94" width="11" align="top" rowspan="5">&nbsp;</td>
+        <td valign="top" height="94" bgcolor="#FFFFFF" align="top" ><!-- #BeginEditable "TopPanel" -->
+            <p><font face="Arial, Helvetica, sans-serif" size="6" color="#000066">Convert Visual Basic to Python</font></p>
+            <ul class="nav justify-content-left">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html"><b>Home</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/onlinelimits.htm">Limitations/Disclaimer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/downloads/vb2py.zip">Runtime Files</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/helpdemo.htm">Help</a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td colspan="5">
+
+            <div>&nbsp;
+                <div id="error_message" class="hidden alert alert-danger" role="alert" style="display: none">
+                    There was a parsing error in, or just after.
+                    <input type="button" class="btn btn-success" value="Submit this code as a test file"
+                           onclick="submit_file();"/>
+                    to help the project improve!
+                </div>
+            </div>
+
+            <div class="vertically_divided code-box">
+                <div>
+                    <div class="code-header">VB Code</div>
+                    <div id="vbcode" class="vbcode">
+Dim A as Integer
+B = 20
+
+Sub DotIt(X as Double)
+    Select Case A
+        Case 1
+            B = B + X
+        Case 2
+            B = B - X
+        Case Else
+            B = 0
+        End Select
+End Sub
+
+Function GetHalfB() As Integer
+    GetHalfB = B / 2
+End Function
+                    </div>
+                </div>
+                <div>
+                    <div class="code-header">Python Equivalent</div>
+                    <div id="pycode" class="pycode"></div>
+                </div>
+            </div>
+
+            <p align="center">
+                <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
+                       onclick="convert_code();">
+                &nbsp;&nbsp;
+                <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
+                       onclick="convert_selection();">
+            </p>
+
+
+            <p align="center">Conversion Type
+                <select id="type">
+                    <option selected value="pythonic">Pythonic code</option>
+                    <option value="exact">Match VB exactly</option>
+                </select>
+            </p>
+
+            <p align="center">Conversion
+                context (where this code lives)
+                <select id="context">
+                    <option selected value="code">Code module</option>
+                    <option value="class">Class module</option>
+                    <option value="form">Form module</option>
+                </select>
+            </p>
+
+
+        </td>
+    </tr>
+</table>
+
+<script>
+    var vbeditor = ace.edit("vbcode");
+    vbeditor.setTheme("ace/theme/monokai");
+    vbeditor.session.setMode("ace/mode/vbscript");
+    var pyeditor = ace.edit("pycode");
+    pyeditor.setTheme("ace/theme/monokai");
+    pyeditor.session.setMode("ace/mode/python");
+    var vb_marker = null;
+    var py_marker = null;
+
+
+    var DEVELOPMENT = false;
+    var HOST;
+    if (DEVELOPMENT) {
+        HOST = 'http://localhost:8090';
+    } else {
+        HOST = 'http://perpetualpyramid.dyndns.org:8090';
+    }
+
+    function convert_selection() {
+        let range = vbeditor.selection.getRange();
+        let selected_text = vbeditor.getSession().doc.getTextRange(range);
+        //
+        // If nothing was selected then just do the current line
+        if (selected_text.length == 0) {
+            range.start.column = 0;
+            range.end.column = 1000;
+            selected_text = vbeditor.getSession().doc.getTextRange(range);
+        }
+        convert_text(selected_text, range.start.row);
+        if (!DEVELOPMENT) ga('send', 'pageview', 'convert_selection.html');
+    }
+
+    function convert_code() {
+        let vbtext = vbeditor.getValue();
+        convert_text(vbtext, 0);
+        if (!DEVELOPMENT) ga('send', 'pageview', 'convert_file.html');
+    }
+
+    function convert_text(vbtext, selection_offset) {
+        pyeditor.session.setValue('# Converting code now ...');
+        var context = $('#context')[0].value;
+        var type = $('#type')[0].value;
+
+        var url;
+        if (context == 'code') {
+            url = '/single_code_module';
+        } else if (context == 'class') {
+            url = '/single_class_module';
+        } else {
+            url = '/single_form_module';
+        }
+        var conversion_style;
+        if (type == 'exact') {
+            conversion_style = 'vb';
+        } else {
+            conversion_style = 'pythonic';
+        }
+
+        // Clear old markers and errors
+        if (vb_marker != null) {
+            vbeditor.session.removeMarker(vb_marker);
+        }
+        if (py_marker != null) {
+            pyeditor.session.removeMarker(py_marker);
+        }
+        $('#error_message')[0].style = 'display: none';
+
+        $.post(HOST + url, {'text': vbtext, 'style': conversion_style}, function (data) {
+            if (data.status == 'OK') {
+                pyeditor.session.setValue(data.result);
+                // Watch for parsing failure
+                if (data.parsing_failed) {
+                    let vb_offset = data.parsing_stopped_vb + selection_offset;
+                    let Range = ace.require('ace/range').Range;
+                    vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
+                        "errorMarker", "line", true);
+                    vbeditor.scrollToLine(vb_offset);
+                    py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
+                        "errorMarker", "line", true);
+                    pyeditor.scrollToLine(data.parsing_stopped_py);
+                    $('#error_message')[0].style = '';
+                }
+
+            } else {
+                alert('Came back ' + data.status + ': ' + data.result);
+            }
+        }, 'json')
+            .fail(function (data, status, error) {
+                pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
+                    status + '\n' + 'Error=' + error);
+            });
+    }
+
+    function submit_file() {
+        var vbtext = vbeditor.getValue();
+        $.post(HOST + '/submit_file', {'text': vbtext}, function (data) {
+        });
+        alert('Thanks for submitting the file! This helps to make vb2py better.');
+    }
+
+</script>
