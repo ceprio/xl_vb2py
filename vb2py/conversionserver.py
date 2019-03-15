@@ -135,11 +135,13 @@ def singleModule(module_type):
         status = 'FAILED'
     else:
         #
-        # Temporarily log file contents to try to debug server crashes
-        temp_path = log_request(text)
-        #
         lines = text.splitlines()
         line_count = len(lines)
+        #
+        app.logger.info('[%s] Started   %d lines %s %s' % (
+            request.remote_addr,
+            line_count, module_type.__class__.__name__, conversion_style,
+        ))
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -167,9 +169,6 @@ def singleModule(module_type):
                         100.0 * parsing_stopped_vb / line_count,
                         lines[parsing_stopped_vb]
                 )
-    #
-    # Remove temp log
-    os.remove(temp_path)
     #
     app.logger.info('[%s] Completed %d lines %s %s with status %s. Time took %5.2fs%s' % (
         request.remote_addr,
