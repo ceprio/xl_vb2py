@@ -26,80 +26,17 @@ Property Get Position() As Long
 Position = Loc(mFileNumber): End Property
 """)
 
-tests.extend(["""
-Property Let MyProp(NewVal As String)
- a = NewVal
- Exit Property
-End Property
-""",
-"""
-Property Get MyProp() As Long
- MyProp = NewVal
- Exit Property
-End Property
-""",
-"""
-Property Set MyProp(NewObject As Object) 
- Set MyProp = NewVal
- Exit Property
-End Property
-"""
-"""
-Public Property Let MyProp(NewVal As String)
- a = NewVal
-End Property
-""",
-"""
-Public Property Get MyProp() As Long
- MyProp = NewVal
-End Property
-""",
-"""
-Public Property Set MyProp(NewObject As Object) 
- Set MyProp = NewVal
-End Property
-""",
-"""
-Public Property Get MyProp(   ) As Long
- MyProp = NewVal
-End Property
-""",
-])
 
-# Simple property let/get/set with labels
-tests.extend(["""
-1: Property Let MyProp(NewVal As String)
-1:  a = NewVal
-1: End Property
+# Complex examples
+tests.extend([
+"""
+With Obj
+    ReDim .Child(10)
+End With
 """,
-"""
-1: Property Get MyProp() As Long
-1:  MyProp = NewVal
-1: End Property
-""",
-"""
-1: Property Set MyProp(NewObject As Object) 
-1:  Set MyProp = NewVal
-1: End Property
-"""
-])
+"Dim A(10).B(10)",
+"Dim A(10).B.C(10) As Object",
 
-# Simple property let/get/set with labels and comment
-tests.extend(["""
-1: Property Let MyProp(NewVal As String) ' comment
-1:  a = NewVal  ' comment
-1: End Property  ' comment
-""",
-"""
-1: Property Get MyProp() As Long  ' comment
-1:  MyProp = NewVal  ' comment
-1: End Property  ' comment
-""",
-"""
-1: Property Set MyProp(NewObject As Object)   ' comment
-1:  Set MyProp = NewVal  ' comment
-1: End Property  ' comment
-"""
 ])
 
 
