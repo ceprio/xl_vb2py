@@ -95,6 +95,10 @@ var splitMe = {
             element.b.css({top:bp,bottom:0, left:0, right:0});
             element.a.css({bottom:ap,top:0, left:0, right:0});
         }
+        // if(element.id == "conversion-box") {
+        //     $('#vbcode')[0].style = 'height: ' + newPos + 'px';
+        //     $('#pycode')[0].style = 'height: ' + newPos + 'px';
+        // }
     },
     init : function(){
         splitMe.resizes=NodeListAsArray(document.querySelectorAll('.vertically_divided')).

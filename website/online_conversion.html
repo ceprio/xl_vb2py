@@ -65,20 +65,21 @@
 
     <tr>
         <td colspan="5">
-
-            <div>&nbsp;
-                <div id="error_message" class="hidden alert alert-danger" role="alert" style="display: none">
-                    There was a parsing error in, or just after.
-                    <input type="button" class="btn btn-success" value="Submit this code as a test file"
-                           onclick="submit_file();"/>
-                    to help the project improve!
-                </div>
-            </div>
-
-            <div class="vertically_divided code-box">
+            <div class="horizontally_divided conversion-box" id="conversion-box">
                 <div>
-                    <div class="code-header">VB Code</div>
-                    <div id="vbcode" class="vbcode">
+                    <div>&nbsp;
+                        <div id="error_message" class="hidden alert alert-danger" role="alert" style="display: none">
+                            There was a parsing error in, or just after the highlighted line.
+                            <input type="button" class="btn btn-success" value="Submit this code as a test file"
+                                   onclick="submit_file();"/>
+                            to help the project improve!
+                        </div>
+                    </div>
+
+                    <div class="vertically_divided code-box">
+                        <div>
+                            <div class="code-header">VB Code</div>
+                            <div id="vbcode" class="vbcode">
 Dim A as Integer
 B = 20
 
@@ -96,40 +97,44 @@ End Sub
 Function GetHalfB() As Integer
     GetHalfB = B / 2
 End Function
+                            </div>
+                        </div>
+                        <div>
+                            <div class="code-header">Python Equivalent</div>
+                            <div id="pycode" class="pycode"></div>
+                        </div>
                     </div>
                 </div>
+
                 <div>
-                    <div class="code-header">Python Equivalent</div>
-                    <div id="pycode" class="pycode"></div>
+                    <div style="margin-top: 20px">
+                        <p align="center">
+                            <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
+                                   onclick="convert_code();">
+                            &nbsp;&nbsp;
+                            <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
+                                   onclick="convert_selection();">
+                        </p>
+
+
+                        <p align="center">Conversion Type
+                            <select id="type">
+                                <option selected value="pythonic">Pythonic code</option>
+                                <option value="exact">Match VB exactly</option>
+                            </select>
+                        </p>
+
+                        <p align="center">Conversion
+                            context (where this code lives)
+                            <select id="context">
+                                <option selected value="code">Code module</option>
+                                <option value="class">Class module</option>
+                                <option value="form">Form module</option>
+                            </select>
+                        </p>
+                    </div>
                 </div>
             </div>
-
-            <p align="center">
-                <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
-                       onclick="convert_code();">
-                &nbsp;&nbsp;
-                <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
-                       onclick="convert_selection();">
-            </p>
-
-
-            <p align="center">Conversion Type
-                <select id="type">
-                    <option selected value="pythonic">Pythonic code</option>
-                    <option value="exact">Match VB exactly</option>
-                </select>
-            </p>
-
-            <p align="center">Conversion
-                context (where this code lives)
-                <select id="context">
-                    <option selected value="code">Code module</option>
-                    <option value="class">Class module</option>
-                    <option value="form">Form module</option>
-                </select>
-            </p>
-
-
         </td>
     </tr>
 </table>
@@ -145,7 +150,7 @@ End Function
     var py_marker = null;
 
 
-    var DEVELOPMENT = false;
+    var DEVELOPMENT = !location.host.startsWith('vb2py');
     var HOST;
     if (DEVELOPMENT) {
         HOST = 'http://localhost:8090';

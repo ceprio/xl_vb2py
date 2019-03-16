@@ -9,19 +9,22 @@
 }
 
 .code-box {
-    height: 60px;
     border: 2px solid #888;
     margin: 2em auto;
-    height: 600px;
+    height: 800px;
+}
+
+.conversion-box {
+    height: 1350px;
 }
 
 .vbcode {
     width: 1200px;
-    height: 600px;
+    height: 800px;
 }
 .pycode {
     width: 1200px;
-    height: 600px;
+    height: 800px;
 }
 
 .code-header {
