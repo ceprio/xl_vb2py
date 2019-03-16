@@ -138,10 +138,10 @@ def singleModule(module_type):
         lines = text.splitlines()
         line_count = len(lines)
         #
-        app.logger.info('[%s] Started   %d lines %s %s' % (
-            request.remote_addr,
-            line_count, module_type.__class__.__name__, conversion_style,
-        ))
+        # app.logger.info('[%s] Started   %d lines %s %s' % (
+        #     request.remote_addr,
+        #     line_count, module_type.__class__.__name__, conversion_style,
+        # ))
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -184,10 +184,10 @@ def singleModule(module_type):
         'parsing_stopped_py': parsing_stopped_py,
     }, encoding='latin1')
     #
-    app.logger.info('[%s] Ended     %d lines %s %s' % (
-        request.remote_addr,
-        line_count, module_type.__class__.__name__, conversion_style,
-    ))
+    # app.logger.info('[%s] Ended     %d lines %s %s' % (
+    #     request.remote_addr,
+    #     line_count, module_type.__class__.__name__, conversion_style,
+    # ))
     #
     return result
 
