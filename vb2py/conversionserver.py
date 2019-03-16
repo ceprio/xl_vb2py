@@ -176,13 +176,20 @@ def singleModule(module_type):
         status, time.time() - start_time, extra
     ))
     #
-    return json.dumps({
+    result = json.dumps({
         'status': status,
         'result': result,
         'parsing_failed': parsing_failed,
         'parsing_stopped_vb': parsing_stopped_vb,
         'parsing_stopped_py': parsing_stopped_py,
     }, encoding='latin1')
+    #
+    app.logger.info('[%s] Ended     %d lines %s %s' % (
+        request.remote_addr,
+        line_count, module_type.__class__.__name__, conversion_style,
+    ))
+    #
+    return result
 
 
 def log_request(text):
