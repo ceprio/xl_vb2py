@@ -378,8 +378,16 @@ basic_dim ::=
   object_definition, (",", wsp*, object_definition)*
 
 object_definition ::=
-  with_events?, bare_object, (unsized_definition / size_definition)?, type_definition?
+  with_events?, dim_expression_object, (unsized_definition / size_definition)?, type_definition?
 
+dim_expression_object ::=
+             ?-keyword, implicit_object?, dim_expression_object_part*, dim_expression_object_last_part, type_definition?
+
+dim_expression_object_part ::=
+              (identifier, (unsized_definition / size_definition)?, ".")
+
+dim_expression_object_last_part ::=
+              identifier, (unsized_definition / size_definition)?
 
 const_statement ::=
              (scope, wsp+)?, c"Const", wsp+, const_definition, (",", wsp*, const_definition)*
@@ -392,10 +400,10 @@ type_definition ::=
              (wsp+, c"As", wsp+, new_keyword?, type, array_indicator?, string_size_definition?, wsp*)
 
 unsized_definition ::=
-			"(", wsp*, ")"
+			wsp*, "(", wsp*, ")"
 
 size_definition ::=
-             "(", (size_range / size)?, (",", wsp*, (size_range / size))*, ")"
+             wsp*, "(", (size_range / size)?, (",", wsp*, (size_range / size))*, ")"
 
 size ::=
              expression

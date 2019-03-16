@@ -322,6 +322,7 @@ tests.extend([
         "Dim variable As Object.OtherObj",
         "Dim Var As Variant",
         "Dim A As String * 100",
+        "Dim A (10)",
 ])
 
 # Dims with New
@@ -401,6 +402,8 @@ With Obj
     ReDim .Child(10)
 End With
 """,
+"Dim A(10).B(10)",
+"Dim A(10).B.C(10) As Object",
 ])
 
 # Constants with different types

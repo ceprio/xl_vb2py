@@ -1,4 +1,14 @@
 from testframework import *
+#
+# Array of integers
+tests.append(("""
+Dim a(3) As Integer
+a(0) = 1
+a(1) = 2
+a(2) = 3
+a(3) = 4
+""", {"a" : [1,2,3,4]}
+))
 
 # << Dim tests >> (1 of 5)
 # Untyped
@@ -100,7 +110,7 @@ d = _b(_a(2))
 """, {"c" : 20, "d" : 30}
 ))
 
-# Double dim set 
+# Double dim set
 tests.append(("""
 Dim _a(10), _b(10)
 for _i = 1 To 10
@@ -187,6 +197,33 @@ a = _f
 
 """, {"a" : 10, }
 ))
+
+# Attribute dim
+tests.append(("""
+Dim vbfunctions.B(20) As String
+
+vbfunctions.B(1) = "hello"
+vbfunctions.B(20) = "bye"
+a = vbfunctions.B(1)
+b = vbfunctions.B(20)
+""", {"a" : "hello", "b" : "bye"}
+))
+tests.append(("""
+Dim _A(10) As Object
+Dim _A(10)._B(20) As String
+Dim _A(1)._B(30) As String
+' Test is incomplete
+
+_A(10)._B(1) = "hello"
+_A(10)._B(20) = "bye"
+_A(1)._B(30) = "you"
+a = _A(10)._B(1)
+b = _A(10)._B(20)
+c = _A(1)._B(30)
+
+""", {"a" : "hello", "b" : "bye", "c" : "you"}
+))
+
 # -- end -- << Dim tests >>
 
 import vb2py.vbparser

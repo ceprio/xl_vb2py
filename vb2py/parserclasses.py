@@ -535,6 +535,33 @@ class VBOptionalCodeBlock(VBCodeBlock):
         return 1
     # -- end -- << VBOptionalCodeBlock methods >>
 # << Classes >> (11 of 75)
+
+class VBExpressionObjectPart(VBNamespace):
+    """Handles part of a Dim'ed object piece"""
+
+    auto_handlers = [
+        'identifier',
+    ]
+
+    def __init__(self, scope="Private"):
+        """Initialise the part"""
+        super(VBExpressionObjectPart, self).__init__(scope)
+        self.size_definitions = []
+        self.unsized_definitions = []
+        self.auto_class_handlers = {
+            "size"	: (VBSizeDefinition, self.size_definitions),
+            "unsized_definition"	: (VBConsumer, self.unsized_definitions),
+        }
+
+    def renderAsCode(self, indent=0):
+        """Render as code"""
+        parts = [self.identifier]
+        if self.unsized_definitions:
+            parts.extend(['()' for item in self.unsized_definitions])
+        if self.size_definitions:
+            parts.extend([('(%s)' % item.renderAsCode()) for item in self.size_definitions])
+        return ''.join(parts)
+
 class VBVariable(VBNamespace):
     """Handles a VB Variable"""
 
@@ -574,12 +601,14 @@ class VBVariable(VBNamespace):
         self.implicit_object = None
         self.param_array = None
         self.unsized_definition = None
+        self.expression_object_parts = []
 
         self.auto_class_handlers = {
             "expression"	: (VBExpression, "expression"),
             "size"	: (VBSizeDefinition, self.size_definitions),
             "size_range"	: (VBSizeDefinition, self.size_definitions),
             "unsized_definition"	: (VBConsumer, "unsized_definition"),
+            "dim_expression_object_part" : (VBExpressionObjectPart, self.expression_object_parts)
         }
     # << VBVariable methods >> (2 of 3)
     def finalizeObject(self):
@@ -599,6 +628,9 @@ class VBVariable(VBNamespace):
             return self.identifier
     # -- end -- << VBVariable methods >>
 # << Classes >> (12 of 75)
+
+
+
 class VBSizeDefinition(VBNamespace):
     """Handles a VB Variable size definition"""
 
@@ -1380,6 +1412,15 @@ class VBVariableDefinition(VBVariable):
         else:
             warning = ""
         #
+        # Attempt to handle dotted Dim's
+        pre_identifier = ''
+        if self.expression_object_parts:
+            warning += self.getWarning(
+                    "CheckNeeded",
+                    "Dim of dotted objects (%s) is experimental. Please check" % local_name,
+                    indent=indent, crlf=1)
+            pre_identifier = '.'.join([item.renderAsCode() for item in self.expression_object_parts]) + '.'
+        #
         if self.string_size_indicator:
             size = self.string_size_indicator
             self.type = "FixedString"
@@ -1390,37 +1431,41 @@ class VBVariableDefinition(VBVariable):
         local_type = self.resolveName(self.type)
         #
         if self.unsized_definition: # This is a 'Dim a()' statement
-            return "%s%s%s = vbObjectInitialize(objtype=%s)\n" % (
+            return "%s%s%s%s = vbObjectInitialize(objtype=%s)\n" % (
                             warning,
                             self.getIndent(indent),
+                            pre_identifier,
                             local_name,
                             local_type)						
         elif self.size_definitions: # There is a size 'Dim a(10)'
             if self.preserve_keyword:
-                preserve = ", %s" % (local_name, )
+                preserve = ", %s%s" % (pre_identifier, local_name, )
             else:
                 preserve = ""
             if size:
                 size = ", stringsize=" + size
-            return "%s%s%s = vbObjectInitialize((%s,), %s%s%s)\n" % (
+            return "%s%s%s%s = vbObjectInitialize((%s,), %s%s%s)\n" % (
                             warning,
                             self.getIndent(indent),
+                            pre_identifier,
                             local_name,
                             ", ".join([item.renderAsCode() for item in self.size_definitions]),
                             local_type,
                             preserve,
                             size)
         elif self.new_keyword: # It is an 'Dim a as new ...'
-            return "%s%s%s = %s(%s)\n" % (
+            return "%s%s%s%s = %s(%s)\n" % (
                             warning,
                             self.getIndent(indent),
+                            pre_identifier,
                             local_name,
                             local_type,
                             size)
         else: # This is just 'Dim a as frob'
-            return "%s%s%s = %s(%s)\n" % (
+            return "%s%s%s%s = %s(%s)\n" % (
                             warning,
                             self.getIndent(indent),
+                            pre_identifier,
                             local_name,
                             local_type,
                             size)
