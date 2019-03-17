@@ -791,7 +791,7 @@ enumeration_line ::=
         (enumeration_item / comment_statement)
 
 enumeration_item ::=
-        ?-c"End", identifier, (wsp*, "=", wsp*, expression)?
+        ?-c"End", "["?, identifier, "]"?, (wsp*, "=", wsp*, expression)?
 
 non_vb_statement ::=
         class_header_statement / attribute_statement

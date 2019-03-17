@@ -2430,6 +2430,17 @@ Enum MyEnum ' yeah
 End Enum
 """)
 
+# If seems that some enums for registry items have [] in them
+tests.append("""
+Public Enum KeyRoot
+[HKEY_CLASSES_ROOT] = &H80000000 'stores OLE class information and file associations
+[HKEY_CURRENT_CONFIG] = &H80000005 'stores computer configuration information
+[HKEY_CURRENT_USER] = &H80000001 'stores program information for the current user.
+[HKEY_LOCAL_MACHINE] = &H80000002 'stores program information for all users
+[HKEY_USERS] = &H80000003 'has all the information for any user (not just the one provided by HKEY_CURRENT_USER)
+End Enum
+""")
+
 
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",

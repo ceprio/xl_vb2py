@@ -15,28 +15,15 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.extend([
-    "Const a = 10",
-    'Const a = "Hello"',
-    "Const a = &HA1",
-    "Const a = 1#",
-    "Const a = 1%",
-    "Const a = 1&",
-    "Const a = 1@",
-    "#Const a = 123",
-    "Public Const a = 10",
-    'Public Const a = "Hello"',
-    "Public Const a = &HA1",
-    "Public Const a = 1#",
-    "Public Const a = 1%",
-    "Public Const a = 1&",
-    "Private Const a = 10",
-    'Private Const a = "Hello"',
-    "Private Const a = &HA1",
-    "Private Const a = 1#",
-    "Private Const a = 1%",
-    "Private Const a = 1&",
-])
+tests.append("""
+Public Enum KeyRoot
+[HKEY_CLASSES_ROOT] = &H80000000 'stores OLE class information and file associations
+[HKEY_CURRENT_CONFIG] = &H80000005 'stores computer configuration information
+[HKEY_CURRENT_USER] = &H80000001 'stores program information for the current user.
+[HKEY_LOCAL_MACHINE] = &H80000002 'stores program information for all users
+[HKEY_USERS] = &H80000003 'has all the information for any user (not just the one provided by HKEY_CURRENT_USER)
+End Enum
+""")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
