@@ -415,6 +415,7 @@ tests.extend([
     "Const a = 1%",
     "Const a = 1&",
     "Const a = 1@",
+    "#Const a = 123",
     "Public Const a = 10",
     'Public Const a = "Hello"',
     "Public Const a = &HA1",

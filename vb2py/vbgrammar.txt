@@ -391,7 +391,7 @@ dim_expression_object_last_part ::=
               identifier, (unsized_definition / size_definition)?
 
 const_statement ::=
-             (scope, wsp+)?, c"Const", wsp+, const_definition, (",", wsp*, const_definition)*
+             (scope, wsp+)?, "#"?, c"Const", wsp+, const_definition, (",", wsp*, const_definition)*
 
 const_definition ::=
              identifier, type_definition?, wsp*, "=", wsp*, expression             
