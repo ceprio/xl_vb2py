@@ -282,6 +282,11 @@ a = 0
 If 1 < 2 Then Resume Next
 a = 10
 """, {"a" : 10,}))
+
+# If directives - these may be tricky
+
+
+
 # -- end -- << If tests >>
 
 import vb2py.vbparser

@@ -15,15 +15,20 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.append("""
-Public Enum KeyRoot
-[HKEY_CLASSES_ROOT] = &H80000000 'stores OLE class information and file associations
-[HKEY_CURRENT_CONFIG] = &H80000005 'stores computer configuration information
-[HKEY_CURRENT_USER] = &H80000001 'stores program information for the current user.
-[HKEY_LOCAL_MACHINE] = &H80000002 'stores program information for all users
-[HKEY_USERS] = &H80000003 'has all the information for any user (not just the one provided by HKEY_CURRENT_USER)
-End Enum
-""")
+tests.extend([
+'a = 10',
+'a = 20+30',
+'a = "hello there"',
+'a = 10',
+'a = Array(10,20)',
+'a = myfunction.mymethod(10)',
+'a = &HFF',
+'a = &HFF&',
+'a = #1/10/2000#',
+'a = #1/10#',
+'a = 10 Mod 2',
+'a = 1000!',
+])
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
