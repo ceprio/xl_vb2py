@@ -15,6 +15,7 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
+# Inline ifs
 tests.extend([
         "If a = 10 Then b = 20",
         "If a = 20 And b = 5 Then d = 123",
@@ -33,7 +34,12 @@ tests.extend([
         "If a = 10 Then DoIt 1,2,34 Else Exit Function",
         "If a = 10 Then Remove X",
         "If ip Then i1 = ip: b = 1  Else i1 = 0",
+        "If ip Then DoIt: Else DontDoIt",
+        "If ip Then a = 1: Else DontDoIt",
+        "If ip Then DoIt: Else A = 2",
 ])
+
+
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
 

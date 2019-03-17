@@ -2275,7 +2275,7 @@ class VBInlineIf(VBCodeBlock):
             "condition" : (VBExpression, "condition"),
             "inline_if_block" : (VBCodeBlock, self.if_statements),
             "inline_else_block" : (VBCodeBlock, self.else_statements),
-          #  "inline_implicit_call" : (VBCodeBlock, self.statements),  # TODO: remove me
+        #    "inline_implicit_call" : (VBCodeBlock, self.if_statements),  # TODO: remove me
         }
     # << VBInlineIf methods >> (2 of 2)
     def renderAsCode(self, indent=0):

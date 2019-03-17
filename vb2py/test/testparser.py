@@ -1233,6 +1233,9 @@ tests.extend([
         "If a = 10 Then DoIt 1,2,34 Else Exit Function",
         "If a = 10 Then Remove X",
         "If ip Then i1 = ip: b = 1  Else i1 = 0",
+        "If ip Then DoIt: Else DontDoIt",
+        "If ip Then a = 1: Else DontDoIt",
+        "If ip Then DoIt: Else A = 2",
 ])
 
 # Weird inline if followed by assignment that failed once
