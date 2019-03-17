@@ -890,6 +890,7 @@ class VBParExpression(VBNamespace):
             "integer" : (VBExpressionPart, self.parts),
             "hexinteger" : (VBExpressionPart, self.parts),
             "octinteger" : (VBExpressionPart, self.parts),
+            "binaryinteger" : (VBExpressionPart, self.parts),
             "stringliteral" : (VBStringLiteral, self.parts),
             "dateliteral" : (VBDateLiteral, self.parts),
             "floatnumber" : (VBExpressionPart, self.parts),
@@ -970,9 +971,19 @@ class VBExpressionPart(VBConsumer):
             number_text = self.element.text.replace('&', '').replace('H', '')
             return "0x%s" % number_text
         elif self.element.name == "octinteger":
-            number_text = self.element.text.replace('&O', '').replace('H', '')
+            number_text = self.element.text.replace('&O', '').replace('&', '')
             return "0%s" % number_text
-
+        elif self.element.name == "binaryinteger":
+            number_text = list(self.element.text.replace('&B', '').replace('&', '').replace('_', ''))
+            total = 0
+            while number_text:
+                total *= 2
+                digit = number_text.pop(0)
+                if digit == '1':
+                    total |= 1
+            #
+            return str(total)
+        #
         return self.element.text
     # << VBExpressionPart methods >> (2 of 2)
     def finalizeObject(self):

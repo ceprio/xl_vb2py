@@ -61,6 +61,9 @@ hexinteger ::=
 octinteger ::=
              ("&O" / "0"), octdigit+, "&"?
 
+binaryinteger ::=
+             "&B", binarydigit, (binarydigit / "_")*, "&"?
+
 <nonzerodigit> ::= 
              [1-9]
 
@@ -69,6 +72,9 @@ octinteger ::=
 
 <hexdigit> ::= 
              digit / [a-f] / [A-F]
+
+<binarydigit> ::=
+              [0-1]
 
 floatnumber ::= 
              ("-"?, (exponentfloat / pointfloat)) / (integer, "#") 
@@ -93,7 +99,8 @@ atom ::=
              object / literal
 
 literal ::= 
-             dateliteral / stringliteral / floatnumber / integer / longinteger / hexinteger / octinteger
+             dateliteral / stringliteral / floatnumber / integer / longinteger /
+             binaryinteger / hexinteger / octinteger
 
 name ::= 
              identifier
