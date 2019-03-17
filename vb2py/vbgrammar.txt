@@ -55,11 +55,11 @@ integer ::=
 decimalinteger ::= 
              digit+
 
-octinteger ::= 
-             "0", octdigit+
-
-hexinteger ::= 
+hexinteger ::=
              "&", "H"?, hexdigit+, "&"?
+
+octinteger ::=
+             ("&O" / "0"), octdigit+, "&"?
 
 <nonzerodigit> ::= 
              [1-9]
@@ -93,7 +93,7 @@ atom ::=
              object / literal
 
 literal ::= 
-             dateliteral / stringliteral / floatnumber / integer / longinteger / hexinteger
+             dateliteral / stringliteral / floatnumber / integer / longinteger / hexinteger / octinteger
 
 name ::= 
              identifier

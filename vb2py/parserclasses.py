@@ -889,6 +889,7 @@ class VBParExpression(VBNamespace):
         self.auto_class_handlers.update({
             "integer" : (VBExpressionPart, self.parts),
             "hexinteger" : (VBExpressionPart, self.parts),
+            "octinteger" : (VBExpressionPart, self.parts),
             "stringliteral" : (VBStringLiteral, self.parts),
             "dateliteral" : (VBDateLiteral, self.parts),
             "floatnumber" : (VBExpressionPart, self.parts),
@@ -968,6 +969,9 @@ class VBExpressionPart(VBConsumer):
         elif self.element.name == "hexinteger":
             number_text = self.element.text.replace('&', '').replace('H', '')
             return "0x%s" % number_text
+        elif self.element.name == "octinteger":
+            number_text = self.element.text.replace('&O', '').replace('H', '')
+            return "0%s" % number_text
 
         return self.element.text
     # << VBExpressionPart methods >> (2 of 2)
