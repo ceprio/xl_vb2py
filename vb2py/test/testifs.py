@@ -283,8 +283,14 @@ If 1 < 2 Then Resume Next
 a = 10
 """, {"a" : 10,}))
 
-# If directives - these may be tricky
-
+# Inline if with multiple items
+tests.append((
+"""
+_x = 0
+If _x = 0 Then a = 1: b = 2: Else a = 10: b = 20
+_x = 1
+If _x = 0 Then c = 1: d = 2: Else c = 10: d = 20
+""", {"a" : 1, "b": 2, "c": 10, "d": 20}))
 
 
 # -- end -- << If tests >>

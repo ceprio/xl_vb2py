@@ -689,7 +689,7 @@ inline_else_block ::=
 			  inline_block
 
 inline_block ::=
-              (statement / inline_implicit_call)
+              (statement / inline_implicit_call)+
 
 for_statement ::=
                 for_start_line,

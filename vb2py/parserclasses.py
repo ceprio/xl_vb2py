@@ -2268,29 +2268,30 @@ class VBInlineIf(VBCodeBlock):
         super(VBInlineIf, self).__init__(scope)
         #
         self.condition = None
-        self.statements = []
+        self.if_statements = []
+        self.else_statements = []
         #
         self.auto_class_handlers = {
             "condition" : (VBExpression, "condition"),
-            "statement" : (VBCodeBlock, self.statements),
-            "inline_implicit_call" : (VBCodeBlock, self.statements),  # TODO: remove me
+            "inline_if_block" : (VBCodeBlock, self.if_statements),
+            "inline_else_block" : (VBCodeBlock, self.else_statements),
+          #  "inline_implicit_call" : (VBCodeBlock, self.statements),  # TODO: remove me
         }
     # << VBInlineIf methods >> (2 of 2)
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        assert self.statements, "Inline If has no statements!"
+        if_parts = "".join([line.renderAsCode(indent + 1) for line in self.if_statements])
+        else_parts = "".join([line.renderAsCode(indent + 1) for line in self.else_statements])
 
         ret = "%sif %s:\n%s" % (
                     self.getIndent(indent),
                     self.condition.renderAsCode(),
-                    self.statements[0].renderAsCode(indent+1),)
+                    if_parts,)
         #
-        if len(self.statements) == 2:
+        if else_parts:
             ret += "%selse:\n%s" % (
                     self.getIndent(indent),
-                    self.statements[1].renderAsCode(indent+1))
-        elif len(self.statements) > 2:
-            raise VBParserError("Inline if with more than one clause not supported")
+                    else_parts)
         #
         return ret
     # -- end -- << VBInlineIf methods >>
