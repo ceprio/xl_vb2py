@@ -65,7 +65,7 @@
 
     <tr>
         <td colspan="5">
-            <div class="horizontally_divided conversion-box" id="conversion-box">
+            <div class="" id="conversion-box">
                 <div>
                     <div>&nbsp;
                         <div id="error_message" class="hidden alert alert-danger" role="alert" style="display: none">
@@ -78,7 +78,9 @@
 
                     <div class="vertically_divided code-box">
                         <div>
-                            <div class="code-header">VB Code</div>
+                            <div class="code-header">
+                                Type VB Code or <input class="btn-small btn-success file-input" type='file' onchange='openFile(event)'>
+                            </div>
                             <div id="vbcode" class="vbcode">
 Dim A as Integer
 B = 20
@@ -116,23 +118,28 @@ End Function
                                    onclick="convert_selection();">
                         </p>
 
-
-                        <p align="center">Conversion Type
-                            <select id="type">
+                        <div class="form-group row" align="center">
+                            <label class="col-sm-2 col-form-label">
+                                Conversion Type
+                            </label>
+                            <select class="form-control col-sm-2" id="type">
                                 <option selected value="pythonic">Pythonic code</option>
                                 <option value="exact">Match VB exactly</option>
                             </select>
-                        </p>
 
-                        <p align="center">Conversion
-                            context (where this code lives)
-                            <select id="context">
+                            <label class="col-sm-2 col-form-label">
+                                Context
+                            </label>
+                            <select class="form-control col-sm-2" id="context">
                                 <option selected value="code">Code module</option>
                                 <option value="class">Class module</option>
                                 <option value="form">Form module</option>
                             </select>
-                        </p>
-                    </div>
+                            <label class="col-sm-2 col-form-label">
+                                Class Name
+                            </label>
+                            <input class="col-sm-2" id="class-name" value="MyClass"/>
+                        </div>
                 </div>
             </div>
         </td>
@@ -182,6 +189,7 @@ End Function
         pyeditor.session.setValue('# Converting code now ...');
         var context = $('#context')[0].value;
         var type = $('#type')[0].value;
+        var class_name = $('#class-name')[0].value;
 
         var url;
         if (context == 'code') {
@@ -207,7 +215,7 @@ End Function
         }
         $('#error_message')[0].style = 'display: none';
 
-        $.post(HOST + url, {'text': vbtext, 'style': conversion_style}, function (data) {
+        $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name}, function (data) {
             if (data.status == 'OK') {
                 pyeditor.session.setValue(data.result);
                 // Watch for parsing failure
@@ -239,5 +247,32 @@ End Function
         });
         alert('Thanks for submitting the file! This helps to make vb2py better.');
     }
+
+    var openFile = function (event) {
+        var input = event.target;
+
+        var reader = new FileReader();
+        reader.onload = function () {
+            var text = reader.result;
+            vbeditor.session.setValue(text);
+        };
+        if (input.files.length != 0) {
+            reader.readAsText(input.files[0]);
+            let extn = input.files[0].name.toLowerCase();
+            let context = $('#context')[0];
+            let class_name = $('#class-name')[0];
+            let chosen_name = input.files[0].name.split('.')[0];
+            chosen_name = chosen_name.replace(/ /g, "_");
+            if (extn.endsWith('.frm')) {
+                context.selectedIndex = 2;
+                class_name.value = chosen_name;
+            } else if (extn.endsWith('.cls')) {
+                context.selectedIndex = 1;
+                class_name.value = chosen_name;
+            } else {
+                context.selectedIndex = 0;
+            }
+        }
+    };
 
 </script>

@@ -11,7 +11,7 @@
 .code-box {
     border: 2px solid #888;
     margin: 2em auto;
-    height: 800px;
+    height: 620px;
 }
 
 .conversion-box {
@@ -20,11 +20,11 @@
 
 .vbcode {
     width: 1200px;
-    height: 800px;
+    height: 600px;
 }
 .pycode {
     width: 1200px;
-    height: 800px;
+    height: 600px;
 }
 
 .code-header {
@@ -34,4 +34,8 @@
     text-align: center;
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
     font-weight: bold;
+}
+
+.file-input {
+    height: 100px;
 }

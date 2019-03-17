@@ -188,6 +188,23 @@ class TestServer(unittest.TestCase):
         obj = d['MyClass']()
         self.assertEqual(2, len(obj.a))
 
+    def testCanSendClassName(self):
+        """testCanSendClassName: should be able to send class name"""
+        vb2py.conversionserver.app.config['TESTING'] = True
+        client = vb2py.conversionserver.app.test_client()
+        #
+        code = """
+        A = 10
+        """
+        #
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'class_name': 'TheName'})
+        data = json.loads(result.data)
+        self.assertEqual(data['status'], 'OK')
+        d = {}
+        exec(data['result'], globals(), d)
+        obj = d['TheName']()
+        self.assertEqual(10, obj.A)
+
     def testDetectsParserFailure(self):
         """testDetectsParserFailure: should detect parser failure"""
         code = '''

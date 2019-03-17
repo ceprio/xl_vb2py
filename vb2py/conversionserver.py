@@ -130,6 +130,7 @@ def singleModule(module_type):
     try:
         conversion_style = request.values['style']
         text = request.values['text']
+        class_name = request.values.get('class_name', 'MyClass')
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
@@ -137,6 +138,7 @@ def singleModule(module_type):
         #
         lines = text.splitlines()
         line_count = len(lines)
+        module_type.classname = class_name
         #
         # app.logger.info('[%s] Started   %d lines %s %s' % (
         #     request.remote_addr,
