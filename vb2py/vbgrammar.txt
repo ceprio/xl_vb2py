@@ -220,7 +220,8 @@ isolated_single_line ::=
             call_statement /
             implicit_call_statement /
             property_start_definition /
-            property_end_definition
+            property_end_definition /
+            goto_statement
 
 
 multi_statement_line ::=
@@ -363,7 +364,7 @@ label ::=
         (identifier / decimalinteger)
 
 goto_statement ::=
-        c"GoTo", wsp+, label
+        c"GoTo", wsp+, label, ":"?
 
 dim_statement ::=
   unscoped_dim / scoped_dim
