@@ -24,6 +24,7 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 BASE_FOLDER = '/Users/paul/Workspace/sandbox/vb2py-git-files'
+FAILURES_FOLDER = '/Users/paul/Workspace/sandbox/vb2py-git-files/AAA-Failing-Files'
 
 
 class FileTester(unittest.TestCase):
@@ -59,6 +60,12 @@ class FileTester(unittest.TestCase):
                 filename,
                 vb_code.splitlines()[data['parsing_stopped_vb']]
             )
+            #
+            # Copy file failure
+            failed_name = os.path.split(filename)[1]
+            with open(os.path.join(FAILURES_FOLDER, failed_name), 'w') as f:
+                f.write(vb_code)
+            #
             self.fail(msg)
 
 
