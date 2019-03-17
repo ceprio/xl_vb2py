@@ -41,7 +41,13 @@ stringliteral ::=
 stringchar ::= -('"' / NEWLINE)+
 
 dateliteral ::=
-			"#", integer, "/", integer, ("/", integer)?, "#"
+			"#", integer, "/", integer, ("/", integer)?, (wsp+, timeliteral)?, (wsp+, ampm)?, "#"
+
+ampm ::=
+            c"AM" / c"PM"
+
+timeliteral ::=
+            integer, ":", integer, (":", integer)?
 
 escapeseq ::= 
              "\\", stringchar

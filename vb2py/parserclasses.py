@@ -1059,7 +1059,8 @@ class VBDateLiteral(VBParExpression):
     # << VBDateLiteral methods >>
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        return "MakeDate(%s)" % ", ".join([item.renderAsCode() for item in self.parts])
+        self.registerImportRequired('datetime')
+        return "datetime.datetime(%s)" % ", ".join([item.renderAsCode() for item in self.parts])
     # -- end -- << VBDateLiteral methods >>
 # << Classes >> (25 of 75)
 class VBProject(VBNamespace):

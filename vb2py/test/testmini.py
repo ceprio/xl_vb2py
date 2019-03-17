@@ -15,6 +15,7 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
+# Simple expressions
 tests.extend([
 'a = 10',
 'a = 20+30',
@@ -25,6 +26,10 @@ tests.extend([
 'a = &HFF',
 'a = &HFF&',
 'a = #1/10/2000#',
+'a = #1/10/2000 11:59#',
+'a = #1/10/2000 11:59:12#',
+'a = #1/10/2000 11:59:12 PM#',
+'a = #1/10/2000 11:59:12 AM#',
 'a = #1/10#',
 'a = 10 Mod 2',
 'a = 1000!',
