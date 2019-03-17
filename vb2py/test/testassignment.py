@@ -37,6 +37,7 @@ numeric = [
     ('Let h=-1e-8',     {'h' :-1e-8}),
     ('Let i=&HFF',      {'i' :255}),
     ('Let j=&HFF&',     {'j' :255}),
+    ('Let j=&FF&',     {'j' :255}),
 ]
 
 strings = [

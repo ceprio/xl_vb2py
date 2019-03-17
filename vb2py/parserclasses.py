@@ -966,10 +966,8 @@ class VBExpressionPart(VBConsumer):
         elif self.element.name == "pre_not":
             self.element.text = "not"
         elif self.element.name == "hexinteger":
-            if self.element.text.endswith("&"):
-                return "0x%s" % self.element.text[2:-1]
-            else:
-                return "0x%s" % self.element.text[2:]
+            number_text = self.element.text.replace('&', '').replace('H', '')
+            return "0x%s" % number_text
 
         return self.element.text
     # << VBExpressionPart methods >> (2 of 2)

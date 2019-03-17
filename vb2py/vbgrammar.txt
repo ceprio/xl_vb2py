@@ -59,7 +59,7 @@ octinteger ::=
              "0", octdigit+
 
 hexinteger ::= 
-             "&H", hexdigit+, "&"?
+             "&", "H"?, hexdigit+, "&"?
 
 <nonzerodigit> ::= 
              [1-9]
