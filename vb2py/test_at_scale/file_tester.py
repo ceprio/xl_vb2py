@@ -39,6 +39,7 @@ class FileTester(unittest.TestCase):
         #
         # Get the container
         container_lookup = {
+            ".vb": (vb2py.parserclasses.VBCodeModule, 'code'),
             ".bas": (vb2py.parserclasses.VBCodeModule, 'code'),
             ".cls": (vb2py.parserclasses.VBClassModule, 'class'),
             ".frm": (vb2py.parserclasses.VBFormModule, 'form'),
@@ -100,7 +101,7 @@ if __name__ == '__main__':
             for filename in files:
                 filepath = os.path.join(subdir, filename)
                 extn = os.path.splitext(filepath)[1]
-                if extn.lower() in ['.frm', '.bas', '.cls']:
+                if extn.lower() in ['.frm', '.bas', '.cls', '.vb']:
                     print 'Creating tests for %s' % filepath
                     filenames.append(filepath)
         #

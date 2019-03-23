@@ -1344,6 +1344,13 @@ class VBClassModule(VBModule):
         self.identifier = self.classname 
         self.registerAsGlobal()
     # -- end -- << VBClassModule methods >>
+
+
+class VBDotNetModule(VBClassModule):
+    """A dot net class module"""
+
+
+
 # << Classes >> (28 of 75)
 class VBCodeModule(VBModule):
     """Handles a VB Code module"""
