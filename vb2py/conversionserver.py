@@ -127,6 +127,8 @@ def singleModule(module_type):
     conversion_style = 'unknown'
     extra = ''
     line_count = -1
+    language = 'UNKNOWN'
+    #
     try:
         conversion_style = request.values['style']
         text = request.values['text']
@@ -136,14 +138,10 @@ def singleModule(module_type):
         status = 'FAILED'
     else:
         #
+        language = detectLanguage(text)
         lines = text.splitlines()
         line_count = len(lines)
         module_type.classname = class_name
-        #
-        # app.logger.info('[%s] Started   %d lines %s %s' % (
-        #     request.remote_addr,
-        #     line_count, module_type.__class__.__name__, conversion_style,
-        # ))
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -172,9 +170,10 @@ def singleModule(module_type):
                         lines[parsing_stopped_vb]
                 )
     #
-    app.logger.info('[%s] Completed %d lines %s %s with status %s. Time took %5.2fs%s' % (
+    app.logger.info('[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s' % (
         request.remote_addr,
         line_count, module_type.__class__.__name__, conversion_style,
+        language,
         status, time.time() - start_time, extra
     ))
     #
@@ -184,6 +183,7 @@ def singleModule(module_type):
         'parsing_failed': parsing_failed,
         'parsing_stopped_vb': parsing_stopped_vb,
         'parsing_stopped_py': parsing_stopped_py,
+        'language': language,
     }, encoding='latin1')
     #
     # app.logger.info('[%s] Ended     %d lines %s %s' % (
@@ -254,3 +254,17 @@ def locateBadLine(vb, error_line):
             return idx
     else:
         return 0
+
+
+def detectLanguage(text):
+    """Try to detect the underlying VB dialect"""
+    flags = re.DOTALL + re.MULTILINE
+    dot_net_signals = [
+        re.compile('.*End Class.*', flags),
+        re.compile('.*End Module.*', flags),
+    ]
+    for signal in dot_net_signals:
+        if signal.match(text):
+            return 'VB.NET'
+    else:
+        return 'VB6'

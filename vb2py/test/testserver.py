@@ -558,6 +558,41 @@ B =
         self.assertEqual(81, data['parsing_stopped_vb'])
         self.assertEqual(6, data['parsing_stopped_py'])
 
+    def testCanDetectVBDotNet(self):
+        """testCanDetectVBDotNet: can detect a dot net module"""
+        code = '''
+        Public Class Test
+            DoIt()
+        End Class
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(False, data['parsing_failed'])
+        self.assertEqual(data['status'], 'OK')
+        self.assertEqual(data['language'], 'VB.NET')
+
+    def testCanDetectVB6Module(self):
+        """testCanDetectVB6Module: should be able to detect VB6"""
+        code = '''
+        Sub doIt(X)
+            With Obj
+                .X = 10
+                If X > 10 Then
+                    A = 12
+                Else
+                    A = 10
+                End If
+            End With
+        End Sub  
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(False, data['parsing_failed'])
+        self.assertEqual(data['status'], 'OK')
+        self.assertEqual(data['language'], 'VB6')
+
 
 
 if __name__ == '__main__':

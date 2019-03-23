@@ -202,7 +202,8 @@ compound_statement ::=
              user_type_definition /
              enumeration_definition /
              property_definition /
-             non_vb_block
+             non_vb_block /
+             class_definition
 
 
 isolated_single_line ::=
@@ -234,7 +235,9 @@ isolated_single_line ::=
             implicit_call_statement /
             property_start_definition /
             property_end_definition /
-            goto_statement
+            goto_statement /
+            class_definition_start_line /
+            class_definition_end_line
 
 
 multi_statement_line ::=
@@ -256,6 +259,16 @@ normal_keyword ::=
             ), (wsp / line_end)
 
 
+class_definition ::=
+            class_definition_start_line, block?, class_definition_end_line
+
+
+class_definition_start_line ::=
+            wsp*, scope, wsp+, c"Class", wsp+, identifier, line_end
+
+
+class_definition_end_line ::=
+            wsp*, c"End Class", line_end
 
 expression ::= 
              (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,

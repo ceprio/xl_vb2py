@@ -74,6 +74,9 @@
                                    onclick="submit_file();"/>
                             to help the project improve!
                         </div>
+                        <div id="dot_net_message" class="hidden alert alert-primary" role="alert" style="display: none">
+                            Note that this code looks like VB.NET. There is only limited support for .NET code currently.
+                        </div>
                     </div>
 
                     <div class="vertically_divided code-box">
@@ -214,6 +217,7 @@ End Function
             pyeditor.session.removeMarker(py_marker);
         }
         $('#error_message')[0].style = 'display: none';
+        $('#dot_net_message')[0].style = 'display: none';
 
         $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name}, function (data) {
             if (data.status == 'OK') {
@@ -229,6 +233,9 @@ End Function
                         "errorMarker", "line", true);
                     pyeditor.scrollToLine(data.parsing_stopped_py);
                     $('#error_message')[0].style = '';
+                    if (data.language == 'VB.NET') {
+                        $('#dot_net_message')[0].style = '';
+                    }
                 }
 
             } else {
