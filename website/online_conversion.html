@@ -263,6 +263,9 @@ End Function
             var text = reader.result;
             vbeditor.session.setValue(text);
         };
+
+        $('#dot_net_message')[0].style = 'display: none';
+
         if (input.files.length != 0) {
             reader.readAsText(input.files[0]);
             let extn = input.files[0].name.toLowerCase();
@@ -276,6 +279,10 @@ End Function
             } else if (extn.endsWith('.cls')) {
                 context.selectedIndex = 1;
                 class_name.value = chosen_name;
+            } else if (extn.endsWith('.vb')) {
+                context.selectedIndex = 1;
+                class_name.value = chosen_name;
+                $('#dot_net_message')[0].style = '';
             } else {
                 context.selectedIndex = 0;
             }
