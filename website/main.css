@@ -39,3 +39,10 @@
 .file-input {
     height: 100px;
 }
+
+.version {
+    padding-left: 10px;
+    font-size: 14px;
+    font-style: italic;
+    color: rgba(139, 59, 25, 0.58);
+}

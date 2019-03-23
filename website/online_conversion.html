@@ -72,7 +72,7 @@
                             There was a parsing error in, or just after the highlighted line.
                             <input type="button" class="btn btn-success" value="Submit this code as a test file"
                                    onclick="submit_file();"/>
-                            to help the project improve!
+                            to help the project improve!<span class="version" id="version"></span>
                         </div>
                         <div id="dot_net_message" class="hidden alert alert-primary" role="alert" style="display: none">
                             Note that this code looks like VB.NET. There is only limited support for .NET code currently.
@@ -241,6 +241,7 @@ End Function
             } else {
                 alert('Came back ' + data.status + ': ' + data.result);
             }
+            $('#version')[0].innerHTML = '(VB2PY version=' + data.version + ')';
         }, 'json')
             .fail(function (data, status, error) {
                 pyeditor.session.setValue('There was an error talking to the server\nStatus=' +

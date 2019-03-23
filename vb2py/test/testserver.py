@@ -6,6 +6,7 @@ from testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
 import vb2py.config
+import vb2py.converter
 import os
 import urllib
 import threading
@@ -593,6 +594,24 @@ B =
         self.assertEqual(data['status'], 'OK')
         self.assertEqual(data['language'], 'VB6')
 
+    def testCanGetVersionNumber(self):
+        """testCanGetVersionNumber: should return the version number used"""
+        code = '''
+        Sub doIt(X)
+            With Obj
+                .X = 10
+                If X > 10 Then
+                    A = 12
+                Else
+                    A = 10
+                End If
+            End With
+        End Sub  
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(data['version'], vb2py.converter.__version__)
 
 
 if __name__ == '__main__':

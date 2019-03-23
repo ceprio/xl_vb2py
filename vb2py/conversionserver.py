@@ -2,6 +2,7 @@
 
 import vbparser
 import parserclasses
+import converter
 import config
 import json
 import re
@@ -128,6 +129,7 @@ def singleModule(module_type):
     extra = ''
     line_count = -1
     language = 'UNKNOWN'
+    version = converter.__version__
     #
     try:
         conversion_style = request.values['style']
@@ -184,6 +186,7 @@ def singleModule(module_type):
         'parsing_stopped_vb': parsing_stopped_vb,
         'parsing_stopped_py': parsing_stopped_py,
         'language': language,
+        'version': version,
     }, encoding='latin1')
     #
     # app.logger.info('[%s] Ended     %d lines %s %s' % (
