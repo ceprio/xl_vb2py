@@ -68,7 +68,8 @@ class FileTester(unittest.TestCase):
                 f.write(vb_code)
             #
             self.fail(msg)
-
+        if data['status'] == 'ERROR':
+            self.fail('Server reported an error: %s' % data['result'])
 
 if __name__ == '__main__':
     #

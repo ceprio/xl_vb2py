@@ -255,7 +255,7 @@ normal_keyword ::=
                 c"If"  / c"Select" / c"Type" / c"Set" / c"ReDim" / c"Dim" / c"Print" / c"Open" / c"With" /
                 c"Enum" / c"Property" / c"Input" / c"Close" / c"Then" / c"Else" / c"Resume" / c"To" /
                 c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" / 
-				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet"
+				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Class"
             ), (wsp / line_end)
 
 
@@ -264,11 +264,15 @@ class_definition ::=
 
 
 class_definition_start_line ::=
-            wsp*, scope, wsp+, c"Class", wsp+, identifier, line_end
+            wsp*, (decorator, wsp*)?, (scope, wsp)?, c"Class", wsp+, identifier, line_end
 
 
 class_definition_end_line ::=
             wsp*, c"End Class", line_end
+
+decorator ::=
+        "<", wsp*, qualified_object, wsp*, ">"
+
 
 expression ::= 
              (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,
@@ -442,7 +446,7 @@ type ::=
              primary, (".", attribute)*
 
 scope ::=
-             c"Global" / c"Private" / c"Public" / c"Static" / c"Friend"
+             c"Global" / c"Private" / c"Public" / c"Static" / c"Friend" / c"Partial"
 
 value ::= 
              literal

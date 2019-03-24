@@ -2450,6 +2450,27 @@ Public Enum KeyRoot
 End Enum
 """)
 
+# VB.NET
+tests.append("""
+Class MyClass
+    A = 1
+End Class
+""")
+
+# Decorated Class
+tests.append("""
+<Decorator.Thing()> Class MyClass
+    A = 1
+End Class
+""")
+
+tests.append("""
+<Decorator.Thing()> _
+Class MyClass
+    A = 1
+End Class
+""")
+
 
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",

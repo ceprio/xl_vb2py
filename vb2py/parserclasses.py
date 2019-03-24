@@ -1349,7 +1349,48 @@ class VBClassModule(VBModule):
 class VBDotNetModule(VBClassModule):
     """A dot net class module"""
 
+    def __init__(self,  *args, **kw):
+        """Initialize the class module"""
+        super(VBDotNetModule, self).__init__(*args, **kw)
+        self.definition = []
+        self.auto_class_handlers.update({
+            "class_definition_start_line" : (VBDotNetClass, self.definition),
+        })
 
+    def renderModuleHeader(self, indent=0):
+        """Render the header for the module"""
+        if self.definition:
+            definition_header = self.definition[0].renderAsCode(indent)
+        else:
+            definition_header = ''
+        #
+        return definition_header + super(VBDotNetModule, self).renderModuleHeader(indent)
+
+
+class VBDotNetClass(VBNamespace):
+    """The class definition"""
+
+    auto_handlers = [
+        'decorator',
+        'scope',
+        'identifier',
+    ]
+
+    def finalizeObject(self):
+        """Do final processing"""
+        super(VBDotNetClass, self).finalizeObject()
+        self.parent.classname = self.identifier
+
+    def renderAsCode(self, indent=0):
+        """Render the header for the class"""
+        if hasattr(self, 'decorator'):
+            return self.getWarning(
+                'UntranslatedCode',
+                '.NET Decorators not supported: %s' % self.decorator,
+                indent,
+            ) + '\n'
+        else:
+            return ''
 
 # << Classes >> (28 of 75)
 class VBCodeModule(VBModule):

@@ -143,7 +143,10 @@ def singleModule(module_type):
         language = detectLanguage(text)
         lines = text.splitlines()
         line_count = len(lines)
-        module_type.classname = class_name
+        if language != 'VB.NET':
+            module_type.classname = class_name
+        else:
+            module_type = parserclasses.VBDotNetModule()
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)

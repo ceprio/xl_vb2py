@@ -15,29 +15,34 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Inline ifs
-tests.extend([
-        "If a = 10 Then b = 20",
-        "If a = 20 And b = 5 Then d = 123",
-        "If a = 12 Then d = 1 Else g = 5",
-        "If a = 10 Then doit",
-        "If a = 10 Then doit 10, 20, 30",
-        "If a = 10 Then doit Else dont",
-        "If a = 10 Then doit 10, 20, 30 Else dont",
-        "If a = 10 Then doit 10, 20, 30 Else dont 5, 10, 15",
-        "If a = 10 Then Exit Function",
-        "If a = 10 Then Exit Function Else DoIt",
-        "If a = 10 Then Exit Function Else DoIt=1",
-        "If a = 10 Then Exit Function Else DoIt 1, 2, 3",
-        "If a = 10 Then DoIt Else Exit Function",
-        "If a = 10 Then DoIt=1 Else Exit Function",
-        "If a = 10 Then DoIt 1,2,34 Else Exit Function",
-        "If a = 10 Then Remove X",
-        "If ip Then i1 = ip: b = 1  Else i1 = 0",
-        "If ip Then DoIt: Else DontDoIt",
-        "If ip Then a = 1: Else DontDoIt",
-        "If ip Then DoIt: Else A = 2",
-])
+# VB.NET
+tests.append("""
+Class MyClass
+    A = 1
+End Class
+""")
+tests.append("""
+Public Class MyClass
+    A = 1
+End Class
+""")
+
+# Decorated Class
+tests.append("""
+<Decorator.Thing()> Class MyClass
+    A = 1
+End Class
+""")
+
+tests.append("""
+<Decorator.Thing()> _
+Class MyClass
+    A = 1
+End Class
+""")
+
+tests.append('Public Shared A as Integer')
+tests.append('Public Shared A as Integer = 10')
 
 
 class ParsingTest(unittest.TestCase):

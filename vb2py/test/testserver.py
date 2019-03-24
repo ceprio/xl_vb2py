@@ -573,6 +573,20 @@ B =
         self.assertEqual(data['status'], 'OK')
         self.assertEqual(data['language'], 'VB.NET')
 
+    def testDotNetRetainsClassName(self):
+        """testDotNetRetainsClassName: dot net module should respect the coded class name"""
+        code = '''
+        Public Class Bob
+            a = 1
+        End Class
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'class_name': 'Fred'})
+        data = json.loads(result.data)
+        d = {}
+        exec(data['result'], globals(), d)
+        self.assertEqual(d['Bob'].a, 1)
+
     def testCanDetectVB6Module(self):
         """testCanDetectVB6Module: should be able to detect VB6"""
         code = '''
