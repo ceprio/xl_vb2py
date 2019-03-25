@@ -179,13 +179,17 @@ End Function
             selected_text = vbeditor.getSession().doc.getTextRange(range);
         }
         convert_text(selected_text, range.start.row);
-        if (!DEVELOPMENT) ga('send', 'pageview', 'convert_selection.html');
+        if (!DEVELOPMENT) {
+            ga('send', 'event', 'Convert', 'Selection');
+        }
     }
 
     function convert_code() {
         let vbtext = vbeditor.getValue();
         convert_text(vbtext, 0);
-        if (!DEVELOPMENT) ga('send', 'pageview', 'convert_file.html');
+        if (!DEVELOPMENT) {
+            ga('send', 'event', 'Convert', 'All');
+        }
     }
 
     function convert_text(vbtext, selection_offset) {
@@ -286,6 +290,9 @@ End Function
                 $('#dot_net_message')[0].style = '';
             } else {
                 context.selectedIndex = 0;
+            }
+            if (!DEVELOPMENT) {
+                ga('send', 'event', 'Load', 'File', extn);
             }
         }
     };
