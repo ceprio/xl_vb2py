@@ -180,7 +180,9 @@ End Function
         }
         convert_text(selected_text, range.start.row);
         if (!DEVELOPMENT) {
-            ga('send', 'event', 'Convert', 'Selection');
+            ga('event', 'Convert', {
+                'event_category': 'Selection',
+            });
         }
     }
 
@@ -188,7 +190,9 @@ End Function
         let vbtext = vbeditor.getValue();
         convert_text(vbtext, 0);
         if (!DEVELOPMENT) {
-            ga('send', 'event', 'Convert', 'All');
+            ga('event', 'Convert', {
+                'event_category': 'All',
+            });
         }
     }
 
@@ -292,7 +296,10 @@ End Function
                 context.selectedIndex = 0;
             }
             if (!DEVELOPMENT) {
-                ga('send', 'event', 'Load', 'File', extn);
+                ga('event', 'Load', {
+                    'event_category': 'File',
+                    'event_label': extn,
+                });
             }
         }
     };
