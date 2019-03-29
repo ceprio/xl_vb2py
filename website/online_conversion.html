@@ -179,21 +179,11 @@ End Function
             selected_text = vbeditor.getSession().doc.getTextRange(range);
         }
         convert_text(selected_text, range.start.row);
-        if (!DEVELOPMENT) {
-            ga('event', 'Convert', {
-                'event_category': 'Selection',
-            });
-        }
     }
 
     function convert_code() {
         let vbtext = vbeditor.getValue();
         convert_text(vbtext, 0);
-        if (!DEVELOPMENT) {
-            ga('event', 'Convert', {
-                'event_category': 'All',
-            });
-        }
     }
 
     function convert_text(vbtext, selection_offset) {
@@ -201,6 +191,8 @@ End Function
         var context = $('#context')[0].value;
         var type = $('#type')[0].value;
         var class_name = $('#class-name')[0].value;
+        var category = ((selection_offset == 0) ? "All" : "Selection");
+        var language = 'Unset Language';
 
         var url;
         if (context == 'code') {
@@ -243,17 +235,38 @@ End Function
                     $('#error_message')[0].style = '';
                     if (data.language == 'VB.NET') {
                         $('#dot_net_message')[0].style = '';
-                    }
-                }
+                    };
+                    language = data.language;
 
+                }
+                if (!DEVELOPMENT) {
+                    let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
+                    gtag('event', 'Convert', {
+                        'event_category': category,
+                        'event_label': label,
+                        'parameter1': data.language
+                    });
+                }
             } else {
                 alert('Came back ' + data.status + ': ' + data.result);
+                if (!DEVELOPMENT) {
+                    gtag('event', 'Convert', {
+                        'event_category': category,
+                        'event_label': "Server Status Error"
+                    });
+                };
             }
             $('#version')[0].innerHTML = '(VB2PY version=' + data.version + ')';
         }, 'json')
             .fail(function (data, status, error) {
                 pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
                     status + '\n' + 'Error=' + error);
+                if (!DEVELOPMENT) {
+                    gtag('event', 'Convert', {
+                        'event_category': category,
+                        'event_label': "Server AJAX Error"
+                    });
+                };
             });
     }
 
@@ -262,6 +275,11 @@ End Function
         $.post(HOST + '/submit_file', {'text': vbtext}, function (data) {
         });
         alert('Thanks for submitting the file! This helps to make vb2py better.');
+        if (!DEVELOPMENT) {
+            gtag('event', 'Submit', {
+                'event_category': 'File',
+            });
+        };
     }
 
     var openFile = function (event) {
@@ -296,9 +314,9 @@ End Function
                 context.selectedIndex = 0;
             }
             if (!DEVELOPMENT) {
-                ga('event', 'Load', {
+                gtag('event', 'Load', {
                     'event_category': 'File',
-                    'event_label': extn,
+                    'event_label': extn.split(".")[1],
                 });
             }
         }
