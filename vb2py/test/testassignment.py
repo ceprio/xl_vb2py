@@ -237,6 +237,12 @@ tests.append(("""
 a = ""
 RSet a = ""
 """, {"a" : ""}))
+
+tests.append(("""
+Dim a As Integer = 10
+Dim b As String = "Hello" & " " & "There"
+""", {'a': 10, 'b': 'Hello There'}))
+
 # -- end -- << Assignment tests >>
 
 import vb2py.vbparser

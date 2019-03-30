@@ -602,9 +602,11 @@ class VBVariable(VBNamespace):
         self.param_array = None
         self.unsized_definition = None
         self.expression_object_parts = []
+        self.initial_value = None
 
         self.auto_class_handlers = {
             "expression"	: (VBExpression, "expression"),
+            "object_initial_value"	: (VBExpression, "initial_value"),
             "size"	: (VBSizeDefinition, self.size_definitions),
             "size_range"	: (VBSizeDefinition, self.size_definitions),
             "unsized_definition"	: (VBConsumer, "unsized_definition"),
@@ -1492,13 +1494,22 @@ class VBVariableDefinition(VBVariable):
         # Make sure we resolve the type properly
         local_type = self.resolveName(self.type)
         #
-        if self.unsized_definition: # This is a 'Dim a()' statement
+        if self.initial_value: # This is a 'Dim A as String = "hello"'
+            return "%s%s%s%s = %s\n" % (
+                            warning,
+                            self.getIndent(indent),
+                            pre_identifier,
+                            local_name,
+                            self.initial_value.renderAsCode(),
+            )
+        elif self.unsized_definition:
             return "%s%s%s%s = vbObjectInitialize(objtype=%s)\n" % (
                             warning,
                             self.getIndent(indent),
                             pre_identifier,
                             local_name,
-                            local_type)						
+                            local_type
+            )
         elif self.size_definitions: # There is a size 'Dim a(10)'
             if self.preserve_keyword:
                 preserve = ", %s%s" % (pre_identifier, local_name, )

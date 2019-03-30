@@ -403,13 +403,16 @@ unscoped_dim ::=
   c"Dim", wsp+, basic_dim
 
 scoped_dim ::=
-  scope, wsp+, (c"Dim", wsp+)?, basic_dim
+  scope, (wsp+, c"Shared")?, wsp+, (c"Dim", wsp+)?, basic_dim
 
 basic_dim ::=
   object_definition, (",", wsp*, object_definition)*
 
 object_definition ::=
-  with_events?, dim_expression_object, (unsized_definition / size_definition)?, type_definition?
+  with_events?, dim_expression_object, (unsized_definition / size_definition)?, type_definition?, object_initial_value?
+
+object_initial_value ::=
+    c"=", wsp*, expression
 
 dim_expression_object ::=
              ?-keyword, implicit_object?, dim_expression_object_part*, dim_expression_object_last_part, type_definition?
