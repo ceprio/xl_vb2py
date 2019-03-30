@@ -243,6 +243,14 @@ Dim a As Integer = 10
 Dim b As String = "Hello" & " " & "There"
 """, {'a': 10, 'b': 'Hello There'}))
 
+tests.append(("""
+Public Shared a() as String = {"one", "two"}
+Public Shared b() as String = ({"one", "two"})
+Public Shared c() as Integer = {1, 2, 4, 5}
+Public Shared d() as Integer = {}
+
+""", {'a': ['one', 'two'], 'b': ['one', 'two'], 'c': [1, 2, 4, 5], 'd': []}))
+
 # -- end -- << Assignment tests >>
 
 import vb2py.vbparser

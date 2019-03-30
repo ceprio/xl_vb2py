@@ -905,9 +905,11 @@ class VBParExpression(VBNamespace):
             "pre_typeof" : (VBUnrendered, self.parts),
             "point" : (VBPoint, self.parts),
             "sign"	: (VBExpressionPart, self.parts),
+            "list_literal"	: (VBListLiteral, self.parts),
         })
 
         self.l_bracket = self.r_bracket = ""
+        self.list_literal = ''
         self.operator_groupings = [] # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
     # << VBParExpression methods >> (2 of 3)
     def renderAsCode(self, indent=0):
@@ -935,6 +937,29 @@ class VBParExpression(VBNamespace):
             rh, lh = self.parts.pop(idx+1), self.parts.pop(idx-1)
             item.rh, item.lh = rh, lh
     # -- end -- << VBParExpression methods >>
+
+class VBListLiteral(VBParExpression):
+    """Represents a literal list in code
+
+    For example Dim A as String() = {"One", "Two"}
+
+    """
+
+    def __init__(self, scope="Private"):
+        """Intialise the literal"""
+        super(VBListLiteral, self).__init__(scope)
+        self.items = []
+
+        self.auto_class_handlers = ({
+            "expression" : (VBParExpression, self.items),
+        })
+
+    def renderAsCode(self, indent=0):
+        """Render this element as code"""
+        items_text = ", ".join([item.renderAsCode(indent) for item in self.items])
+        return "%s[%s]" % (self.getIndent(indent), items_text)
+
+
 # << Classes >> (20 of 75)
 class VBPoint(VBExpression):
     """A block in an expression"""

@@ -15,34 +15,12 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# VB.NET
-tests.append("""
-Class MyClass
-    A = 1
-End Class
-""")
-tests.append("""
-Public Class MyClass
-    A = 1
-End Class
-""")
 
-# Decorated Class
-tests.append("""
-<Decorator.Thing()> Class MyClass
-    A = 1
-End Class
-""")
 
-tests.append("""
-<Decorator.Thing()> _
-Class MyClass
-    A = 1
-End Class
-""")
-
-tests.append('Public Shared A as Integer')
-tests.append('Public Shared A as Integer = 10')
+tests.append('Public Shared A() as String = {"one", "two"}')
+tests.append('Public Shared A() as String = ({"one", "two"})')
+tests.append('Public Shared A() as Integer = {1, 2, 4, 5}')
+tests.append('Public Shared A() as Integer = {}')
 
 
 class ParsingTest(unittest.TestCase):

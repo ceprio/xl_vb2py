@@ -2471,6 +2471,12 @@ Class MyClass
 End Class
 """)
 
+# Initialising arrays
+tests.append('Public Shared A() as String = {"one", "two"}')
+tests.append('Public Shared A() as String = ({"one", "two"})')
+tests.append('Public Shared A() as Integer = {1, 2, 4, 5}')
+tests.append('Public Shared A() as Integer = {}')
+
 
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",
