@@ -37,9 +37,13 @@ class FileTester(unittest.TestCase):
         with open(filename, 'r') as f:
             vb_code = f.read()
         #
+        # Some strange preamble seen in some code
+        preamble = '\xef\xbb\xbf'
+        vb_code = vb_code.replace(preamble, '')
+        #
         # Get the container
         container_lookup = {
-            ".vb": (vb2py.parserclasses.VBCodeModule, 'code'),
+            ".vb": (vb2py.parserclasses.VBDotNetModule, 'class'),
             ".bas": (vb2py.parserclasses.VBCodeModule, 'code'),
             ".cls": (vb2py.parserclasses.VBClassModule, 'class'),
             ".frm": (vb2py.parserclasses.VBFormModule, 'form'),
