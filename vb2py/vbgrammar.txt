@@ -212,6 +212,8 @@ isolated_single_line ::=
             using_end_statement /
             for_start_line /
             for_end_line /
+            for_each_start_line /
+            for_each_end_line /
             select_start_statement /
             case_item_start /
             case_else_start /
@@ -746,9 +748,16 @@ for_stepping ::=
                 c"Step", expression
 
 for_each_statement ::=
+                for_each_start_line, for_each_body, for_each_end_line
+
+for_each_start_line ::=
                 c"For", wsp+, c"Each", wsp+, object, wsp*, c"In", wsp+, 
-                expression, line_end,
-                block?,
+                expression, line_end
+
+for_each_body ::=
+                block?
+
+for_each_end_line ::=
                 label_definition?, c"Next", (wsp+, object)?
 
 inline_for_statement ::=				
