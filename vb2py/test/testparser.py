@@ -2510,7 +2510,7 @@ End Using
 tests.append("""
 Using client as New WebClient
     DoSomething()
-    With other_client as Something.Somethat()
+    Using other_client as Something.Somethat()
         DoOtherThing client, other_client
     End Using 
 End Using
