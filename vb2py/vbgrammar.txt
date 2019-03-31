@@ -247,7 +247,7 @@ keyword ::=
             normal_keyword / block_terminator
 
 
-# NB: 'BEGIN' is case sensitive because it is not a VB keyword
+# NB: 'BEGIN' is case sensitive because it is not a VB keyword, Open is a non keyword in .NET
 
 normal_keyword ::=
             (
