@@ -52,14 +52,14 @@ def convertToElements(details, txt):
             ret.append(VBElement(item, txt))
     return ret
 # << Utility functions >> (2 of 10)
-def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0):
+def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, grammar=None):
     """Parse some VB"""
 
     # << Build Parser >>
     # Try to buid the parse - if this fails we probably have an early
     # version of Simpleparse
     try:
-        parser = Parser(declaration, starttoken)
+        parser = Parser((grammar if grammar else declaration), starttoken)
     except Exception, err:
         log.warn("Failed to build parse (%s) - trying case sensitive grammar" % err)
         parser = Parser(declaration.replace('c"', ' "'), starttoken)
@@ -160,13 +160,13 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
 
     return m
 # << Utility functions >> (6 of 10)
-def getAST(vbtext, starttoken="line", returnpartial=None):
+def getAST(vbtext, starttoken="line", returnpartial=None, grammar=None):
     """Parse some VB to produce an AST"""
 
     if returnpartial is None:
         returnpartial = Config["General", "ReportPartialConversion"] == "Yes"
 
-    nodes = buildParseTree(vbtext, starttoken, 0, returnpartial, returnast=1)
+    nodes = buildParseTree(vbtext, starttoken, 0, returnpartial, returnast=1, grammar=grammar)
 
     return nodes
 # << Utility functions >> (7 of 10)

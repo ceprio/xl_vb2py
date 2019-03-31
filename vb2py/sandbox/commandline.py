@@ -27,6 +27,21 @@ try:
 except ImportError:
     print "Clipboard copy not working!"
 
+
+def pp(ast):
+    """Print out a pretified version of the ast"""
+    if not ast:
+        return None
+    cleaned_ast = []
+    for entry in ast:
+        if len(entry) == 1:
+            cleaned_ast.append(pp(entry))
+        else:
+            production, start, end, contents = entry
+            cleaned_ast.append((production, pp(contents)))
+    return cleaned_ast
+
+
 if __name__ == "__main__":
     def c(*args, **kw):
         print convertVBtoPython(*args, **kw)

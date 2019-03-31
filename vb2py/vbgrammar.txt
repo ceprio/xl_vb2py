@@ -208,6 +208,8 @@ compound_statement ::=
 
 
 isolated_single_line ::=
+            using_start_statement /
+            using_end_statement /
             for_start_line /
             for_end_line /
             select_start_statement /
@@ -228,9 +230,10 @@ isolated_single_line ::=
             fn_end_definition /
             with_start_statement /
             with_end_statement /
-            # user_type
-            # enumeration
-            # non_vb
+            user_type_start_statement /
+            user_type_end_statement /
+            enumeration_start_statement /
+            enumeration_end_statement /
             single_statement /
             call_statement /
             implicit_call_statement /
@@ -238,10 +241,13 @@ isolated_single_line ::=
             property_end_definition /
             goto_statement /
             class_definition_start_line /
-            class_definition_end_line /
-            using_start_statement /
-            using_end_statement
+            class_definition_end_line
+            # non_vb
 
+
+
+line_collection ::=
+            (wsp*, isolated_single_line) / (wsp*, line_end)
 
 multi_statement_line ::=
              ((single_statement, colon) / label_statement), (wsp+, (compound_statement / statement))?
@@ -822,7 +828,16 @@ property_decorator_type ::=
              c"Get" / c"Set" / c"Let"
 
 user_type_definition ::=
-             (scope, wsp+)?, c"Type", wsp+, identifier, line_end, ((type_property_definition / comment_statement), line_end)*, label_definition?, c"End Type"
+            user_type_start_statement, user_type_body, user_type_end_statement
+
+user_type_start_statement ::=
+             (scope, wsp+)?, c"Type", wsp+, identifier, line_end
+
+user_type_body ::=
+             ((type_property_definition / comment_statement), line_end)*
+
+user_type_end_statement ::=
+             label_definition?, c"End Type"
 
 type_property_definition ::=
   with_events?, identifier, (unsized_definition / size_definition)?, type_definition?
@@ -838,7 +853,16 @@ with_end_statement ::=
 
 
 enumeration_definition ::=
-        (scope, wsp+)?, c"Enum", wsp, identifier, line_end, (enumeration_line, line_end)*, c"End Enum"
+        enumeration_start_statement, enumeration_body, enumeration_end_statement
+
+enumeration_start_statement ::=
+        (scope, wsp+)?, c"Enum", wsp, identifier, line_end
+
+enumeration_body ::=
+        (enumeration_line, line_end)*
+
+enumeration_end_statement ::=
+        c"End Enum"
 
 enumeration_line ::=
         (enumeration_item / comment_statement)

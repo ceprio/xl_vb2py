@@ -818,7 +818,7 @@ class VBUsing(VBNamespace):
 
     def renderAsCode(self, indent=0):
         """Render this attribute"""
-        code_block = self.block.renderAsCode(indent + 1) if self.block else 'pass\n'
+        code_block = self.block.renderAsCode(indent + 1) if self.block else '%spass\n' % self.getIndent(indent+1)
         return '%swith %s as %s:\n%s' % (
             self.getIndent(indent),
             self.expression.renderAsCode(),
