@@ -17,8 +17,20 @@ tests = []
 
 
 
-# Shared methods
-tests.append("Dim A = 0")
+# Using statement
+tests.append("""
+Using client as New WebClient
+    DoSomething()
+End Using
+""")
+tests.append("""
+Using client as New WebClient
+    DoSomething()
+    Using other_client as Something.Somethat()
+        DoOtherThing client, other_client
+    End Using 
+End Using
+""")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

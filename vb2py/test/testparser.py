@@ -2501,6 +2501,22 @@ Class MyClass
 End Class
 """)
 
+# Using statement
+tests.append("""
+Using client as New WebClient
+    DoSomething()
+End Using
+""")
+tests.append("""
+Using client as New WebClient
+    DoSomething()
+    With other_client as Something.Somethat()
+        DoOtherThing client, other_client
+    End Using 
+End Using
+""")
+
+
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12 Else g=123",

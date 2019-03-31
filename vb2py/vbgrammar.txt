@@ -150,7 +150,7 @@ block_terminator ::=
              (end_terminator / c"Else" / c"ElseIf" / c"Case" / c"Next"), (wsp+ / line_end)
 
 end_terminator ::=
-			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property")) / "END"
+			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
 
 statement ::=
                multi_statement_line / single_statement
@@ -196,6 +196,7 @@ compound_statement ::=
              while_statement /
              do_statement /
              if_statement /
+             using_statement /
              sub_definition /
              fn_definition /
              with_statement /
@@ -237,7 +238,9 @@ isolated_single_line ::=
             property_end_definition /
             goto_statement /
             class_definition_start_line /
-            class_definition_end_line
+            class_definition_end_line /
+            using_start_statement /
+            using_end_statement
 
 
 multi_statement_line ::=
@@ -255,7 +258,7 @@ normal_keyword ::=
                 c"If"  / c"Select" / c"Type" / c"Set" / c"ReDim" / c"Dim" / c"Print" / "Open" / c"With" /
                 c"Enum" / c"Property" / c"Input" / c"Close" / c"Then" / c"Else" / c"Resume" / c"To" /
                 c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" / 
-				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Class"
+				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Class" / "Using"
             ), (wsp / line_end)
 
 
@@ -385,7 +388,14 @@ external_declaration ::=
         stringliteral, wsp+, (c"Alias", wsp+, stringliteral, wsp+)?, formal_param_list, type_definition?
 
 
+using_statement ::=
+        using_start_statement, block?, using_end_statement
 
+using_start_statement ::=
+        label_definition?, "Using", wsp+, identifier, wsp+, c"As", wsp+, expression, line_end
+
+using_end_statement ::=
+        label_definition?, "End", wsp+, "Using"
 
 label_definition ::=
         label_statement, (wsp+ / line_end)

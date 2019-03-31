@@ -84,6 +84,17 @@ With _a
     End With
 End With
 """, {"val" : 10}))
+
+
+# Some "Using"
+tests.append(("""
+Using _a As open("/tmp/test.txt", "w")
+    _a.write "test" 
+End Using
+Using _a As open("/tmp/test.txt", "r")
+    b = _a.read()
+End Using
+""", {"b" : 'test'}))
 # -- end -- << With tests >>
 
 import vb2py.vbparser
