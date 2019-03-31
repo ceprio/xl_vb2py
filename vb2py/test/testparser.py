@@ -400,6 +400,10 @@ tests.extend([
 ])
 
 
+# Define in dim statements
+tests.extend([
+    "Dim A = 1234",
+])
 # Complex examples
 tests.extend([
 """

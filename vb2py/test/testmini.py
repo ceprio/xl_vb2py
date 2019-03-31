@@ -18,13 +18,7 @@ tests = []
 
 
 # Shared methods
-tests.append("""
-Class MyClass
-    Public Sub DoIt() Handles Button.Click
-    End Sub
-    
-End Class
-""")
+tests.append("Dim A = 0")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
