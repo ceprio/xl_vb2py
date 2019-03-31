@@ -2478,6 +2478,16 @@ tests.append('Public Shared A() as Integer = {1, 2, 4, 5}')
 tests.append('Public Shared A() as Integer = {}')
 
 
+# Shared methods
+tests.append("""
+Class MyClass
+    Public Shared Sub DoIt()
+    End Sub
+    Public Shared Function DoIt()
+    End Function
+End Class
+""")
+
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12 Else g=123",

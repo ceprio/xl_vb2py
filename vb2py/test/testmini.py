@@ -17,11 +17,15 @@ tests = []
 
 
 
-tests.append('Public Shared A() as String = {"one", "two"}')
-tests.append('Public Shared A() as String = ({"one", "two"})')
-tests.append('Public Shared A() as Integer = {1, 2, 4, 5}')
-tests.append('Public Shared A() as Integer = {}')
-
+# Shared methods
+tests.append("""
+Class MyClass
+    Public Shared Sub DoIt()
+    End Sub
+    Public Shared Function DoIt()
+    End Function
+End Class
+""")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

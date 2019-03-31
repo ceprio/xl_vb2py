@@ -1153,6 +1153,11 @@ class VBModule(VBCodeBlock):
         self.rendering_locals = 0
         self.docstrings = []
         self.module_imports = [] # The additional modules we need to import
+        #
+        # Scoping - cancel all scopes
+        self.static = None
+        self.shared = None
+
     # << VBModule methods >> (2 of 11)
     def renderAsCode(self, indent=0):
         """Render this element as code"""
@@ -1354,6 +1359,10 @@ class VBClassModule(VBModule):
             """
         # Don't do anything for locals
         if rendering_locals:
+            prefix = ""
+        elif requestedby.getParentProperty("shared", False):
+            prefix = "cls."
+        elif requestedby.getParentProperty("static", False):
             prefix = ""
         else:
             prefix = "self."
@@ -2132,6 +2141,7 @@ class VBSubroutine(VBCodeBlock):
         self.globals_required = {} # A list of objects required in a global statement
         self.type = None
         self.static = None
+        self.shared = None
         self.param_arrays_name = None
         #
         self.auto_class_handlers.update({
@@ -2144,6 +2154,7 @@ class VBSubroutine(VBCodeBlock):
                 "identifier",
                 "scope",
                 "static",
+                "shared",
         ]
 
         self.skip_handlers = [
@@ -2157,8 +2168,13 @@ class VBSubroutine(VBCodeBlock):
         code_block = self.block.renderAsCode(indent+1)
         locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
         if self.static:
-            log.warn("Static function detected - static is not supported")
-        ret = "\n%sdef %s(%s):\n%s%s%s%s" % (
+            decorator = '%s@staticmethod\n' % self.getIndent(indent)
+        elif self.shared:
+            decorator = '%s@classmethod\n' % self.getIndent(indent)
+        else:
+            decorator = ''
+        ret = "\n%s%sdef %s(%s):\n%s%s%s%s" % (
+                    decorator,
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self),
                     self.renderParameters(),
@@ -2171,8 +2187,11 @@ class VBSubroutine(VBCodeBlock):
     def renderParameters(self):
         """Render the parameter list"""
         params = [param.renderAsCode() for param in self.parameters]
-        if self.getParentProperty("convert_functions_to_methods"):
-            params.insert(0, "self")
+        if self.getParentProperty("convert_functions_to_methods") and not self.static:
+            if self.shared:
+                params.insert(0, "cls")
+            else:
+                params.insert(0, "self")
         return ", ".join(params)
     # << VBSubroutine methods >> (4 of 6)
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
@@ -2256,8 +2275,16 @@ class VBFunction(VBSubroutine):
                     return_var)
         else:
             pre_init = ""
-
-        ret = "\n%sdef %s(%s):\n%s%s%s%s%s%sreturn %s\n" % (
+        #
+        if self.static:
+            decorator = '%s@staticmethod\n' % self.getIndent(indent)
+        elif self.shared:
+            decorator = '%s@classmethod\n' % self.getIndent(indent)
+        else:
+            decorator = ''
+        #
+        ret = "\n%s%sdef %s(%s):\n%s%s%s%s%s%sreturn %s\n" % (
+                    decorator,
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self), 
                     self.renderParameters(),

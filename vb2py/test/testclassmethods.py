@@ -382,6 +382,31 @@ tests.append((
          "A.DoIt(10)\n"
          "assert A.Val==11, 'A.Val was (%s)' % (A.Val,)\n",)
 ))
+
+
+#
+# Class method should alter class properties
+tests.append((
+        VBClassModule(),
+        """
+        Class MyClass
+
+            Public Val As Integer = 20
+            
+            Public Shared Sub DoIt(Value As Integer)
+                Val = Value
+            End Sub
+
+        End Class
+
+        """,
+        ("A = MyClass()\n"
+         "B = MyClass()\n"
+         "A.DoIt(10)\n"
+         "B.DoIt(20)\n"
+         "assert A.Val==20, 'A.Val was (%s)' % (A.Val,)\n"
+         "assert B.Val==20, 'B.Val was (%s)' % (B.Val,)\n",)
+))
 # -- end -- << ClassMethod tests >>
 
 import vb2py.vbparser
