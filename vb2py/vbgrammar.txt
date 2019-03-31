@@ -279,7 +279,7 @@ expression ::=
              (operation, par_expression)*) / line_expression
 
 par_expression ::= 
-             point / (l_bracket, expression, r_bracket) / list_literal /base_expression
+             point / (l_bracket, expression, r_bracket) / list_literal / base_expression
 
 base_expression ::= 
 			  simple_expr, (operation, simple_expr)?
@@ -748,7 +748,7 @@ sub_definition ::=
 
 sub_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
-             formal_param_list, line_end
+             formal_param_list, handler_definition?, line_end
 
 sub_end_definition ::=
              label_definition?, c"End Sub"
@@ -761,6 +761,9 @@ formal_param ::=
 
 optional ::=
              c"Optional", wsp+
+
+handler_definition ::=
+            wsp+, c"Handles", wsp+, expression
 
 passing_semantics ::=
              (c"ByVal" / c"ByRef"), wsp+           

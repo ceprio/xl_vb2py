@@ -2488,6 +2488,15 @@ Class MyClass
 End Class
 """)
 
+# Handlers
+tests.append("""
+Class MyClass
+    Public Sub DoIt() Handles Button.Click
+    End Sub
+    
+End Class
+""")
+
 failures = [
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12",
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12 Else g=123",

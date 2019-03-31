@@ -2142,6 +2142,7 @@ class VBSubroutine(VBCodeBlock):
         self.type = None
         self.static = None
         self.shared = None
+        self.handler_definition = None
         self.param_arrays_name = None
         #
         self.auto_class_handlers.update({
@@ -2155,6 +2156,7 @@ class VBSubroutine(VBCodeBlock):
                 "scope",
                 "static",
                 "shared",
+                "handler_definition",
         ]
 
         self.skip_handlers = [
@@ -2165,6 +2167,12 @@ class VBSubroutine(VBCodeBlock):
     # << VBSubroutine methods >> (2 of 6)
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
+        if self.handler_definition:
+            warning = self.getWarning(
+                "UntranslatedCode", "Handler not translated: %s\n" % self.handler_definition, indent)
+        else:
+            warning = ''
+        #
         code_block = self.block.renderAsCode(indent+1)
         locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
         if self.static:
@@ -2173,7 +2181,8 @@ class VBSubroutine(VBCodeBlock):
             decorator = '%s@classmethod\n' % self.getIndent(indent)
         else:
             decorator = ''
-        ret = "\n%s%sdef %s(%s):\n%s%s%s%s" % (
+        ret = "\n%s%s%sdef %s(%s):\n%s%s%s%s" % (
+                    warning,
                     decorator,
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self),

@@ -20,10 +20,9 @@ tests = []
 # Shared methods
 tests.append("""
 Class MyClass
-    Public Shared Sub DoIt()
+    Public Sub DoIt() Handles Button.Click
     End Sub
-    Public Shared Function DoIt()
-    End Function
+    
 End Class
 """)
 
