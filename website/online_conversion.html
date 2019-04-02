@@ -158,6 +158,7 @@ End Function
     pyeditor.session.setMode("ace/mode/python");
     var vb_marker = null;
     var py_marker = null;
+    var unchanged_hash = hashFnv32a(vbeditor.getValue());
 
 
     var DEVELOPMENT = !location.host.startsWith('vb2py');
@@ -191,7 +192,18 @@ End Function
         var context = $('#context')[0].value;
         var type = $('#type')[0].value;
         var class_name = $('#class-name')[0].value;
-        var category = ((selection_offset == 0) ? "All" : "Selection");
+        var number_of_lines = vbtext.split(/\r\n|\r|\n/).length;
+
+        var category;
+        if (hashFnv32a(vbeditor.getValue()) == unchanged_hash) {
+            category = "Demo";
+        } else if (selection_offset == 0) {
+            category = "All";
+        } else {
+            category = "Selection";
+        };
+
+
         var language = 'Unset Language';
 
         var url;
@@ -244,7 +256,8 @@ End Function
                     gtag('event', 'Convert', {
                         'event_category': category,
                         'event_label': label,
-                        'parameter1': data.language
+                        'parameter1': data.language,
+                        'value': number_of_lines
                     });
                 }
             } else {
@@ -321,5 +334,22 @@ End Function
             }
         }
     };
+
+
+    function hashFnv32a(str, asString, seed) {
+        /*jshint bitwise:false */
+        var i, l,
+            hval = (seed === undefined) ? 0x811c9dc5 : seed;
+
+        for (i = 0, l = str.length; i < l; i++) {
+            hval ^= str.charCodeAt(i);
+            hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+        }
+        if( asString ){
+            // Convert to 8 digit hex string
+            return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+        }
+        return hval >>> 0;
+    }
 
 </script>
