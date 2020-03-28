@@ -292,6 +292,20 @@ _x = 1
 If _x = 0 Then c = 1: d = 2: Else c = 10: d = 20
 """, {"a" : 1, "b": 2, "c": 10, "d": 20}))
 
+# Inline if with no then
+tests.append((
+"""
+_x = 1 = 1
+_y = 1 = 2
+a = 0
+b = 0
+If _x 
+a = 1
+End If
+If _y
+b = 1
+End If
+""", {"a" : 1, "b": 0,}))
 
 # -- end -- << If tests >>
 

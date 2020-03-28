@@ -705,7 +705,7 @@ if_statement ::=
              if_end_statement
 
 if_start_statement ::=
-             hash?, c"If", condition, hash?, c"Then", line_end
+             hash?, c"If", condition, hash?, c"Then"?, line_end
 
 if_end_statement ::=
              label_definition?, hash?, c"End If"

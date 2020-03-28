@@ -913,6 +913,13 @@ If a = 10 Then
 End If
 """)
 
+# If without a then
+tests.append("""
+If some_logical_construct 
+    b = 10
+End If
+""")
+
 # Sub with an 'End' in there
 tests.append("""
 Sub doit()

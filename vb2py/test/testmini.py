@@ -19,17 +19,9 @@ tests = []
 
 # Using statement
 tests.append("""
-Using client as New WebClient
-    DoSomething()
-End Using
-""")
-tests.append("""
-Using client as New WebClient
-    DoSomething()
-    Using other_client as Something.Somethat()
-        DoOtherThing client, other_client
-    End Using 
-End Using
+If some_logical_construct 
+    b = 10
+End If
 """)
 
 class ParsingTest(unittest.TestCase):
