@@ -122,6 +122,7 @@ tests.extend([
             "a = myfunction(1,2,3,4)",
             "a = myfunction(1,2,3,z:=4)",
             "a = myfunction(x:=1,y:=2,z:=4)",
+            "a = myfunction(x:=1,y:=2,z :=4)",
             "a = myfunction(b(10))",
 ])
 

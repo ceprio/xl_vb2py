@@ -317,7 +317,7 @@ sign ::=
             "-" / "+"                   
 
 pre_named_argument ::=
-            wsp*, named_argument, ":=", wsp*    
+            wsp*, named_argument, wsp*, ":=", wsp*
 
 named_argument ::=
             identifier
