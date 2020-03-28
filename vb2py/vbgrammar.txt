@@ -373,7 +373,7 @@ range_definition ::=
 
 
 primary ::= 
-             identifier
+             identifier / range_definition
 
 attribute ::=
              identifier

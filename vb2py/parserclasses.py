@@ -415,6 +415,40 @@ class VBConsumer(VBNamespace):
         self.element = element
         log.info("Consumed element: %s" % element)
 #
+
+class VBPrimary(VBNamespace):
+    """A primary object in an expression"""
+
+    def __init__(self, scope="Private"):
+        """Initialize the object"""
+        super(VBPrimary, self).__init__(scope)
+
+        self.identifier = None
+        self.range_definition = None
+
+        self.auto_class_handlers.update({
+            "identifier" : (VBConsumer, "identifier"),
+            "range_definition" : (VBRangeDefinition, "range_definition"),
+        })
+
+    def processElement(self, element):
+        """Process this element"""
+        super(VBPrimary, self).processElement(element)
+        #
+        # Strip type identifiers if any
+        if self.identifier:
+            if self.identifier.element.text[-1:] in '#$%&':
+                self.identifier.element.text = self.identifier.element.text[:-1]
+            self.element = self.identifier.element
+
+    def getName(self):
+        """Return the name"""
+        if self.identifier:
+            return self.identifier.element.text
+        else:
+            return self.range_definition.renderAsCode().lstrip('.')
+
+
 class VBUnrendered(VBConsumer):
     """Represents an unrendered statement"""
 
@@ -705,7 +739,7 @@ class VBObject(VBNamespace):
         self.implicit_object = None
 
         self.auto_class_handlers.update({
-            "primary" : (VBConsumer, "primary"),
+            "primary" : (VBPrimary, "primary"),
             "attribute" : (VBAttribute, self.modifiers),
             "range_definition" : (VBRangeDefinition, self.modifiers),
             "parameter_list" : (VBParameterList, self.modifiers),
@@ -725,7 +759,7 @@ class VBObject(VBNamespace):
             Check for any type markers.
 
             """
-        for obj in [self.primary] + self.modifiers:
+        for obj in self.modifiers:
             try:
                 ending = obj.element.text[-1:] or " "
             except AttributeError:
@@ -739,7 +773,7 @@ class VBObject(VBNamespace):
         """Return a string representation"""
         if self.implicit_object:
             log.info("Ooops an implicit object in definition")
-        ret = [self.primary.element.text] + [item.asString() for item in self.modifiers]
+        ret = [self.primary.getName()] + [item.asString() for item in self.modifiers]
         return ".".join(ret)
     #
     def fnPart(self): 
@@ -757,9 +791,9 @@ class VBObject(VBNamespace):
         #
         # For the LHS objects we need to look for the local name for Function return arguments
         if self.am_on_lhs:
-            obj_name = self.getLocalNameFor(self.primary.element.text)
+            obj_name = self.getLocalNameFor(self.primary.getName())
         else:
-            obj_name = self.primary.element.text
+            obj_name = self.primary.getName()
         #
         resolved_name = self.resolveName(obj_name)
         #
@@ -1725,7 +1759,7 @@ class VBAssignment(VBNamespace):
              - if we are then tell our subroutine parent that we need a global statement
 
             """        
-        log.info("Checking whether to use a global statement for '%s'" % self.object.primary.element.text)
+        log.info("Checking whether to use a global statement for '%s'" % self.object.primary.getName())
         #import pdb; pdb.set_trace()
         try:
             enclosing_sub = self.findParentOfClass(VBSubroutine)
@@ -1734,9 +1768,9 @@ class VBAssignment(VBNamespace):
 
         log.info("Found sub")    
         try:
-            name = enclosing_sub.resolveLocalName(self.object.primary.element.text)
+            name = enclosing_sub.resolveLocalName(self.object.primary.getName())
         except UnresolvableName:
-            if enclosing_sub.identifier == self.object.primary.element.text:
+            if enclosing_sub.identifier == self.object.primary.getName():
                 return
         else:
             return # We are a subroutine local
@@ -1749,14 +1783,14 @@ class VBAssignment(VBNamespace):
 
         log.info("Found code module")        
         try:
-            name = enclosing_module.resolveLocalName(self.object.primary.element.text)
+            name = enclosing_module.resolveLocalName(self.object.primary.getName())
         except UnresolvableName:
             return # We are not known at the module level
 
         # If we get to here then we are a module level local!
-        enclosing_sub.globals_required[self.resolveName(self.object.primary.element.text)] = 1
+        enclosing_sub.globals_required[self.resolveName(self.object.primary.getName())] = 1
 
-        log.info("Added a module level global: '%s'" % self.resolveName(self.object.primary.element.text))
+        log.info("Added a module level global: '%s'" % self.resolveName(self.object.primary.getName()))
     
 #
 class VBSpecialAssignment(VBAssignment):

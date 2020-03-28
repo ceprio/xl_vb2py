@@ -18,11 +18,13 @@ tests = []
 
 
 # Implicit Range identifiers
+# Implicit Range identifiers
 tests.extend([
 "Worksheet.[A1].Select",
 "A = Worksheet.[A1].Value",
 "A = Worksheet.[1:10].Value",
 "Worksheet.[value]",
+"With worksheet\n\t.[1:10] = 5\nEnd With",
 ])
 
 class ParsingTest(unittest.TestCase):
