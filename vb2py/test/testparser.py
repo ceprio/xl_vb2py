@@ -293,6 +293,20 @@ Sub a()
     b=1
 End Sub: 
 """,
+
+"""
+Sub a
+    b=12
+End Sub 
+""",
+
+
+"""
+Function a
+    b=1
+End Function
+""",
+
 ])
 
 # Directives

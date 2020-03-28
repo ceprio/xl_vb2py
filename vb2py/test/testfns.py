@@ -126,6 +126,13 @@ a = _sum(, , 30)
 b = _sum(10,,30)
 """, {"a" : 33, "b" : 42,}))
 # -- end -- << Fn tests >>
+tests.append(("""
+Function _dummy
+    _dummy = 123
+End Function
+a = _dummy
+""", {"a" : 123,}))
+
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff

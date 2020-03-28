@@ -251,6 +251,18 @@ End Function
 
 """, {'a': [20]}))
 
+tests.append(("""
+
+Dim a() as Integer 
+_Dummy
+
+Sub _Dummy 
+   a.append(1)
+End Sub
+
+
+""", {'a': [0, 1]}))
+
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff
 TestClass = addTestsTo(BasicTest, tests)

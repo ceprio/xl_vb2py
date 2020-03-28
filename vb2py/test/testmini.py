@@ -15,9 +15,73 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-
+# comments and colons in awkward places
 tests.extend([
-'Range("X1").Select\nActiveWorkbook.Names.Add Name:="scrollx1", RefersToR1C1:="=OFFSET(All_logs!R2C19:R120C19,All_logs!R1C22,0,All_logs!R1C24,1)"',
+"""
+If a =0 Then ' nasty comment
+    b=1
+End If ' other nasty comment
+""",
+
+"""
+While a<0 ' nasty comment
+    b=1
+Wend ' other nasty comment
+""",
+
+"""
+Select Case a ' nasty comment
+Case 10 ' oops
+    b=1
+Case Else ' other nasty comment
+    b = 2
+End Select ' gotcha
+""",
+
+"""
+For i = 0 To 100 ' nasty comment
+    b=1
+Next i ' other nasty comment
+""",
+
+"""
+Sub a() ' nasty comment
+    b=1
+End Sub ' other nasty comment
+""",
+
+"""
+Function f() ' nasty comment
+    b=1
+End Function ' other nasty comment
+""",
+
+"""
+Sub a():
+    b=1
+End Sub 
+""",
+
+
+"""
+Sub a()
+    b=1
+End Sub: 
+""",
+
+"""
+Sub a
+    b=12
+End Sub 
+""",
+
+
+"""
+Function a
+    b=1
+End Function
+""",
+
 ])
 
 class ParsingTest(unittest.TestCase):
