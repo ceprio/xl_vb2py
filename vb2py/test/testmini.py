@@ -17,22 +17,60 @@ tests = []
 
 
 
-# Continuation with
-tests.append("""
-With MyObject _
-    .Other
-End With
-""")
-tests.append("""
-With MyObject. _
-    Other
-End With
-""")
-tests.append("""
-        With ActiveSheet.ListObjects.Add.Range("$A$1"). _
-            QueryTable
-        End With
-""")
+# comments and colons in awkward places
+tests.extend([
+"""
+If a =0 Then ' nasty comment
+    b=1
+End If ' other nasty comment
+""",
+
+"""
+While a<0 ' nasty comment
+    b=1
+Wend ' other nasty comment
+""",
+
+"""
+Select Case a ' nasty comment
+Case 10 ' oops
+    b=1
+Case Else ' other nasty comment
+    b = 2
+End Select ' gotcha
+""",
+
+"""
+For i = 0 To 100 ' nasty comment
+    b=1
+Next i ' other nasty comment
+""",
+
+"""
+Sub a() ' nasty comment
+    b=1
+End Sub ' other nasty comment
+""",
+
+"""
+Function f() ' nasty comment
+    b=1
+End Function ' other nasty comment
+""",
+
+"""
+Sub a():
+    b=1
+End Sub 
+""",
+
+
+"""
+Sub a()
+    b=1
+End Sub: 
+""",
+])
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

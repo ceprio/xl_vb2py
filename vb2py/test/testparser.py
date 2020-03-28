@@ -239,7 +239,7 @@ tests.extend([
     "Public a As Integer ' and a comment"
 ])
 
-# comments in awkward places
+# comments and colons in awkward places
 tests.extend([
 """
 If a =0 Then ' nasty comment
@@ -280,6 +280,18 @@ Function f() ' nasty comment
 End Function ' other nasty comment
 """,
 
+"""
+Sub a():
+    b=1
+End Sub 
+""",
+
+
+"""
+Sub a()
+    b=1
+End Sub: 
+""",
 ])
 
 # Directives
