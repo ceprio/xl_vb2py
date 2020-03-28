@@ -33,6 +33,8 @@ class LineContinuations(extensions.SystemPlugin):
         #         stripped_lines[idx] = line[:-1]
         #
         txtout = "\n".join(stripped_lines)
+        txtout = txtout.replace(" _\n.", ".")
+        txtout = txtout.replace(". _\n", ".")
         txtout = txtout.replace(" _\n", " ")
         txtout += "\n\n"
         self.log.info("Line continuation:\nConverted '%s'\nTo '%s'" % (txt, txtout))

@@ -17,15 +17,22 @@ tests = []
 
 
 
-# Implicit Range identifiers
-# Implicit Range identifiers
-tests.extend([
-"Worksheet.[A1].Select",
-"A = Worksheet.[A1].Value",
-"A = Worksheet.[1:10].Value",
-"Worksheet.[value]",
-"With worksheet\n\t.[1:10] = 5\nEnd With",
-])
+# Continuation with
+tests.append("""
+With MyObject _
+    .Other
+End With
+""")
+tests.append("""
+With MyObject. _
+    Other
+End With
+""")
+tests.append("""
+        With ActiveSheet.ListObjects.Add.Range("$A$1"). _
+            QueryTable
+        End With
+""")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

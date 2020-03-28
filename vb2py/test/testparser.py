@@ -2391,6 +2391,13 @@ With MyObject
 End With
 """)
 
+# Continuation with
+tests.append("""
+With MyObject _
+    .Other
+End With
+""")
+
 # Simple header found at the top of most class files
 tests.append("""
 VERSION 1.0 CLASS
