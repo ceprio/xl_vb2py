@@ -78,6 +78,7 @@ tests.extend([
 'a = 1000!',
 'a = "12!12"',
 'a = "=VLOOKUP(RC[-4],[Temp2.xlsx]Sheet1!C3C55,38,0)"',
+'Range("X1").Select\nActiveWorkbook.Names.Add Name:="scrollx1", RefersToR1C1:="=OFFSET(All_logs!R2C19:R120C19,All_logs!R1C22,0,All_logs!R1C24,1)"',
 ])
 
 

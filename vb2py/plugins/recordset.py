@@ -34,7 +34,7 @@ class RecordSetShort(extensions.SystemPluginREPlugin):
     (r'(?P<RS>[\w\d_]+)!(?P<FN>[\w\d_]+)', r'%(RS)s.Fields("%(FN)s").Value'),
     )
 
-    negative_check = re.compile('.*".*!.*".*')
+    negative_check = re.compile('.*".*!.*".*', re.DOTALL + re.MULTILINE)
 
     def preProcessVBText(self, text):
         """Preprocess the text"""
