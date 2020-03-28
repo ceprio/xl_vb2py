@@ -657,7 +657,38 @@ class VBSizeDefinition(VBNamespace):
             return ", ".join([item.renderAsCode() for item in self.sizes])
         else:
             return "(%s)" % ", ".join([item.renderAsCode() for item in self.size_ranges])
-    
+
+
+class VBRangeDefinition(VBCodeBlock):
+    """An implict range call (eg in Excel)"""
+
+    auto_handlers = [
+            "stringliteral",
+            "object",
+    ]
+
+    def __init__(self, scope="Private"):
+        """Initialize the object"""
+        super(VBRangeDefinition, self).__init__(scope)
+        self.stringliteral = None
+        self.object = None
+        self.atoms = []
+        self.auto_class_handlers = ({
+            "atom": (VBExpressionPart, self.atoms)
+        })
+
+    def renderAsCode(self, indent=0):
+        """Render this range item"""
+        if self.stringliteral:
+            content = self.stringliteral
+        elif self.object:
+            content = self.object
+        elif self.atoms:
+            content = '"%s"' % ':'.join(atom.element.text for atom in self.atoms)
+        else:
+            content = "Unknown!"
+        return ".Range(%s)" % content
+
 #
 class VBObject(VBNamespace):
     """Handles a VB Object"""
@@ -676,6 +707,7 @@ class VBObject(VBNamespace):
         self.auto_class_handlers.update({
             "primary" : (VBConsumer, "primary"),
             "attribute" : (VBAttribute, self.modifiers),
+            "range_definition" : (VBRangeDefinition, self.modifiers),
             "parameter_list" : (VBParameterList, self.modifiers),
         })
 

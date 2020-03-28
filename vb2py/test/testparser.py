@@ -971,6 +971,14 @@ tests.extend([
 'RS!diskID = "DriveID"',
 ])
 
+# Implicit Range identifiers
+tests.extend([
+"Worksheet.[A1].Select",
+"A = Worksheet.[A1].Value",
+"A = Worksheet.[1:10].Value",
+"Worksheet.[value]",
+])
+
 # Unicode
 tests.extend([
 'cIÅ  = 10',

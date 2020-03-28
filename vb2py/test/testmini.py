@@ -17,10 +17,12 @@ tests = []
 
 
 
-# Using statement
+# Implicit Range identifiers
 tests.extend([
-'a = "12!12"',
-'a = "=VLOOKUP(RC[-4],[Temp2.xlsx]Sheet1!C3C55,38,0)"'
+"Worksheet.[A1].Select",
+"A = Worksheet.[A1].Value",
+"A = Worksheet.[1:10].Value",
+"Worksheet.[value]",
 ])
 
 class ParsingTest(unittest.TestCase):

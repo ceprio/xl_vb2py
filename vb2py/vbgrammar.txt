@@ -357,7 +357,7 @@ new_keyword ::=
               wsp?, c"New", wsp+
 
 object ::=
-             ?-keyword, implicit_object?, (primary, ((".", attribute) / parameter_list)*) 
+             ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / parameter_list)*)
 
 bare_object ::=
 			 ?-keyword, implicit_object?, primary, (".", attribute)*
@@ -368,11 +368,15 @@ qualified_object ::=
 implicit_object ::=
              "."         
 
+range_definition ::=
+    "[", (atom, ":", atom) / stringliteral / object, "]"
+
+
 primary ::= 
              identifier
 
 attribute ::=
-             "["?, identifier, "]"?
+             identifier
 
 
 lset_statement ::=
