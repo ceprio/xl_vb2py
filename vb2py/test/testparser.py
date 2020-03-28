@@ -2397,6 +2397,16 @@ With MyObject _
     .Other
 End With
 """)
+tests.append("""
+With MyObject. _
+    Other
+End With
+""")
+tests.append("""
+        With ActiveSheet.ListObjects.Add.Range("$A$1"). _
+            QueryTable
+        End With
+""")
 
 # Simple header found at the top of most class files
 tests.append("""
