@@ -16,6 +16,8 @@ Contributed by Alexandr Zamaraev
 
 """
 
+import re
+
 
 try:
     import vb2py.extensions as extensions
@@ -23,11 +25,23 @@ except ImportError:
     import extensions
 
 class RecordSetShort(extensions.SystemPluginREPlugin):
-  """Convert RecordSet!FieldName to RecordSet.Fields("FieldName").Value"""
+    """Convert RecordSet!FieldName to RecordSet.Fields("FieldName").Value"""
 
-  #name = 'RecordSetShort'
-  __enabled = 1
+    #name = 'RecordSetShort'
+    __enabled = 1
 
-  pre_process_patterns = (
+    pre_process_patterns = (
     (r'(?P<RS>[\w\d_]+)!(?P<FN>[\w\d_]+)', r'%(RS)s.Fields("%(FN)s").Value'),
-  )
+    )
+
+    negative_check = re.compile('.*".*!.*".*')
+
+    def preProcessVBText(self, text):
+        """Preprocess the text"""
+        #
+        # Skip the whole thing if the "!" is inside a string
+        if "!" not in text or self.negative_check.match(text):
+            return text
+        else:
+            return super(RecordSetShort, self).preProcessVBText(text)
+

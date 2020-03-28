@@ -76,6 +76,8 @@ tests.extend([
 'a = #1/10#',
 'a = 10 Mod 2',
 'a = 1000!',
+'a = "12!12"',
+'a = "=VLOOKUP(RC[-4],[Temp2.xlsx]Sheet1!C3C55,38,0)"',
 ])
 
 
