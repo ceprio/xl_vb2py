@@ -2,6 +2,7 @@
 
 #
 StopSearch = -9999 # Used to terminate searches for parent properties
+TYPE_IDENTIFIERS = '#$%&!@'
 
 #
 class VBElement(object):
@@ -437,7 +438,7 @@ class VBPrimary(VBNamespace):
         #
         # Strip type identifiers if any
         if self.identifier:
-            if self.identifier.element.text[-1:] in '#$%&':
+            if self.identifier.element.text[-1:] in TYPE_IDENTIFIERS:
                 self.identifier.element.text = self.identifier.element.text[:-1]
             self.element = self.identifier.element
 
@@ -765,7 +766,7 @@ class VBObject(VBNamespace):
             except AttributeError:
                 pass # It isn't a consumer so we can't check it
             else:
-                if ending in "#$%&":
+                if ending in TYPE_IDENTIFIERS:
                     log.info("Removed type identifier from '%s'" % obj.element.text)
                     obj.element.text = obj.element.text[:-1]
     #
@@ -1118,7 +1119,7 @@ class VBExpressionPart(VBConsumer):
 
             """
         ending = self.element.text[-1:] or " "
-        if ending in "#$%&@":
+        if ending in TYPE_IDENTIFIERS:
             log.info("Removed type identifier from '%s'" % self.element.text)
             self.element.text = self.element.text[:-1]
     

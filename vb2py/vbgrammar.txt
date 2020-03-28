@@ -8,7 +8,7 @@ identifier ::=
         (safe_letter/("_", safe_letter)), (safe_letter / digit / "_")*, type_marker?
 
 type_marker ::=
-        "$" / "%" / "#" / "&"
+        "$" / "%" / "#" / "&" / "!"
 
 NEWLINE ::=
         "\n"
@@ -83,7 +83,7 @@ binaryinteger ::=
               [0-1]
 
 floatnumber ::= 
-             ("-"?, (exponentfloat / pointfloat)) / (integer, "#") 
+             ("-"?, (exponentfloat / pointfloat)) / (integer, "#"), "!"?
 
 <pointfloat> ::= 
              (intpart?, fraction) / (intpart, ".")
