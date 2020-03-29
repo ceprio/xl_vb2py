@@ -904,6 +904,16 @@ Enum thing
     _four
 End Enum
 """,
+"""
+Public Enum Stats
+xStrength = 1
+Endurance
+xIntelligence
+Agility
+Spirit
+Stat_count
+End Enum
+"""
 ])
 
 # Types

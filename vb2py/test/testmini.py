@@ -15,74 +15,35 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# comments and colons in awkward places
 tests.extend([
 """
-If a =0 Then ' nasty comment
-    b=1
-End If ' other nasty comment
+Enum thing
+    _one = 1
+    _two = 2
+    _three = 3
+    _four = 4
+End Enum
 """,
-
 """
-While a<0 ' nasty comment
-    b=1
-Wend ' other nasty comment
+Enum thing
+    _one
+    _two
+    _three
+    _four
+End Enum
 """,
-
 """
-Select Case a ' nasty comment
-Case 10 ' oops
-    b=1
-Case Else ' other nasty comment
-    b = 2
-End Select ' gotcha
-""",
-
+Public Enum Stats
+xStrength = 1
+Endurance
+xIntelligence
+Agility
+Spirit
+Stat_count
+End Enum
 """
-For i = 0 To 100 ' nasty comment
-    b=1
-Next i ' other nasty comment
-""",
-
-"""
-Sub a() ' nasty comment
-    b=1
-End Sub ' other nasty comment
-""",
-
-"""
-Function f() ' nasty comment
-    b=1
-End Function ' other nasty comment
-""",
-
-"""
-Sub a():
-    b=1
-End Sub 
-""",
-
-
-"""
-Sub a()
-    b=1
-End Sub: 
-""",
-
-"""
-Sub a
-    b=12
-End Sub 
-""",
-
-
-"""
-Function a
-    b=1
-End Function
-""",
-
 ])
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
