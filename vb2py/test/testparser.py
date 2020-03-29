@@ -968,6 +968,10 @@ If some_logical_construct
 End If
 """)
 
+tests.append("""
+If A Or Not (B = 1) Then C = 1
+""")
+
 # Sub with an 'End' in there
 tests.append("""
 Sub doit()

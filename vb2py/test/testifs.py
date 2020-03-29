@@ -320,6 +320,16 @@ End If
 """, {"a": 2}
 ))
 
+tests.append((
+"""
+_x = 0
+_y = 0
+a = 1
+b = 1
+If _x Or Not (_y = 1) Then a = 2
+If _x Or Not (_y = 0) Then b = 2
+""", {"a": 2, "b": 1}
+))
 # -- end -- << If tests >>
 
 import vb2py.vbparser

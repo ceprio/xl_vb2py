@@ -15,14 +15,9 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# If block with an inline in there too
 tests.append("""
-If some_logical_construct 
-    b = 10
-    ElseIf b = 2 Then x = 3
-End If
+If A Or Not (B = 1) Then C = 1
 """)
-
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
