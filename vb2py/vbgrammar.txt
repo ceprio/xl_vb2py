@@ -428,7 +428,7 @@ unscoped_dim ::=
   c"Dim", wsp+, basic_dim
 
 scoped_dim ::=
-  scope, (wsp+, c"Shared", wsp+)?, wsp+, (c"Dim", wsp+)?, basic_dim
+  scope, wsp+, (c"Shared", wsp+)?, (c"Dim", wsp+)?, basic_dim
 
 basic_dim ::=
   object_definition, (",", wsp*, object_definition)*
