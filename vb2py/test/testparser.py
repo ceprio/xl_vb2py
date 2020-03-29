@@ -2572,6 +2572,9 @@ Class MyClass
 End Class
 """)
 
+# Shared Dim
+tests.append('Public SharedScriptSupport As New clsScriptSupportClass')
+
 # Handlers
 tests.append("""
 Class MyClass

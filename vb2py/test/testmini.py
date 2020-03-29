@@ -15,12 +15,9 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Problematic if
-tests.append("""
-if a = 1 Then
-        iFile = xFreeFile
-End if
-""")
+# Shared Dim
+tests.append('Public SharedScriptSupport As New clsScriptSupportClass')
+
 
 
 class ParsingTest(unittest.TestCase):
