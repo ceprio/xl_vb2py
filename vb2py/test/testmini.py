@@ -15,34 +15,12 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.extend([
-"""
-Enum thing
-    _one = 1
-    _two = 2
-    _three = 3
-    _four = 4
-End Enum
-""",
-"""
-Enum thing
-    _one
-    _two
-    _three
-    _four
-End Enum
-""",
-"""
-Public Enum Stats
-xStrength = 1
-Endurance
-xIntelligence
-Agility
-Spirit
-Stat_count
-End Enum
-"""
-])
+# Problematic if
+tests.append("""
+if a = 1 Then
+        iFile = xFreeFile
+End if
+""")
 
 
 class ParsingTest(unittest.TestCase):

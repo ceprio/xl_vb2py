@@ -1347,6 +1347,13 @@ tests.append("""
 #End If
 """)
 
+# Problematic if
+tests.append("""
+if a = 1 Then
+        iFile = xFreeFile
+End if
+""")
+
 # Simple #If with compount And/Or expression
 tests.append("""
 #If (a = 10 And k = "test") And (c Or b Or e = 43.23) Then
