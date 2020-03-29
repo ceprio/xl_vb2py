@@ -2459,8 +2459,9 @@ class VBElseIf(VBIf):
         self.elif_block = VBPass()
         #
         self.auto_class_handlers = {
-            "condition" : (VBExpression, "condition"),
-            "else_if_block" : (VBCodeBlock, "elif_block"),
+            "condition": (VBExpression, "condition"),
+            "else_if_block": (VBCodeBlock, "elif_block"),
+            "else_if_inline": (VBCodeBlock, "elif_block"),
         }
     #
     def renderAsCode(self, indent=0):

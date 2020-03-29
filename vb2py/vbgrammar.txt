@@ -136,7 +136,7 @@ line_body ::=
 
 
 line_end ::=
-             comment_statement?, NEWLINE
+             ":"?, comment_statement?, NEWLINE
 
 
 compound_line ::=
@@ -666,7 +666,7 @@ select_statement ::=
                 select_end_statement
 
 select_start_statement ::=
-                c"Select", wsp+, c"Case", wsp+, expression, line_end
+                c"Select", wsp+, c"Case", wsp+, expression, ":"?, line_end
 
 select_end_statement ::=
                 label_definition?, c"End Select"
@@ -709,7 +709,7 @@ if_statement ::=
              if_end_statement
 
 if_start_statement ::=
-             hash?, c"If", wsp+, condition, hash?, c"Then"?, line_end
+             hash?, c"If", wsp+, condition, hash?, c"Then"?, ":"?, line_end
 
 if_end_statement ::=
              label_definition?, hash?, c"End If"
@@ -718,13 +718,14 @@ if_block ::=
              block
 
 else_if_statement ::=
-             (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", line_end, else_if_block?)
+             (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", else_if_inline / (line_end, else_if_block?))
 
 else_statement ::=
              (label_definition?, hash?, c"Else", wsp*, line_end, else_block?)
 
 else_block ::= block
 else_if_block ::= block
+else_if_inline ::= wsp+, single_statement, line_end
 condition ::= expression
 
 inline_if_block ::=

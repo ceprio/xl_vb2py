@@ -307,6 +307,19 @@ b = 1
 End If
 """, {"a" : 1, "b": 0,}))
 
+# If block with an inline else
+tests.append((
+"""
+_x = 0
+_y = 1
+a = 1
+If _x Then
+a = -1
+ElseIf _y Then a = 2
+End If
+""", {"a": 2}
+))
+
 # -- end -- << If tests >>
 
 import vb2py.vbparser

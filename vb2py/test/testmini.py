@@ -15,9 +15,13 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Shared Dim
-tests.append('Public SharedScriptSupport As New clsScriptSupportClass')
-
+# If block with an inline in there too
+tests.append("""
+If some_logical_construct 
+    b = 10
+    ElseIf b = 2 Then x = 3
+End If
+""")
 
 
 class ParsingTest(unittest.TestCase):

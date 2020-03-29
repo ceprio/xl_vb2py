@@ -960,6 +960,14 @@ If some_logical_construct
 End If
 """)
 
+# If block with an inline in there too
+tests.append("""
+If some_logical_construct 
+    b = 10
+    ElseIf b = 2 Then x = 3
+End If
+""")
+
 # Sub with an 'End' in there
 tests.append("""
 Sub doit()
@@ -1993,6 +2001,11 @@ Case Else: z = -1
 End Select
 """)
 
+# Single line case with colon at the end
+tests.append("""
+Select Case x:
+End Select
+""")
 
 # Range case 
 tests.append("""
