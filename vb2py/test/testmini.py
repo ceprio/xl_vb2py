@@ -16,8 +16,20 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 tests.append("""
-If A Or Not (B = 1) Then C = 1
+If c = 2 Then ' bottom centered
+
+ElseIf c = 5 Then ' comment
+    a = 1
+End If
 """)
+
+tests.append("""
+If c = 2 Then ' bottom centered
+
+ElseIf c = 5 Then D
+End If
+""")
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

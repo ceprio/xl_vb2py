@@ -718,14 +718,14 @@ if_block ::=
              block
 
 else_if_statement ::=
-             (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", else_if_inline / (line_end, else_if_block?))
+             (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", (comment_statement?, line_end, else_if_block?) / else_if_inline)
 
 else_statement ::=
              (label_definition?, hash?, c"Else", wsp*, line_end, else_block?)
 
 else_block ::= block
 else_if_block ::= block
-else_if_inline ::= wsp+, single_statement, line_end
+else_if_inline ::= wsp+, inline_block, line_end
 condition ::= expression
 
 inline_if_block ::=

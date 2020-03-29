@@ -972,6 +972,21 @@ tests.append("""
 If A Or Not (B = 1) Then C = 1
 """)
 
+tests.append("""
+If c = 2 Then ' bottom centered
+
+ElseIf c = 5 Then ' comment
+    a = 1
+End If
+""")
+
+tests.append("""
+If c = 2 Then ' bottom centered
+
+ElseIf c = 5 Then D
+End If
+""")
+
 # Sub with an 'End' in there
 tests.append("""
 Sub doit()
