@@ -72,7 +72,7 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
 
     nodes = []
     while 1:
-        success, tree, next = parser.parse(txt) 
+        success, tree, next = parser.parse(txt)
         if not success:
             if txt.strip():
                 # << Handle failure >>
@@ -131,7 +131,10 @@ def makeUnicodeFromSafe(text):
         """Replace the safe unicode thingumy"""
         text = match.groups()[1]
         code = int(text)
-        return chr(code)
+        try:
+            return unichr(code)
+        except ValueError:
+            raise
 
     proper_text = re.sub('(xX)(\d+)(Xx)', replacer, text)
 
