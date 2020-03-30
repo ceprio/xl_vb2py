@@ -13,7 +13,7 @@ import os
 import re
 import utils
 
-declaration = open(utils.relativePath("vbgrammar.txt"), "r").read()
+declaration = open(utils.relativePath("grammars", "vbgrammar.txt"), "r").read()
 
 from simpleparse.parser import Parser
 

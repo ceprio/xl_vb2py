@@ -7,7 +7,7 @@ def rootPath():
     return os.path.split(os.path.abspath(__file__))[0]
 
 
-def relativePath(path):
+def relativePath(*paths):
     """Return the path to a file"""
-    return os.path.join(rootPath(), path)
+    return os.path.join(rootPath(), *paths)
 # -- end -- << Utilities >>
