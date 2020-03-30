@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a785366f-83ea-4687-8337-59f7b8bdaed7" name="web.sourceforge.net" url="http://vb2py.sourceforge.net">
+        <fileTransfer host="web.sourceforge.net" port="22" rootFolder="/home/project-web/vb2py/htdocs" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
