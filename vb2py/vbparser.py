@@ -13,7 +13,7 @@ import os
 import re
 import utils
 
-declaration = open(utils.relativePath("grammars", "vbgrammar.txt"), "r").read()
+declaration = utils.loadGrammarFrom(utils.relativePath("grammars", "vbgrammar.txt"))
 
 from simpleparse.parser import Parser
 
@@ -140,13 +140,13 @@ def makeUnicodeFromSafe(text):
 
     return proper_text
 # << Utility functions >> (5 of 10)
-def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None):
+def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None):
     """Parse some VB"""
 
     if returnpartial is None:
         returnpartial = Config["General", "ReportPartialConversion"] == "Yes"
 
-    nodes = buildParseTree(vbtext, starttoken, verbose, returnpartial)
+    nodes = buildParseTree(vbtext, starttoken, verbose, returnpartial, grammar=grammar)
 
     if container is None:
         m = VBModule()
