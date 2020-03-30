@@ -1,7 +1,7 @@
 
 
 
-<%include file="basics.txt"/>
+<%include file="basics.mako"/>
 
 
 

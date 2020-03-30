@@ -13,7 +13,7 @@ import os
 import re
 import utils
 
-declaration = utils.loadGrammarFrom(utils.relativePath("grammars", "vbgrammar.txt"))
+declaration = utils.loadGrammarFrom(utils.relativePath("grammars", "vbgrammar.mako"))
 
 from simpleparse.parser import Parser
 

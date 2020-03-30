@@ -34,7 +34,7 @@ functioncall = myfunction.mymethod(10)
 
 
 dot_net_grammar = vb2py.utils.loadGrammarFrom(
-    vb2py.utils.relativePath('grammars', 'vbgrammar.txt'),
+    vb2py.utils.relativePath('grammars', 'vbgrammar.mako'),
     data={
         'dialect': 'vb.net',
     }
