@@ -29,11 +29,12 @@
 
 .code-header {
     background-color: #3fb921;
-    height: 30px;
     vertical-align: middle;
     text-align: center;
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
     font-weight: bold;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .file-input {

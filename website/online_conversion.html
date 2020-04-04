@@ -82,10 +82,46 @@
                         </div>
                     </div>
 
+
+
                     <div class="vertically_divided code-box">
                         <div>
                             <div class="code-header">
-                                Type VB Code or <input class="btn-small btn-success file-input" type='file' onchange='openFile(event)'>
+
+                                Type VB Code or
+
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <div class="btn-group" role="group">
+                                        <button id="LoadGroup" type="button"
+                                                class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Load File
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="LoadGroup">
+                                            <div>
+                                                <input class="btn-small btn-success file-input" type='file'
+                                                       onchange='openFile(event)'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    &nbsp;&nbsp;or&nbsp;&nbsp;
+                                    <div class="btn-group" role="group">
+                                        <button id="ExampleGroup" type="button"
+                                                class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            See example
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="ExampleGroup">
+                                            <a class="dropdown-item" href="#">Dropdown link</a>
+                                            <a class="dropdown-item" href="#">Dropdown link</a>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+
                             </div>
                             <div id="vbcode" class="vbcode">
 Dim A as Integer
@@ -108,7 +144,19 @@ End Function
                             </div>
                         </div>
                         <div>
-                            <div class="code-header">Python Equivalent</div>
+                            <div class="code-header">Python Equivalent
+
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop3" type="button" class="btn-small btn-secondary"
+                                                aria-haspopup="true" aria-expanded="false" onclick="downloadPython()">
+                                            Download
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <div id="pycode" class="pycode"></div>
                         </div>
                     </div>
@@ -354,6 +402,27 @@ End Function
             return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
         }
         return hval >>> 0;
+    }
+
+
+    function downloadPython() {
+        let element = document.createElement('a');
+        let text = pyeditor.session.getValue();
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', 'converted_code.py');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+
+        if (!DEVELOPMENT) {
+            gtag('event', 'Download Python', {
+                'event_category': 'Converted Python',
+            });
+        }
     }
 
 </script>
