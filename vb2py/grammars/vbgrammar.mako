@@ -200,8 +200,18 @@ expression ::=
              (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,
              (operation, par_expression)*) / line_expression
 
-par_expression ::= 
-             point / (l_bracket, expression, r_bracket) / list_literal / base_expression
+par_expression ::=
+% if dialect == 'vb.net':
+    point / (l_bracket, expression, r_bracket, attributes?) / list_literal / base_expression
+
+attributes ::=
+    ".", atom
+
+% else:
+    point / (l_bracket, expression, r_bracket) / list_literal / base_expression
+% endif
+
+
 
 base_expression ::= 
 			  simple_expr, (operation, simple_expr)?
@@ -282,9 +292,12 @@ implicit_object ::=
 range_definition ::=
     "[", (atom, ":", atom) / stringliteral / object, "]"
 
-
-primary ::= 
-             identifier / range_definition
+primary ::=
+%if dialect == 'vb.net':
+    identifier / range_definition / stringliteral
+%else:
+    identifier / range_definition
+%endif
 
 attribute ::=
              identifier
@@ -305,6 +318,8 @@ comment_body ::=
 comment_start ::=
 			 "'"	/ (c"Rem", (wsp / ?line_end))
 
+text_to_end_of_line ::=
+             (stringitem / '"')*, line_end
 
 external_declaration ::=
         (scope, wsp+)?, c"Declare", wsp+, (c"Sub" / c"Function"), wsp+, identifier, wsp+, c"Lib", wsp+, 
@@ -657,6 +672,11 @@ for_start_line ::=
                 c"For", wsp+, object, wsp*, "=", wsp*,
                 expression, c"To", wsp+, expression, for_stepping?, line_end
 
+for_each_start_line ::=
+                c"For", wsp+, c"Each", wsp+, object, wsp*, c"In", wsp+,
+                expression, line_end
+
+
 for_end_line ::=
                 label_definition?, c"Next", (wsp+, object)?
 
@@ -665,10 +685,6 @@ for_stepping ::=
 
 for_each_statement ::=
                 for_each_start_line, for_each_body, for_each_end_line
-
-for_each_start_line ::=
-                c"For", wsp+, c"Each", wsp+, object, wsp*, c"In", wsp+, 
-                expression, line_end
 
 for_each_body ::=
                 block?

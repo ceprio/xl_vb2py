@@ -13,7 +13,7 @@ import os
 import re
 import utils
 
-declaration = utils.loadGrammarFrom(utils.relativePath("grammars", "vbgrammar.mako"))
+GRAMMAR_FILE = utils.relativePath("grammars", "vbgrammar.mako")
 
 from simpleparse.parser import Parser
 
@@ -52,19 +52,15 @@ def convertToElements(details, txt):
             ret.append(VBElement(item, txt))
     return ret
 # << Utility functions >> (2 of 10)
-def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, grammar=None):
-    """Parse some VB"""
-
-    # << Build Parser >>
-    # Try to buid the parse - if this fails we probably have an early
-    # version of Simpleparse
-    try:
-        parser = Parser((grammar if grammar else declaration), starttoken)
-    except Exception, err:
-        log.warn("Failed to build parse (%s) - trying case sensitive grammar" % err)
-        parser = Parser(declaration.replace('c"', ' "'), starttoken)
-        log.info("Downgraded to case sensitive grammar")
-    # -- end -- << Build Parser >>
+def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, dialect='VB6', grammar=None):
+    """Parse some VB
+    :param dialect:
+    """
+    #
+    # Select the right grammar file
+    if not grammar:
+        grammar = utils.loadGrammarFrom(GRAMMAR_FILE, data={'dialect': dialect})
+    parser = Parser(grammar, starttoken)
 
     txt = applyPlugins("preProcessVBText", vbtext)
 
@@ -140,13 +136,13 @@ def makeUnicodeFromSafe(text):
 
     return proper_text
 # << Utility functions >> (5 of 10)
-def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None):
+def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None, dialect='VB6'):
     """Parse some VB"""
 
     if returnpartial is None:
         returnpartial = Config["General", "ReportPartialConversion"] == "Yes"
 
-    nodes = buildParseTree(vbtext, starttoken, verbose, returnpartial, grammar=grammar)
+    nodes = buildParseTree(vbtext, starttoken, verbose, returnpartial, grammar=grammar, dialect=dialect)
 
     if container is None:
         m = VBModule()
@@ -163,13 +159,13 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
 
     return m
 # << Utility functions >> (6 of 10)
-def getAST(vbtext, starttoken="line", returnpartial=None, grammar=None):
+def getAST(vbtext, starttoken="line", returnpartial=None, grammar=None, dialect='VB6'):
     """Parse some VB to produce an AST"""
 
     if returnpartial is None:
         returnpartial = Config["General", "ReportPartialConversion"] == "Yes"
 
-    nodes = buildParseTree(vbtext, starttoken, 0, returnpartial, returnast=1, grammar=grammar)
+    nodes = buildParseTree(vbtext, starttoken, 0, returnpartial, returnast=1, grammar=grammar, dialect=dialect)
 
     return nodes
 # << Utility functions >> (7 of 10)
