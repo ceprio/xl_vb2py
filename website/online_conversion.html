@@ -112,8 +112,22 @@
                                             See example
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="ExampleGroup">
-                                            <a class="dropdown-item" href="#">Dropdown link</a>
-                                            <a class="dropdown-item" href="#">Dropdown link</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('dim')">Dim</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('if')">If</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('with')">With</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('select')">Select</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('for')">For / For Each</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('while')">While / Do</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('using')">Using</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" onclick="getExample('sub')">Subroutines</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('fn')">Functions</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('class')">Classes</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('properties')">Properties</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" onclick="getExample('type')">Types</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('enum')">Enums</a>
+                                            <a class="dropdown-item" href="#" onclick="getExample('open')">Open / Files</a>
                                         </div>
                                     </div>
 
@@ -124,23 +138,6 @@
 
                             </div>
                             <div id="vbcode" class="vbcode">
-Dim A as Integer
-B = 20
-
-Sub DotIt(X as Double)
-    Select Case A
-        Case 1
-            B = B + X
-        Case 2
-            B = B - X
-        Case Else
-            B = 0
-        End Select
-End Sub
-
-Function GetHalfB() As Integer
-    GetHalfB = B / 2
-End Function
                             </div>
                         </div>
                         <div>
@@ -220,6 +217,11 @@ End Function
         //HOST = 'http://perpetualpyramid.dyndns.org:8090';
         HOST = 'http://23.99.213.204:8090';
     }
+
+
+    $(document).ready(function () {
+        getExample('initial');
+    });
 
     function convert_selection() {
         let range = vbeditor.selection.getRange();
@@ -425,4 +427,319 @@ End Function
         }
     }
 
+    function getExample(name) {
+        //
+        // Get the text
+        let e = null;
+        if (name == 'initial') {
+            e = $('#ex-general')[0];
+        } else {
+            e = $('#ex-' + name)[0];
+        }
+        vbeditor.session.setValue(unescape(e.innerHTML));
+        //
+        // Set the context
+        let context = e.attributes['context'];
+        if (context == null) {
+            $('#context')[0].value = 'code';
+        } else {
+            $('#context')[0].value = context.textContent;
+        }
+        if (name != 'initial') {
+            convert_code();
+            if (!DEVELOPMENT) {
+                gtag('event', 'Example', {
+                    'event_category': 'Example',
+                    'event_label': name,
+                });
+            }
+        }
+    }
 </script>
+
+
+<div style="display: none">
+    <div id="ex-general">
+Dim A as Integer
+B = 20
+
+Sub DotIt(X as Double)
+    Select Case A
+        Case 1
+            B = B + X
+        Case 2
+            B = B - X
+        Case Else
+            B = 0
+        End Select
+End Sub
+
+Function GetHalfB() As Integer
+    GetHalfB = B / 2
+End Function
+    </div>
+    <div id="ex-if">
+
+'
+' Multi-line and singe-line ifs are converted to blocks in Python
+If A = 10 Then
+        DoSomething()
+ElseIf  B = 20 Then
+        DoSomethingElse()
+Else
+        OtherCase()
+        If B = 20 Then C = 0 Else C = 1
+End If
+    </div>
+    <div id="ex-with">
+
+'
+' With statements allow quick access to properties and methods
+' of an object. These will be translated into explicit calls to
+' a temporary object (in case of side-effects)
+With Container.Member
+        .Init
+        .IncrementCounter 43
+        With .ChildItem
+                .Refresh
+        End With
+End With
+    </div>
+    <div id="ex-select">
+
+'
+' Selects are converted to If blocks with a temporary variable to
+' hold the tested variables (in case of side-effects). Case ranges
+' and options are handled as additional clauses for the if
+Select Case A
+    Case 1
+        B = B + X
+    Case 2
+        B = B - X
+        Select Case B
+            Case 0 to 10
+                C = 1
+            Case 11, 12
+                C = 2
+        End Select
+    Case Else
+        B = 0
+End Select
+    </div>
+    <div id="ex-for">
+
+'
+' Numeric for loops use a helper function to create the underlying
+' sequence to be iterated over
+For I = 1 To 10
+    B = B + 1
+    For J = 10 To 0 Step -1
+        If B = 20 Then Exit For
+    Next J
+Next I
+
+'
+' For Each relies on the underlying object supporting the iteration
+' protocol (which might not be the case!)
+For Each Child in Parent
+        Child.CleanUp
+Next
+    </div>
+    <div id="ex-while">
+
+'
+' While and Do loops are converted to a Python while
+' block.
+While Something %3C%3E 10
+    Something = Something + 1
+Wend
+
+'
+' A starting until clause reverses the condition
+Do Until Something = 5
+   Something = Something - 1
+Loop
+
+'
+' A final Until clause will generate an If with a break
+Do
+    Something = Something - 1
+Loop Until Something = 0
+    </div>
+    <div id="ex-dim">
+'
+' Dim statements define the types of variables and perform initialisation
+' and so are mapped to helper functions which create python objects that
+' try to behave like the VB equivalents
+Dim A
+Dim B as Integer, C As String
+A = 10: B = 30: C = "Hello World"
+
+'
+' Where arrays are defined these use a helper function which creates
+' a variant of a list which has initial values
+Dim D(10) As String, E(10, 2, 3) As MyClass
+
+D(5) = "Hello"
+E(1, 1, 2) = New MyClass(20)
+
+'
+' ReDim statements use the helper function to resize the underlying list
+' objects while retaining the size
+ReDim Preserve D(5)
+ReDim C(20)
+
+    </div>
+    <div id="ex-sub">
+'
+' Subroutines are converted to Python functions and can
+' include optional parameters with defaults
+'
+' An optional parameter with no default uses the helper
+' object VBMissingArgument and the helper function IsMissing
+Sub MySub(X, Optional Y, Optional Z=20)
+    Dim subLocal
+    If IsMissing(Y) Then Y = 12
+    subLocal = X + Y + Z + moduleGlobal
+End Sub
+
+MySub 1, 2
+MySub 1, Z:=10
+
+'
+' Passing by Value converts but behaves differently for
+' immutable types in Python.
+Sub DoIt(x, ByVal y)
+    x = x + 1
+    y = y + 1
+End Sub
+
+x = 0
+y = 0
+DoIt x, y
+' x is now 1, y is still 0
+    </div>
+    <div id="ex-fn">
+'
+' Functions use a variable to store the result of the
+' function during its execution
+Function MyFunc(X, Optional Y, Optional Z=20)
+    Dim subLocal
+    subLocal = X + Y + Z
+    MyFunc = subLocal*10
+End Function
+
+a = MyFunc(1, 2)
+a = MyFunc(1, Z:=10)
+    </div>
+    <div id="ex-type">
+'
+' Types create classes with properties to store the
+' values of the types
+Type Point
+    X As Single
+    Y As Single
+End Type
+'
+Type Line2D
+    Start As Point
+    Finish As Point
+End Type
+'
+Dim p1 As Point, p2 As Point
+p1.X = 10
+p1.Y = 20
+p2.X = 30
+p3.Y = 40
+'
+Dim l1 As Line2D
+l1.Start = p1
+l1.Finish = p2
+
+    </div>
+    <div id="ex-enum">
+'
+' Enums create variables with the same names
+Enum Number
+        One = 1
+        Two = 2
+        Three = 3
+        Four = 4
+        Ten = 10
+        Hundred = 100
+End Enum
+
+Enum Day
+        Mon
+        Tue
+        Wed
+        Thu
+        Fri
+End Enum
+    </div>
+    <div id="ex-properties" context="class">
+'
+' In class modules you can use properties to provide
+' accessor functions. These are converted to the Python
+' equivalent
+Dim myValue = 0
+
+Property Let PriceToPublic(Value As Integer)
+    myValue = myValue - Value
+    If myValue %3C 0 Then myValue = 0
+End Property
+
+Property Get PriceToPublic()
+    PriceToPublic = 2 * myValue
+End Property
+
+    </div>
+    <div id="ex-class" context="class">
+
+'
+' In the context of a class module, dimensioned variables
+' are converted to attributes of the class and any
+' subroutines and functions are converted to methods
+' of the class.
+Dim A as Integer
+Dim B = 20
+
+Sub DotIt(X as Double)
+    Select Case A
+        Case 1
+            B = B + X
+        Case 2
+            B = B - X
+        Case Else
+            B = 0
+        End Select
+End Sub
+
+Function GetHalfB() As Integer
+    GetHalfB = B / 2
+End Function
+    </div>
+    <div id="ex-open">
+'
+' File operations using #channels are mapped to a helper
+' function that keeps track of the open files
+Open "myfile.txt" For Input as #1
+Line Input #1, aLine
+Close #1
+
+'
+' This also handles the writing of files
+Open "myOtherFile.txt" For Append as #2
+Print #2, "Hello World"
+Seek #2, 1
+Print #2, "Here at the begining"
+Close #2
+    </div>
+    <div id="ex-using">
+'
+' Using blocks are mapped to with blocks.
+Using A As Object.Value
+   b = A.Result()
+End Using
+    </div>
+</div>
