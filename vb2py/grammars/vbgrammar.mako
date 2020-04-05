@@ -764,7 +764,7 @@ shared ::=
 
 property_definition ::=
              property_start_definition,
-             block?,
+             property_block?,
              property_end_definition
 
 property_start_definition ::=
@@ -776,6 +776,9 @@ property_end_definition ::=
 
 property_decorator_type ::=
              c"Get" / c"Set" / c"Let"
+
+property_block ::=
+        (?-c"End Property", line)+
 
 user_type_definition ::=
             user_type_start_statement, user_type_body, user_type_end_statement

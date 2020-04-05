@@ -2863,6 +2863,7 @@ class VBWith(VBCodeBlock):
 class VBProperty(VBSubroutine):
     """Represents a property definition"""
 
+    block_name = "property_block"
     #
     def __init__(self, scope="Private"):
         """Initialize the Select"""

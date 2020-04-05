@@ -293,7 +293,7 @@
         }
 
         $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name, 'failure-mode': 'fail-safe'}, function (data) {
-            if (data.status == 'OK') {
+            if (data.status === 'OK') {
                 pyeditor.session.setValue(data.result);
                 // Watch for parsing failure
                 if (data.parsing_failed) {
@@ -305,14 +305,14 @@
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
                             "errorMarker", "line", true);
 
-                        if (i == 0) {
+                        if (i === 0) {
                             vbeditor.scrollToLine(vb_offset);
                             pyeditor.scrollToLine(data.parsing_stopped_py);
                         }
                     }
 
                     $('#error_message')[0].style = '';
-                    if (data.language == 'VB.NET') {
+                    if (data.language === 'VB.NET') {
                         $('#dot_net_message')[0].style = '';
                     };
                     language = data.language;
@@ -458,7 +458,7 @@
         } else {
             $('#context')[0].value = context.textContent;
         }
-        if (name != 'initial') {
+        if (name !== 'initial') {
             convert_code();
             if (!DEVELOPMENT) {
                 gtag('event', 'Example', {
