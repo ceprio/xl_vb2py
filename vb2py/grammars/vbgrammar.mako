@@ -97,7 +97,10 @@ single_statement ::=
 			   event_definition /
                close_statement /
 			   end_statement /
-			   seek_statement 
+			   seek_statement
+% if mode == 'safe':
+    / untranslated_text
+% endif
              )
 
 compound_statement ::= 
@@ -318,8 +321,8 @@ comment_body ::=
 comment_start ::=
 			 "'"	/ (c"Rem", (wsp / ?line_end))
 
-text_to_end_of_line ::=
-             (stringitem / '"')*, line_end
+untranslated_text ::=
+             (stringitem / '"')+
 
 external_declaration ::=
         (scope, wsp+)?, c"Declare", wsp+, (c"Sub" / c"Function"), wsp+, identifier, wsp+, c"Lib", wsp+, 

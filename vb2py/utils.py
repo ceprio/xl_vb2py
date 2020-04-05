@@ -2,6 +2,10 @@ import os
 import mako.template
 import mako.lookup
 
+BASE_GRAMMAR_SETTINGS = {
+    'dialect': 'VB6',
+    'mode': 'rigorous',
+}
 
 def rootPath():
     """Return the root path"""
@@ -19,9 +23,8 @@ def loadGrammarFrom(filename, data=None):
     lookup = mako.lookup.TemplateLookup(directories=[relativePath('grammars')])
     template = mako.template.Template(text, lookup=lookup)
     #
-    base_data = {
-        'dialect': 'VB6',
-    }
+    base_data = {}
+    base_data.update(BASE_GRAMMAR_SETTINGS)
     #
     if data:
         base_data.update(data)

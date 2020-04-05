@@ -536,6 +536,7 @@ class VBCodeBlock(VBNamespace):
             "class_header_block" : (VBUnrenderedBlock, self.blocks),
 
             "parser_failure" : (VBParserFailure, self.blocks),
+            "untranslated_text" : (VBUntranslatedText, self.blocks),
 
         })
     #
@@ -3068,6 +3069,14 @@ class VBParserFailure(VBConsumer):
             warn += "%simport warnings;warnings.warn('VB2PY Code conversion failed at this point')" % self.getIndent(indent)
         #
         return warn
+
+
+class VBUntranslatedText(VBConsumer):
+    """Stores text which has not been translated"""
+
+    def renderAsCode(self, indent=0):
+        """Render it"""
+        return "%sassert False, '# UNTRANSLATED VB LINE [%s]'\n" % (self.getIndent(indent), self.element.text)
 
 
 from vbparser import *
