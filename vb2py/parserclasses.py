@@ -2392,6 +2392,9 @@ class VBFunction(VBSubroutine):
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
         #
+        # See if we are using return statements
+        just_use_return = Config["Functions", "JustUseReturnStatement"].lower() == "yes"
+        #
         # Set a name conversion to capture the function name
         # Assignments to this function name should go to the _ret parameter
         return_var = Config["Functions", "ReturnVariableName"]
@@ -2404,7 +2407,7 @@ class VBFunction(VBSubroutine):
         #
         locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
         #
-        if Config["Functions", "PreInitializeReturnVariable"] == "Yes":
+        if Config["Functions", "PreInitializeReturnVariable"] == "Yes" and not just_use_return:
             pre_init = "%s%s = None\n" % (				
                     self.getIndent(indent+1),
                     return_var)
@@ -2418,7 +2421,12 @@ class VBFunction(VBSubroutine):
         else:
             decorator = ''
         #
-        ret = "\n%s%sdef %s(%s):\n%s%s%s%s%s%sreturn %s\n" % (
+        if just_use_return:
+            last_return = ""
+        else:
+            last_return = 'return %s' % return_var
+        #
+        ret = "\n%s%sdef %s(%s):\n%s%s%s%s%s%s%s\n" % (
                     decorator,
                     self.getIndent(indent),
                     self.getParentProperty("enforcePrivateName")(self), 
@@ -2429,7 +2437,7 @@ class VBFunction(VBSubroutine):
                     "\n".join(locals),
                     block,
                     self.getIndent(indent+1),
-                    return_var)
+                    last_return)
         return ret
     
 #

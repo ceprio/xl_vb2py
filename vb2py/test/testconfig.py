@@ -222,6 +222,25 @@ class TestConfig(unittest.TestCase):
         self.assert_(len(r.findall(c_1)) > 1)	
         self.assertEqual(len(r.findall(c_2)), 0)
     # -- end -- << Config tests >>
+    def testReturnStatements(self):
+        """testReturnStatements: can rely on return statements"""
+        code = """
+        Function a()
+            Return 20
+        End Function
+        """
+        c1 = convertVBtoPython(code, dialect='vb.net')
+        self.assertIn('return _ret', c1)
+        self.c.setLocalOveride('Functions', 'JustUseReturnStatement', 'Yes')
+        c2 = convertVBtoPython(code, dialect='vb.net')
+        self.assertNotIn('return _ret', c2)
+        self.assertIn('return 20', c2)
+        self.c.setLocalOveride('Functions', 'JustUseReturnStatement', 'No')
+        c3 = convertVBtoPython(code, dialect='vb.net')
+        self.assertIn('return _ret', c3)
+
+
+
 
 
 if __name__ == "__main__":
