@@ -704,11 +704,14 @@ body ::=
 			    (implicit_call_statement / (single_statement, colon))*
 
 sub_definition ::=
-             sub_start_definition, block?, sub_end_definition
+             sub_start_definition, sub_block?, sub_end_definition
 
 sub_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
              formal_param_list?, handler_definition?, ":"?, line_end
+
+sub_block ::=
+    (?-c"End Sub", line)+
 
 sub_end_definition ::=
              label_definition?, c"End Sub"
@@ -735,7 +738,7 @@ parameter_list ::=
              list
 
 fn_definition ::=
-             fn_start_definition, block?, fn_end_definition
+             fn_start_definition, fn_block?, fn_end_definition
 
 fn_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Function", wsp+, identifier, wsp*,
@@ -743,6 +746,9 @@ fn_start_definition ::=
 
 fn_end_definition ::=
              label_definition?, c"End Function"
+
+fn_block ::=
+    (?-c"End Function", line)+
 
 default_value ::=
             wsp*, "=", expression            

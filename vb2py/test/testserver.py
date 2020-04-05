@@ -627,6 +627,40 @@ B =
         data = json.loads(result.data)
         self.assertEqual(data['version'], vb2py.converter.__version__)
 
+    def testCanDoQuickFailMode(self):
+        """testCanDoQuickFailMode: can do conversion without error lines"""
+        code = '''
+        Sub doIt(X)
+            If X > 10 Then
+                A =
+            End If 
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb', 'failure-mode': 'quick'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual(0, data['parsing_stopped_vb'])
 
+    def testCanDoFailSafeMode(self):
+        """testCanDoFailSafeMode: should be able to do fail safe mode"""
+        code = '''
+        Sub doIt(X)
+            If X > 10 Then
+                A =
+            End If 
+            B =
+            For I error = 1 To 3
+              C = 10
+            Next
+        End Sub       
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb', 'failure-mode': 'fail-safe'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual([3, 5, 6, 8], data['parsing_stopped_vb'])
+
+    
 if __name__ == '__main__':
     main()

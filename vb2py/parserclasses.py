@@ -2230,8 +2230,8 @@ class VBSubroutine(VBCodeBlock):
     """Represents a subroutine"""
 
     public_is_global = 0 # Public objects defined here will not be globals
+    block_name = 'sub_block'
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the subroutine"""
         super(VBSubroutine, self).__init__(scope)
@@ -2248,7 +2248,7 @@ class VBSubroutine(VBCodeBlock):
         #
         self.auto_class_handlers.update({
             "formal_param" : (VBVariable, self.parameters),
-            "block" : (VBCodeBlock, "block"),
+            self.block_name : (VBCodeBlock, "block"),
             "type_definition" : (VBUnrendered, "type"),
         })
 
@@ -2362,7 +2362,7 @@ class VBFunction(VBSubroutine):
     """Represents a function"""
 
     is_function = 1 # We need () if we are accessed directly
-
+    block_name = 'fn_block'
     #
     def renderAsCode(self, indent=0):
         """Render this subroutine"""

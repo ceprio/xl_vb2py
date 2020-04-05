@@ -135,6 +135,7 @@ def singleModule(module_type):
         conversion_style = request.values['style']
         text = request.values['text']
         class_name = request.values.get('class_name', 'MyClass')
+        failure_mode = request.values.get('failure-mode', 'line-by-line')
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
@@ -167,13 +168,23 @@ def singleModule(module_type):
             match = re.match(".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
             if match:
                 parsing_failed = True
-                parsing_stopped_vb = getLineMatch(match.groups()[0], text)
-                parsing_stopped_py = getLineMatch('(ParserError)', result)
-                parsing_stopped_vb += locateBadLine(text, parsing_stopped_vb)
-                extra = ' (parser failure after %5.2f%% of lines): [%s]' % (
-                        100.0 * parsing_stopped_vb / line_count,
-                        lines[parsing_stopped_vb]
-                )
+                if failure_mode == 'line-by-line':
+                    parsing_stopped_vb = getLineMatch(match.groups()[0], text)
+                    parsing_stopped_py = getLineMatch('(ParserError)', result)
+                    parsing_stopped_vb += locateBadLine(text, parsing_stopped_vb)
+                    extra = ' (parser failure after %5.2f%% of lines): [%s]' % (
+                            100.0 * parsing_stopped_vb / line_count,
+                            lines[parsing_stopped_vb]
+                    )
+                elif failure_mode == 'quick':
+                    parsing_stopped_vb = 0
+                    parsing_stopped_py = 0
+                    extra = 'Quick fail mode'
+                elif failure_mode == 'fail-safe':
+                    parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(
+                        text, module_type, conversion_style)
+                    extra = 'Fail safe mode'
+
     #
     app.logger.info('[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s' % (
         request.remote_addr,
@@ -274,3 +285,25 @@ def detectLanguage(text):
             return 'VB.NET'
     else:
         return 'VB6'
+
+
+def getErrorLinesBySafeMode(vbtext, module_type, conversion_style):
+    """Return all the failing lines using the safe mode approach"""
+    try:
+        utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
+        result = ConversionHandler.convertSingleFile(
+            vbtext,
+            module_type,
+            conversion_style,
+        )
+        untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*')
+        py_lines = []
+        vb_lines = []
+        for py_line_num, line in enumerate(result.splitlines()):
+            m = untranslated.match(line)
+            if m:
+                py_lines.append(py_line_num)
+                vb_lines.append(getLineMatch(m.group(1), vbtext))
+        return vb_lines, py_lines
+    finally:
+        utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
