@@ -285,19 +285,32 @@
         $('#error_message')[0].style = 'display: none';
         $('#dot_net_message')[0].style = 'display: none';
 
-        $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name}, function (data) {
+        for(item in vbeditor.session.getMarkers(true)) {
+            vbeditor.session.removeMarker(item)
+        }
+        for(item in pyeditor.session.getMarkers(true)) {
+            pyeditor.session.removeMarker(item)
+        }
+
+        $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name, 'failure-mode': 'fail-safe'}, function (data) {
             if (data.status == 'OK') {
                 pyeditor.session.setValue(data.result);
                 // Watch for parsing failure
                 if (data.parsing_failed) {
-                    let vb_offset = data.parsing_stopped_vb + selection_offset;
-                    let Range = ace.require('ace/range').Range;
-                    vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
-                        "errorMarker", "line", true);
-                    vbeditor.scrollToLine(vb_offset);
-                    py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py, 0, data.parsing_stopped_py, 100),
-                        "errorMarker", "line", true);
-                    pyeditor.scrollToLine(data.parsing_stopped_py);
+                    for (i = 0; i < data.parsing_stopped_vb.length; i++) {
+                        let vb_offset = data.parsing_stopped_vb[i] + selection_offset;
+                        let Range = ace.require('ace/range').Range;
+                        vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
+                            "errorMarker", "line", true);
+                        py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
+                            "errorMarker", "line", true);
+
+                        if (i == 0) {
+                            vbeditor.scrollToLine(vb_offset);
+                            pyeditor.scrollToLine(data.parsing_stopped_py);
+                        }
+                    }
+
                     $('#error_message')[0].style = '';
                     if (data.language == 'VB.NET') {
                         $('#dot_net_message')[0].style = '';

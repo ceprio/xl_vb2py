@@ -153,11 +153,16 @@ def singleModule(module_type):
         stripped_text = removeFormCruft(text)
         #
         try:
-            result = ConversionHandler.convertSingleFile(
-                stripped_text,
-                module_type,
-                conversion_style,
-            )
+            try:
+                if failure_mode == 'fail-safe':
+                    utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
+                result = ConversionHandler.convertSingleFile(
+                    stripped_text,
+                    module_type,
+                    conversion_style,
+                )
+            finally:
+                utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'
         except Exception, err:
             result = str(err)
@@ -165,7 +170,10 @@ def singleModule(module_type):
         else:
             #
             # Check for errors and store them
-            match = re.match(".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
+            if failure_mode == 'fail-safe':
+                match = re.match(".*UNTRANSLATED VB LINE.*", result, re.DOTALL)
+            else:
+                match = re.match(".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
             if match:
                 parsing_failed = True
                 if failure_mode == 'line-by-line':
@@ -179,11 +187,11 @@ def singleModule(module_type):
                 elif failure_mode == 'quick':
                     parsing_stopped_vb = 0
                     parsing_stopped_py = 0
-                    extra = 'Quick fail mode'
+                    extra = ' Quick fail mode'
                 elif failure_mode == 'fail-safe':
                     parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(
-                        text, module_type, conversion_style)
-                    extra = 'Fail safe mode'
+                        text, result, module_type, conversion_style)
+                    extra = ' Fail safe mode'
 
     #
     app.logger.info('[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s' % (
@@ -287,23 +295,14 @@ def detectLanguage(text):
         return 'VB6'
 
 
-def getErrorLinesBySafeMode(vbtext, module_type, conversion_style):
+def getErrorLinesBySafeMode(vbtext, pytext, module_type, conversion_style):
     """Return all the failing lines using the safe mode approach"""
-    try:
-        utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
-        result = ConversionHandler.convertSingleFile(
-            vbtext,
-            module_type,
-            conversion_style,
-        )
-        untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*')
-        py_lines = []
-        vb_lines = []
-        for py_line_num, line in enumerate(result.splitlines()):
-            m = untranslated.match(line)
-            if m:
-                py_lines.append(py_line_num)
-                vb_lines.append(getLineMatch(m.group(1), vbtext))
-        return vb_lines, py_lines
-    finally:
-        utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
+    untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*')
+    py_lines = []
+    vb_lines = []
+    for py_line_num, line in enumerate(pytext.splitlines()):
+        m = untranslated.match(line)
+        if m:
+            py_lines.append(py_line_num)
+            vb_lines.append(getLineMatch(m.group(1), vbtext))
+    return vb_lines, py_lines
