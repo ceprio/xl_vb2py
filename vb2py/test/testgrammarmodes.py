@@ -37,6 +37,12 @@ class TestSafeMode(unittest.TestCase):
         self.assertIn(expected, result_text)
         self.assertEqual(num_failures, len(re.findall('UNTRANSLATED', result_text)))
 
+    def assertParses(self, text):
+        """Check that parsing succeeds"""
+        result = vb2py.vbparser.parseVB(text)
+        result_text = result.renderAsCode()
+        self.assertEqual(0, len(re.findall('UNTRANSLATED', result_text)))
+
     def testSingleLine(self):
         """testSingleLine: single line works in safe mode"""
         text = 'a ='
@@ -88,6 +94,21 @@ class TestSafeMode(unittest.TestCase):
         self.assertParserFails(text, 1)
         self._setSafe()
         self.assertParsesAndContains(text, '[a =]', 1)
+
+    def testIfAndElseIf(self):
+        """testIfAndElseIf: should handle ElseIf"""
+        text = """
+            If A = 10 Then
+                    DoSomething()
+            ElseIf  B = 20 Then
+                    DoSomethingElse()
+            Else
+                    OtherCase()
+                    If B = 20 Then C = 0 Else C = 1
+            End If        
+        """
+        self.assertParses(text)
+
 
 
 

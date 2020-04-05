@@ -632,7 +632,8 @@ inline_if_statement ::=
              (wsp*, hash?, c"Else", wsp+, inline_else_block)?
 
 if_statement ::= 
-             if_start_statement, if_block?,
+             if_start_statement,
+             if_block?,
              else_if_statement*,
              else_statement?,
              if_end_statement
@@ -643,8 +644,6 @@ if_start_statement ::=
 if_end_statement ::=
              label_definition?, hash?, c"End If"
 
-if_block ::= 
-             block
 
 else_if_statement ::=
              (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", (comment_statement?, line_end, else_if_block?) / else_if_inline)
@@ -652,6 +651,7 @@ else_if_statement ::=
 else_statement ::=
              (label_definition?, hash?, c"Else", wsp*, line_end, else_block?)
 
+if_block ::= (?-(c"End If" / c"Else"), line)+
 else_block ::= block
 else_if_block ::= block
 else_if_inline ::= wsp+, inline_block, line_end
@@ -664,7 +664,7 @@ inline_else_block ::=
 			  inline_block
 
 inline_block ::=
-              (statement / inline_implicit_call)+
+              (?-c"Else", (statement / inline_implicit_call))+
 
 for_statement ::=
                 for_start_line,

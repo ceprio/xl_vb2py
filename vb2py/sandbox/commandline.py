@@ -10,6 +10,7 @@ sys.path.append('..')
 
 from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
 import vb2py.vbparser
+b = vb2py.vbparser.utils.bcolors
 
 try:
     from win32clipboard import *
@@ -28,18 +29,42 @@ except ImportError:
     print "Clipboard copy not working!"
 
 
-def pp(ast):
+def pp(ast, text, indent=0):
     """Print out a pretified version of the ast"""
     if not ast:
+        print
         return None
     cleaned_ast = []
     for entry in ast:
         if len(entry) == 1:
-            cleaned_ast.append(pp(entry))
+            print (' ' * indent),
+            cleaned_ast.append((indent, pp(entry, text, indent + 1)))
         else:
             production, start, end, contents = entry
-            cleaned_ast.append((production, pp(contents)))
+            print ' ' * indent + nice_text(text, production, start, end)
+            cleaned_ast.append((indent, nice_text(text, production, start, end), pp(contents, text, indent + 1)))
     return cleaned_ast
+
+
+def n(text):
+    ast = t(text)
+    pp(ast, text)
+
+
+def nice_text(text, name, start, finish):
+    subset = text[start:finish]
+    conjoined = subset.replace('\n', ' $ ')
+    return '%s [%s]' % (
+        b.UNDERLINE + b.BOLD + name + b.ENDC,
+        b.OKBLUE + conjoined + b.ENDC
+    )
+
+
+def safe():
+    vb2py.vbparser.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
+
+def unsafe():
+    vb2py.vbparser.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
 
 
 if __name__ == "__main__":
