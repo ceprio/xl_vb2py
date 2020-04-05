@@ -98,6 +98,9 @@ single_statement ::=
                close_statement /
 			   end_statement /
 			   seek_statement
+% if dialect == 'vb.net':
+    / return_statement
+% endif
 % if mode == 'safe':
     / untranslated_text
 % endif
@@ -181,6 +184,9 @@ normal_keyword ::=
                 c"Enum" / c"Property" / c"Input" / c"Close" / c"Then" / c"Else" / c"Resume" / c"To" /
                 c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" / 
 				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Class" / "Using"
+% if dialect == 'vb.net':
+    / c"Return"
+% endif
             ), (wsp / line_end)
 
 
@@ -755,6 +761,9 @@ fn_end_definition ::=
 
 fn_block ::=
     (?-c"End Function", line)+
+
+return_statement ::=
+    c"Return", expression
 
 default_value ::=
             wsp*, "=", expression            

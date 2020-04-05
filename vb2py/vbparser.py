@@ -52,7 +52,7 @@ def convertToElements(details, txt):
             ret.append(VBElement(item, txt))
     return ret
 # << Utility functions >> (2 of 10)
-def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, dialect='VB6', grammar=None):
+def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, dialect=None, grammar=None):
     """Parse some VB
     :param dialect:
     """
@@ -136,7 +136,7 @@ def makeUnicodeFromSafe(text):
 
     return proper_text
 # << Utility functions >> (5 of 10)
-def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None, dialect='VB6'):
+def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None, dialect=None):
     """Parse some VB"""
 
     if returnpartial is None:

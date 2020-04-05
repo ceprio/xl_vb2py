@@ -36,7 +36,13 @@ tests.extend([
     '(a + b).Truncate()',
 ])
 
-
+tests.append(
+    """
+Function B()
+    Return 12
+End Function             
+    """
+)
 
 
 

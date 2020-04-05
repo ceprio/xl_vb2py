@@ -573,6 +573,20 @@ B =
         self.assertEqual(data['status'], 'OK')
         self.assertEqual(data['language'], 'VB.NET')
 
+    def testDotNetUsesRightGrammar(self):
+        """testDotNetUsesRightGrammar: when detecting .Net should use the right dialect"""
+        code = '''
+        Public Class Mine
+            Public Function Test()
+                Return 10
+            End Function
+        End Class
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertIn("return 10", data['result'])
+
     def testDotNetRetainsClassName(self):
         """testDotNetRetainsClassName: dot net module should respect the coded class name"""
         code = '''

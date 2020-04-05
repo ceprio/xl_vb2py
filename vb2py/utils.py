@@ -39,7 +39,9 @@ def loadGrammarFrom(filename, data=None):
     base_data.update(BASE_GRAMMAR_SETTINGS)
     #
     if data:
-        base_data.update(data)
+        for k, v in data.iteritems():
+            if v is not None:
+                base_data[k] = v
     #
     return str(template.render(**base_data))
 

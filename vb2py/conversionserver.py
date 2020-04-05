@@ -48,14 +48,14 @@ class ConversionHandler(object):
     """A server to convert files"""
 
     @staticmethod
-    def convertSingleFile(text, container=None, style='vb', returnpartial=True):
+    def convertSingleFile(text, container=None, style='vb', returnpartial=True, dialect='VB6'):
         """Convert a single file of text"""
         if container is None:
             container = parserclasses.VBModule()
         ConversionHandler.setPythonic(style)
         ConversionHandler.clearHistory()
         try:
-            return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial)
+            return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial, dialect=dialect)
         except vbparser.VBParserError, err:
             raise ConversionError('Error converting VB. %s' % err)
 
@@ -146,8 +146,10 @@ def singleModule(module_type):
         line_count = len(lines)
         if language != 'VB.NET':
             module_type.classname = class_name
+            dialect = 'VB6'
         else:
             module_type = parserclasses.VBDotNetModule()
+            dialect = 'vb.net'
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -160,6 +162,7 @@ def singleModule(module_type):
                     stripped_text,
                     module_type,
                     conversion_style,
+                    dialect=dialect,
                 )
             finally:
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'

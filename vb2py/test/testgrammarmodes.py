@@ -16,6 +16,10 @@ class TestSafeMode(unittest.TestCase):
     def tearDown(self):
         """Tear down the tests"""
 
+    def _setDotNet(self):
+        """Set safe mode on"""
+        vb2py.utils.BASE_GRAMMAR_SETTINGS['dialect'] = 'vb.net'
+
     def _setSafe(self):
         """Set safe mode on"""
         vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
@@ -36,12 +40,14 @@ class TestSafeMode(unittest.TestCase):
         result_text = result.renderAsCode()
         self.assertIn(expected, result_text)
         self.assertEqual(num_failures, len(re.findall('UNTRANSLATED', result_text)))
+        return result_text
 
     def assertParses(self, text):
         """Check that parsing succeeds"""
         result = vb2py.vbparser.parseVB(text)
         result_text = result.renderAsCode()
         self.assertEqual(0, len(re.findall('UNTRANSLATED', result_text)))
+        return result_text
 
     def testSingleLine(self):
         """testSingleLine: single line works in safe mode"""
@@ -107,6 +113,7 @@ class TestSafeMode(unittest.TestCase):
                     If B = 20 Then C = 0 Else C = 1
             End If        
         """
+        self._setSafe()
         self.assertParses(text)
 
     def testWhile(self):
@@ -121,8 +128,19 @@ class TestSafeMode(unittest.TestCase):
             Do
             Loop Until a
         """
+        self._setSafe()
         self.assertParses(text)
 
+    def testDotNetFunctionReturns(self):
+        """testDotNetFunctionReturns: return should be simplified in .net"""
+        text = """
+        Function A()
+            Return 10
+        End Function
+        """
+        self._setDotNet()
+        r = self.assertParses(text)
+        self.assertIn('return 10', r)
 
 
 

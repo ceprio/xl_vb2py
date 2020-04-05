@@ -2,14 +2,6 @@ from testframework import *
 import vb2py.utils
 import vb2py.vbparser
 
-dot_net_grammar = vb2py.utils.loadGrammarFrom(
-    vb2py.utils.relativePath('grammars', 'vbgrammar.mako'),
-    data={
-        'dialect': 'vb.net',
-    }
-)
-vb2py.vbparser.declaration = dot_net_grammar
-
 
 tests.append((
     'a = "hello".Length',
@@ -24,9 +16,23 @@ tests.append((
     {'a': 12},
 ))
 
+
+# Functions
+tests.append((
+    """
+    a = _B(10)
+    Function _B(x)
+        Return 12 + x
+    End Function
+    """, {
+        'a': 22,
+    }
+))
+
+
 import vb2py.vbparser
-vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff
-TestClass = addTestsTo(BasicTest, tests)
+vb2py.vbparser.log.setLevel(0)
+TestClass = addTestsTo(BasicTest, tests, dialect='vb.net')
 
 if __name__ == "__main__":
     main()

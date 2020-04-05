@@ -46,10 +46,10 @@ def pp(ast, text, indent=0):
     return cleaned_ast
 
 
-def n(text):
-    ast = t(text)
+def n(text, *args, **kw):
+    ast = t(text, *args, **kw)
     pp(ast, text)
-    print c(text)
+    print c(text, *args, **kw)
 
 
 def nice_text(text, name, start, finish):

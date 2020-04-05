@@ -8,6 +8,7 @@ from unittest import main
 from vb2py.vbparser import convertVBtoPython
 import vb2py.vbfunctions as vbfunctions
 import vb2py.vbfunctions
+import vb2py.parserclasses
 
 #
 # Import script testing
@@ -29,6 +30,8 @@ def BasicTest():
     """Return a new class - we do it this way to allow this to work properly for multiple tests"""
     class _BasicTest(unittest.TestCase):
         """Holder class which gets built into a whole test case"""
+        dialect = 'VB6'
+
     return _BasicTest
 
 # << Test functions >> (1 of 2)
@@ -39,7 +42,10 @@ def getTestMethod(vb, result):
                       "vbfunctions" : vbfunctions}
         # << Parse VB >>
         try:					  
-            python = convertVBtoPython(vb.replace("\r\n", "\n"))
+            python = convertVBtoPython(
+                vb.replace("\r\n", "\n"),
+                dialect=self.dialect,
+            )
         except Exception, err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
         # -- end -- << Parse VB >>
@@ -91,9 +97,11 @@ def getScriptTestMethod(vb):
 
 #
 # Add tests to main test class
-def addTestsTo(TestClassFactory, tests):
+def addTestsTo(TestClassFactory, tests, dialect='VB6'):
     """Add all the tests to the test class"""
     TestClass = TestClassFactory()
+    TestClass.dialect = dialect
+    #
     for idx in range(len(tests)):
         setattr(TestClass, "test%d" % idx, getTestMethod(*tests[idx]))
     return TestClass

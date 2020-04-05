@@ -512,6 +512,7 @@ class VBCodeBlock(VBNamespace):
             "with_statement" : (VBWith, self.blocks),
             "using_statement" : (VBUsing, self.blocks),
             "end_statement" : (VBEnd, self.blocks),
+            "return_statement" : (VBReturnStatement, self.blocks),
 
             "for_statement" : (VBFor, self.blocks),
             "inline_for_statement" : (VBFor, self.blocks),
@@ -1716,6 +1717,30 @@ class VBReDim(VBCodeBlock):
         return "".join([var.renderAsCode(indent) for var in self.variables])
     
 #
+
+class VBReturnStatement(VBNamespace):
+    """An return statement"""
+
+    auto_handlers = [
+    ]
+
+    #
+    def __init__(self, scope="Private"):
+        """Initialize the assignment"""
+        super(VBReturnStatement, self).__init__(scope)
+        self.expression = []
+        self.auto_class_handlers.update({
+            "expression" : (VBExpression, self.expression),
+        })
+
+    def renderAsCode(self, indent=0):
+        """Render the return"""
+        return '%sreturn %s\n' % (
+            self.getIndent(indent),
+            self.expression[0].renderAsCode(),
+        )
+
+
 class VBAssignment(VBNamespace):
     """An assignment statement"""
 
