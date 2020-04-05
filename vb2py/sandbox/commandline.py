@@ -49,6 +49,7 @@ def pp(ast, text, indent=0):
 def n(text):
     ast = t(text)
     pp(ast, text)
+    print c(text)
 
 
 def nice_text(text, name, start, finish):
