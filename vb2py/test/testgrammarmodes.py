@@ -109,6 +109,19 @@ class TestSafeMode(unittest.TestCase):
         """
         self.assertParses(text)
 
+    def testWhile(self):
+        """testWhile: while should work"""
+        text = """
+            While A
+            Wend   
+            
+            Do Until A
+            Loop    
+            
+            Do
+            Loop Until a
+        """
+        self.assertParses(text)
 
 
 

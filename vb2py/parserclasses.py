@@ -2734,7 +2734,7 @@ class VBWhile(VBCodeBlock):
         #
         self.auto_class_handlers = {
             "expression" : (VBExpression, "expression"),
-            "block" : (VBCodeBlock, "block"),
+            "while_block" : (VBCodeBlock, "block"),
         }
     #
     def renderAsCode(self, indent=0):
@@ -2764,7 +2764,7 @@ class VBDo(VBCodeBlock):
             "until_clause" : (VBExpression, "pre_until"),
             "post_while_clause" : (VBExpression, "post_while"),
             "post_until_clause" : (VBExpression, "post_until"),
-            "block" : (VBCodeBlock, "block"),
+            "do_block" : (VBCodeBlock, "block"),
         }
     #
     def renderAsCode(self, indent=0):
