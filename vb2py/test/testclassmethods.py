@@ -325,24 +325,7 @@ tests.append((
          "assert len(B.arr) == 21, 'len(B.arr) was (%s)' % (len(B.arr),)\n",)
 ))         
 
-#
-# Make sure class properties are not shared
-tests.append((
-        VBClassModule(),
-        """
-        Public arr(20)
 
-        Public Sub DoIt(Value As Integer)
-            arr(10) = Value
-        End Sub
-        """,
-        ("A = MyClass()\n"
-         "B = MyClass()\n"
-         "A.DoIt(10)\n"
-         "B.DoIt(20)\n"
-         "assert A.arr[10] == 10, 'A.arr[10] was (%s)' % (A.arr[10],)\n"
-         "assert B.arr[10] == 20, 'B.arr[10] was (%s)' % (B.arr[10],)\n",)
-))
 # << ClassMethod tests >> (7 of 7)
 #
 # Me in an expression

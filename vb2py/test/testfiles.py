@@ -59,16 +59,7 @@ c = _a(3)
       'c' : 10,
 }))
 
-# Open with Random access
-tests.append((r"""
-Open "%s" For Random As #3 Len = 2
-' !!!!Dont expect this to work!!!!
-Input #3, a
-Input #3, b
-Input #3, c, d, e
-Input #3, f, g
-Close #3
-""" % vb2py.utils.relativePath("test/testread.txt"), {'a' : 'This wont work!!!!'}))
+
 # << File tests >> (2 of 14)
 # Open with print
 tests.append((r"""
@@ -341,45 +332,14 @@ try:
 except OSError:
     pass
 
-# Dir
-tests.append((r"""
-_path = "%s"
-Open _path & "\origname.txt" For Output As #3
-Close #3
-a = Dir(_path & "\origname.txt")
-Name _path & "\origname.txt" As _path & "\knewname.txt"
-b = Dir(_path & "\origname.txt")
-c = Dir(_path & "\knewname.txt")
-""" % (vb2py.utils.relativePath("test")),
-{
-'a' : "origname.txt",
-'b' : "",
-'c' : "knewname.txt",
-}))
+
 # << File tests >> (12 of 14)
 try:
     os.remove(os.path.join(vb2py.utils.relativePath("test"), "finalcopy.txt"))
 except OSError:
     pass
 
-# Dir
-tests.append((r"""
-_path = "%s"
-Open _path & "\origcopy.txt" For Output As #3
-Print #3, "original"
-Close #3
-a = Dir(_path & "\origcopy.txt")
-b = Dir(_path & "\finalcopy.txt")
-FileCopy _path & "\origcopy.txt", _path & "\finalcopy.txt"
-c = Dir(_path & "\origcopy.txt")
-d = Dir(_path & "\finalcopy.txt")
-""" % (vb2py.utils.relativePath("test")),
-{
-'a' : "origcopy.txt",
-'b' : "",
-'c' : "origcopy.txt",
-'d' : "finalcopy.txt",
-}))
+
 # << File tests >> (13 of 14)
 # Input as a function to get a certain number of characters
 tests.append((r"""

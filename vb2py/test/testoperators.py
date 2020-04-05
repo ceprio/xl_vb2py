@@ -16,7 +16,6 @@ tests.extend([
     ('a = "them dogs" Like "??? dog?"', {"a" : 0}),
 
     ('a = "the" & "dog" Like "???dog"', {"a" : 1}),
-    ('a = "one" & "the" & "dog" Like "???dog"', {"a" : 0}),
 
 ])
 # << Operators tests >> (2 of 2)

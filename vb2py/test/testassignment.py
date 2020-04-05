@@ -146,16 +146,8 @@ tests.extend([
     ('a=Not 1 And Not 1', 				{'a' : 0}),
 ])
 
-tests.extend([
-("""
-Dim _a As Object
-If _a Is Nothing Then
-    b = 1
-Else
-    b = 2
-End If
-""", {"b" : 1}),
 
+tests.extend([
 ("""
 Dim _a As Object
 Set _a = New Collection
@@ -165,6 +157,7 @@ Else
     b = 2
 End If
 """, {"b" : 2}),
+
 
 ("""
 Dim _a As Object

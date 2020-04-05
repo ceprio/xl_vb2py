@@ -1,4 +1,7 @@
 from testframework import *
+import vb2py.utils
+
+TEST_FILE_NAME = vb2py.utils.relativePath('test', 'vbtestfile.txt')
 
 # << Intrinsic tests >> (1 of 10)
 tests.extend([
@@ -126,15 +129,15 @@ a3 = _a(3)
 # << Intrinsic tests >> (8 of 10)
 tests.extend([
 ("""
-a = FileLen("/usr/local/lib/python2.6/dist-packages/vb2py/test/vbtestfile.txt")
-""", { "a" : 164}),
+a = FileLen("%s")
+""" % (TEST_FILE_NAME, ), { "a" : 150}),
 ])
 # << Intrinsic tests >> (9 of 10)
 tests.extend([
 ("""
-Open "/usr/local/lib/python2.6/dist-packages/vb2py/test/vbtestfile.txt" For Input As #3
+Open "%s" For Input As #3
 a = Lof(3)
-""", { "a" : 164}),
+""" % (TEST_FILE_NAME), { "a" : 150}),
 ])
 # << Intrinsic tests >> (10 of 10)
 tests.extend([
