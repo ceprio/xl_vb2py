@@ -1756,9 +1756,11 @@ class VBAssignment(VBNamespace):
         self.parts = []
         self.object = None
         self.auto_class_handlers.update({
-            "expression" : (VBExpression, self.parts),
-            "object" : (VBLHSObject, "object")
+            "expression": (VBExpression, self.parts),
+            "object": (VBLHSObject, "object")
         })
+        self.assignment_operator = '='
+        self.auto_handlers = ['assignment_operator']
     #
     def asString(self):
         """Convert to a nice representation"""
@@ -1766,10 +1768,16 @@ class VBAssignment(VBNamespace):
     #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
+        if self.assignment_operator == '^=':
+            self.assignment_operator = '**='
+        elif self.assignment_operator == r'\=':
+            self.assignment_operator = '/='
+        #
         self.checkForModuleGlobals()
         self.object.brackets_are_indexes = 1 # Convert brackets on LHS to []
-        return "%s%s = %s\n" % (self.getIndent(indent),
-                                self.object.renderAsCode(), 
+        return "%s%s %s %s\n" % (self.getIndent(indent),
+                                self.object.renderAsCode(),
+                                self.assignment_operator,
                                 self.parts[0].renderAsCode(indent))
     #
     def checkForModuleGlobals(self):
@@ -1788,7 +1796,7 @@ class VBAssignment(VBNamespace):
              - see if this parent knows us, if so then we are a module local
              - if we are then tell our subroutine parent that we need a global statement
 
-            """        
+            """
         log.info("Checking whether to use a global statement for '%s'" % self.object.primary.getName())
         #import pdb; pdb.set_trace()
         try:
@@ -1796,7 +1804,7 @@ class VBAssignment(VBNamespace):
         except NestingError:
             return # We are not in a subroutine
 
-        log.info("Found sub")    
+        log.info("Found sub")
         try:
             name = enclosing_sub.resolveLocalName(self.object.primary.getName())
         except UnresolvableName:
@@ -1805,13 +1813,13 @@ class VBAssignment(VBNamespace):
         else:
             return # We are a subroutine local
 
-        log.info("Am not local")    
+        log.info("Am not local")
         try:
             enclosing_module = self.findParentOfClass(VBCodeModule)
         except NestingError:
             return # We are not in a module
 
-        log.info("Found code module")        
+        log.info("Found code module")
         try:
             name = enclosing_module.resolveLocalName(self.object.primary.getName())
         except UnresolvableName:

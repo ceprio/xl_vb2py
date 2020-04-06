@@ -32,6 +32,7 @@ def BasicTest():
     class _BasicTest(unittest.TestCase):
         """Holder class which gets built into a whole test case"""
         dialect = 'VB6'
+        container = vb2py.parserclasses.VBModule
 
     return _BasicTest
 
@@ -46,7 +47,7 @@ def getTestMethod(vb, result, test_code=None):
             python = convertVBtoPython(
                 vb.replace("\r\n", "\n"),
                 dialect=self.dialect,
-                container=vb2py.parserclasses.VBDotNetModule() if self.dialect == 'vb.net' else None
+                container=self.container()
             )
         except Exception, err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
@@ -71,10 +72,10 @@ def getTestMethod(vb, result, test_code=None):
                 exec python_test_code in local_dict
         except Exception, err:
             if not result.has_key("FAIL"):
-                self.fail("Error (%s):\n%s\n....\n%s" % (err, vb, python))
+                self.fail("Error (%s):\n%s\n....\n%s\n%s" % (err, vb, python, python_test_code))
         else:
             if result.has_key("FAIL"):
-                self.fail("Should have failed:%s\n\n%s" % (vb, python))
+                self.fail("Should have failed:%s\n\n%s\n%s" % (vb, python, python_test_code))
         # -- end -- << Execute the Python code >>
         # << Work out what is expected >>
         expected = {}
@@ -113,10 +114,14 @@ def getScriptTestMethod(vb):
 
 #
 # Add tests to main test class
-def addTestsTo(TestClassFactory, tests, dialect='VB6'):
+def addTestsTo(TestClassFactory, tests, dialect='VB6', container=None):
     """Add all the tests to the test class"""
     TestClass = TestClassFactory()
     TestClass.dialect = dialect
+    if dialect == 'vb.net':
+        TestClass.container = vb2py.parserclasses.VBDotNetModule
+    if container:
+        TestClass.container = container
     #
     for idx in range(len(tests)):
         setattr(TestClass, "test%d" % idx, getTestMethod(*tests[idx]))

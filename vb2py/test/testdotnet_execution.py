@@ -1,19 +1,21 @@
 from testframework import *
 import vb2py.utils
 import vb2py.vbparser
+import vb2py.parserclasses
 
+in_vb_module_tests = []
 
 tests.append((
     'a = "hello".Length',
-    {'MyClass.a': 5},
+    {'a': 5},
 ))
 tests.append((
     'a = ("hello").Length',
-    {'MyClass.a': 5},
+    {'a': 5},
 ))
 tests.append((
     'a = ("hello" + "world").Length + 2',
-    {'MyClass.a': 12},
+    {'a': 12},
 ))
 
 
@@ -65,27 +67,29 @@ y = _a.A
 
 
 # Operators
-tests.extend([
+in_vb_module_tests.extend([
     # IsNot
-    ('a = 1 IsNot 2', {'MyClass.a': True}),
-    ('a = 1 IsNot 1', {'MyClass.a': False}),
+    ('a = 1 IsNot 2', {'a': True}),
+    ('a = 1 IsNot 1', {'a': False}),
 
     # Assignment
-    ('a = 1\na += 1', {'MyClass.a': 2}),
-    ('a = 1\na -= 1', {'MyClass.a': 0}),
-    ('a = 1\na *= 4', {'MyClass.a': 4}),
-    ('a = 1\na /= 2', {'MyClass.a': 0.5}),
-    ('a = 11\na \\= 2', {'MyClass.a': 5}),
-    ('a = 2\na ^= 3', {'MyClass.a': 8}),
-    ('a = 8\na <<= 2', {'MyClass.a': 2}),
-    ('a = 8\na >>= 2', {'MyClass.a': 32}),
-    ('a = 7\na &= 11', {'MyClass.a': 3}),
+    ('a = 1\na += 1', {'a': 2}),
+    ('a = 1\na -= 1', {'a': 0}),
+    ('a = 1\na *= 4', {'a': 4}),
+    ('a = 11\na /= 2', {'a': 5}),
+    ('a = 11\na \\= 2', {'a': 5}),
+    ('a = 2\na ^= 3', {'a': 8}),
+    ('a = 8\na <<= 2', {'a': 32}),
+    ('a = 8\na >>= 2', {'a': 2}),
+    ('a = 7\na &= 11', {'a': 3}),
 
 ])
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
-TestClass = addTestsTo(BasicTest, tests, dialect='vb.net')
+TestClass1 = addTestsTo(BasicTest, tests, dialect='vb.net')
+TestClass2 = addTestsTo(BasicTest, in_vb_module_tests, dialect='vb.net', container=vb2py.parserclasses.VBModule)
+
 
 if __name__ == "__main__":
     main()
