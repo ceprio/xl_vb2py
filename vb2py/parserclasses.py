@@ -1493,6 +1493,7 @@ class VBDotNetModule(VBClassModule):
         self.definition = []
         self.auto_class_handlers.update({
             "class_definition_start_line" : (VBDotNetClass, self.definition),
+            "property_definition" : (VBDotNetProperty, self.locals)
         })
 
     def renderModuleHeader(self, indent=0):
@@ -2904,6 +2905,13 @@ class VBProperty(VBSubroutine):
         self.property_decorator_type = None
         #
         self.auto_handlers.append("property_decorator_type")
+        #
+        self.get_block = []
+        self.set_block = []
+        self.auto_class_handlers.update({
+            "property_get_block" : (VBCodeBlock, self.get_block),
+            "property_set_block" : (VBCodeBlock, self.set_block),
+        })
     #
     def renderPropertyGroup(self, indent, name, Let=None, Set=None, Get=None):
         """Render a group of property statements"""
@@ -2940,8 +2948,56 @@ class VBProperty(VBSubroutine):
                     self.getIndent(indent),
                     proper_name,
                     ", ".join(params))
-    
-#
+
+
+class VBDotNetProperty(VBCodeBlock):
+    """A dot net version of a property"""
+
+    def __init__(self, scope="Private"):
+        """Initialize the Select"""
+        super(VBDotNetProperty, self).__init__(scope)
+        #
+        self.definition = []
+        self.get_block = []
+        self.set_block = []
+        self.set_parameters = []
+        self.property_identifier = None
+        self.property_scope = None
+        self.auto_handlers = ['property_identifier', 'property_scope']
+        self.auto_class_handlers.update({
+            "property_get_block": (VBDoNetPropertyGet, self.get_block),
+            "property_set_block": (VBDoNetPropertySet, self.set_block),
+        })
+
+    def renderAsCode(self, indent=0):
+        """Render the property"""
+        result = []
+        #
+        # Do the get block if there is one
+        if self.get_block:
+            result.append(self.getIndent(indent) + '@property')
+            self.get_block[0].identifier = self.property_identifier
+            self.get_block[0].scope = self.property_scope
+            result.append(self.get_block[0].renderAsCode(indent).lstrip('\n'))
+        #
+        # Do the set block if there is one
+        if self.set_block:
+            result.append('%s@%s.setter' % (self.getIndent(indent), self.property_identifier))
+            self.set_block[0].identifier = self.property_identifier
+            self.set_block[0].scope = self.property_scope
+            result.append(self.set_block[0].renderAsCode(indent).lstrip('\n'))
+        #
+        return '\n'.join(result)
+
+
+class VBDoNetPropertyGet(VBSubroutine):
+    block_name = 'block'
+
+
+class VBDoNetPropertySet(VBSubroutine):
+    block_name = 'block'
+
+
 class VBEnum(VBCodeBlock):
     """Represents an enum definition"""
 

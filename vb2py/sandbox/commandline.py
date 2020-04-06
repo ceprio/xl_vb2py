@@ -11,6 +11,8 @@ sys.path.append('..')
 from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
 import vb2py.vbparser
 b = vb2py.vbparser.utils.bcolors
+vb2py.vbparser.log.setLevel(0)
+
 
 try:
     from win32clipboard import *
@@ -39,17 +41,23 @@ def pp(ast, text, indent=0):
         if len(entry) == 1:
             print (' ' * indent),
             cleaned_ast.append((indent, pp(entry, text, indent + 1)))
-        else:
+        elif len(entry) == 4:
             production, start, end, contents = entry
             print ' ' * indent + nice_text(text, production, start, end)
             cleaned_ast.append((indent, nice_text(text, production, start, end), pp(contents, text, indent + 1)))
+        else:
+            print 'Unknown entry:' % (entry,)
+            return entry
     return cleaned_ast
 
 
 def n(text, *args, **kw):
     ast = t(text, *args, **kw)
     pp(ast, text)
-    print c(text, *args, **kw)
+    try:
+        print c(text, *args, **kw)
+    except:
+        print 'Cannot convert text'
 
 
 def nice_text(text, name, start, finish):

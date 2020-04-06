@@ -44,6 +44,21 @@ End Function
     """
 )
 
+tests.append((
+    """
+Public Class MyObject
+    Public Property A As Integer
+        Get
+            Return 10
+        End Get
+        Set(Value as Integer)
+            X = Value
+        End Set
+    End Property
+End Class    
+    """
+))
+
 
 
 

@@ -20,6 +20,7 @@ except ImportError:
 #
 # Private data hiding may obscure some of the testing so we turn it off
 import vb2py.config
+import vb2py.parserclasses
 Config = vb2py.config.VB2PYConfig()
 Config.setLocalOveride("General", "RespectPrivateStatus", "No")
 Config.setLocalOveride("General", "ReportPartialConversion", "No")
@@ -35,7 +36,7 @@ def BasicTest():
     return _BasicTest
 
 # << Test functions >> (1 of 2)
-def getTestMethod(vb, result):
+def getTestMethod(vb, result, test_code=None):
     """Create a test method"""
     def testMethod(self):
         local_dict = {"convertVBtoPython" : convertVBtoPython,
@@ -45,14 +46,29 @@ def getTestMethod(vb, result):
             python = convertVBtoPython(
                 vb.replace("\r\n", "\n"),
                 dialect=self.dialect,
+                container=vb2py.parserclasses.VBDotNetModule() if self.dialect == 'vb.net' else None
             )
         except Exception, err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
+
+        try:
+            if test_code is None:
+                python_test_code = ''
+            else:
+                python_test_code = convertVBtoPython(
+                test_code.replace("\r\n", "\n"),
+                dialect=self.dialect,
+            )
+        except Exception, err:
+            self.fail("Error while parsing test code (%s)\n%s" % (err, test_code))
+
         # -- end -- << Parse VB >>
         # << Execute the Python code >>
         try:
             exec "from vb2py.vbfunctions import *" in local_dict
             exec python in local_dict
+            if python_test_code:
+                exec python_test_code in local_dict
         except Exception, err:
             if not result.has_key("FAIL"):
                 self.fail("Error (%s):\n%s\n....\n%s" % (err, vb, python))
@@ -82,7 +98,7 @@ def getTestMethod(vb, result):
                         reason += "Variable didn't exist: '%s'\n" % key
         # -- end -- << Check for discrepancies >>
         #
-        self.assert_(reason == "", "Failed: %s\n%s\n\n%s" % (reason, vb, python))
+        self.assert_(reason == "", "Failed: %s\n%s\n\n%s\n%s" % (reason, vb, python, python_test_code))
 
     return testMethod
 # << Test functions >> (2 of 2)

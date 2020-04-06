@@ -107,9 +107,10 @@ single_statement ::=
              )
 
 compound_statement ::= 
+             property_definition /
              for_statement /
              for_each_statement /
-             select_statement / 
+             select_statement /
              while_statement /
              do_statement /
              if_statement /
@@ -119,7 +120,6 @@ compound_statement ::=
              with_statement /
              user_type_definition /
              enumeration_definition /
-             property_definition /
              non_vb_block /
              class_definition
 
@@ -776,15 +776,10 @@ static ::=
 shared ::=
             "Shared", wsp+
 
-
 property_definition ::=
              property_start_definition,
              property_block?,
              property_end_definition
-
-property_start_definition ::=
-             label_definition?, (scope, wsp*)?, c"Property", wsp+, property_decorator_type, wsp+, identifier,
-             formal_param_list, type_definition?, (line_end / colon)
 
 property_end_definition ::=
               label_definition?, c"End Property"
@@ -792,8 +787,32 @@ property_end_definition ::=
 property_decorator_type ::=
              c"Get" / c"Set" / c"Let"
 
-property_block ::=
-        (?-c"End Property", line)+
+% if dialect == 'vb.net':
+    property_start_definition ::=
+                 label_definition?, (property_scope, wsp*)?, c"Property", wsp+, property_identifier,
+                 type_definition?, (line_end / colon)
+
+    property_identifier ::= identifier
+    property_scope ::= scope
+
+    property_block ::=
+            (property_get_block / property_set_block)+
+
+    property_get_block ::=
+        c"Get", line_end, block?, c"End Get", line_end
+
+    property_set_block ::=
+        c"Set", wsp*, formal_param_list, line_end, block?, c"End Set", line_end
+
+% else:
+    property_start_definition ::=
+                 label_definition?, (scope, wsp*)?, c"Property", wsp+, property_decorator_type, wsp+, identifier,
+                 formal_param_list, type_definition?, (line_end / colon)
+
+    property_block ::=
+            (?-c"End Property", line)+
+
+% endif
 
 user_type_definition ::=
             user_type_start_statement, user_type_body, user_type_end_statement

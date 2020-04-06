@@ -20,14 +20,50 @@ tests.append((
 # Functions
 tests.append((
     """
-    a = _B(10)
-    Function _B(x)
-        Return 12 + x
-    End Function
+    Class _MyClass
+        Function B(x)
+            Return 12 + x
+        End Function
+    End Class
     """, {
-        'a': 22,
-    }
+        'x': 22,
+    },
+    '''
+    _a = _MyClass()
+    x = _a.B(10)
+    '''
 ))
+
+# Properties
+tests.append((
+    """
+Public Class _MyObject
+    Dim _y = 0
+    
+    Public Property A As Integer
+        Get
+            Return _y
+        End Get
+        Set(Value as Integer)
+            _y = Value
+        End Set
+    End Property
+End Class  
+
+
+    """, {
+        'x': 0,
+        'y': 1,
+    },
+    """
+Set _a = _MyObject()
+x = _a.A
+_a.A = 1
+y = _a.A   
+    """
+))
+
+
 
 
 import vb2py.vbparser
