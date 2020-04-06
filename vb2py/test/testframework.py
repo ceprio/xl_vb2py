@@ -89,7 +89,7 @@ def getTestMethod(vb, result, test_code=None):
         # << Check for discrepancies >>
         reason = ""
         for key in local_dict:
-            if not (key.startswith("_") or hasattr(vb2py.vbfunctions, key)):
+            if not (key.startswith("_") or hasattr(vb2py.vbfunctions, key) or key == "MyClass"):
                 try:
                     if expected[key] <> local_dict[key]:
                         reason += "%s (exp, act): '%s' <> '%s'\n" % (key, expected[key], local_dict[key])

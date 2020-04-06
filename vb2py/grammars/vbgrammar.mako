@@ -241,7 +241,7 @@ operation ::=
              "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / "\\" / c"Not" / c"Mod" / c"Imp" / compare
 
 compare ::= 
-             (c"And Not") / c"Or Not" / c"Or" / c"And" / c"Xor" / "=" / "<=" / ">=" / "<>" / "<" / ">" / c"Is" / c"Like"
+             (c"And Not") / c"Or Not" / c"Or" / c"And" / c"Xor" / "=" / "<=" / ">=" / "<>" / "<" / ">" / c"IsNot" / c"Is" / c"Like"
 
 sign ::=
             "-" / "+"                   
@@ -277,8 +277,13 @@ assignment_statement ::=
              (c"Let", wsp+)?, assignment_body
 
 assignment_body ::=
-			 object, wsp*, "=", wsp*, expression			 
+			 object, wsp*, assignment_operator, wsp*, expression
 
+% if dialect == 'vb.net':
+    assignment_operator ::= "=" / "+=" / "-=" / "*=" / "/=" / "\\=" / "^=" / ">>=" / "<<=" / "&="
+% else:
+    assignment_operator ::= "="
+% endif
 
 set_statement ::=
              c"Set", wsp+, object, wsp*, "=", new_keyword?, expression

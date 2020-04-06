@@ -5,15 +5,15 @@ import vb2py.vbparser
 
 tests.append((
     'a = "hello".Length',
-    {'a': 5},
+    {'MyClass.a': 5},
 ))
 tests.append((
     'a = ("hello").Length',
-    {'a': 5},
+    {'MyClass.a': 5},
 ))
 tests.append((
     'a = ("hello" + "world").Length + 2',
-    {'a': 12},
+    {'MyClass.a': 12},
 ))
 
 
@@ -64,7 +64,24 @@ y = _a.A
 ))
 
 
+# Operators
+tests.extend([
+    # IsNot
+    ('a = 1 IsNot 2', {'MyClass.a': True}),
+    ('a = 1 IsNot 1', {'MyClass.a': False}),
 
+    # Assignment
+    ('a = 1\na += 1', {'MyClass.a': 2}),
+    ('a = 1\na -= 1', {'MyClass.a': 0}),
+    ('a = 1\na *= 4', {'MyClass.a': 4}),
+    ('a = 1\na /= 2', {'MyClass.a': 0.5}),
+    ('a = 11\na \\= 2', {'MyClass.a': 5}),
+    ('a = 2\na ^= 3', {'MyClass.a': 8}),
+    ('a = 8\na <<= 2', {'MyClass.a': 2}),
+    ('a = 8\na >>= 2', {'MyClass.a': 32}),
+    ('a = 7\na &= 11', {'MyClass.a': 3}),
+
+])
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
