@@ -159,7 +159,7 @@ def singleModule(module_type):
                 if failure_mode == 'fail-safe':
                     utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
                 result = ConversionHandler.convertSingleFile(
-                    'Module A\nb=1\nEnd Module',
+                    stripped_text,
                     module_type,
                     conversion_style,
                     dialect=dialect,
