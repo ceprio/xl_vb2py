@@ -37,6 +37,18 @@
     padding-bottom: 2px;
 }
 
+.error-header {
+    background-color: #b97127;
+    vertical-align: middle;
+    text-align: left;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    font-weight: bold;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 20px;
+    display: none;
+}
+
 .file-input {
     height: 100px;
 }

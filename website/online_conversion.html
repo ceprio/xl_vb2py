@@ -70,7 +70,7 @@
         <td colspan="5">
             <div class="" id="conversion-box">
                 <div>
-                    <div>&nbsp;
+                    <div>&nbsp;<!-- ERROR AND WARNING MESSAGE -->
                         <div id="error_message" class="hidden alert alert-danger" role="alert" style="display: none">
                             There was a parsing error in, or just after the highlighted line.
                             <input type="button" class="btn btn-success" value="Submit this code as a test file"
@@ -82,9 +82,40 @@
                         </div>
                     </div>
 
+                    <div style="margin-top: 20px">
+                        <p align="center">
+                            <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
+                                   onclick="convert_code();">
+                            &nbsp;&nbsp;
+                            <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
+                                   onclick="convert_selection();">
+                        </p>
 
+                        <div class="form-group row" align="center"> <!-- Context -->
+                            <label class="col-sm-2 col-form-label">
+                                Conversion Type
+                            </label>
+                            <select class="form-control col-sm-2" id="type">
+                                <option selected value="pythonic">Pythonic code</option>
+                                <option value="exact">Match VB exactly</option>
+                            </select>
 
-                    <div class="vertically_divided code-box">
+                            <label class="col-sm-2 col-form-label">
+                                Context
+                            </label>
+                            <select class="form-control col-sm-2" id="context">
+                                <option selected value="code">Code module</option>
+                                <option value="class">Class module</option>
+                                <option value="form">Form module</option>
+                            </select>
+                            <label class="col-sm-2 col-form-label">
+                                Class Name
+                            </label>
+                            <input class="col-sm-2" id="class-name" value="MyClass"/>
+                        </div>
+                </div>
+
+                    <div class="vertically_divided code-box"> <!-- CODE BOXES -->
                         <div>
                             <div class="code-header">
 
@@ -130,13 +161,24 @@
                                             <a class="dropdown-item" href="#" onclick="getExample('open')">Open / Files</a>
                                         </div>
                                     </div>
-
+                                    &nbsp;&nbsp;
+                                                                <div class="error-header">
+                                                                    &nbsp;or&nbsp;
+                                        <button id="VBErrorGroup" type="button"
+                                                class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Jump to error
+                                        </button>
+                                        <div id="vb-error-dropdown-menu" class="dropdown-menu" aria-labelledby="VBErrorGroup">
+                                         </div>
+                            </div>
 
                                 </div>
 
 
 
                             </div>
+
                             <div id="vbcode" class="vbcode">
                             </div>
                         </div>
@@ -150,9 +192,24 @@
                                             Download
                                         </button>
                                     </div>
+
+ &nbsp;&nbsp;
+                                                                <div class="error-header">
+                                                                    &nbsp;or&nbsp;
+                                        <button id="PyErrorGroup" type="button"
+                                                class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Jump to error
+                                        </button>
+                                        <div id="py-error-dropdown-menu" class="dropdown-menu" aria-labelledby="PyErrorGroup">
+                                         </div>
+                            </div>
+
                                 </div>
 
                             </div>
+
+
 
                             <div id="pycode" class="pycode"></div>
                         </div>
@@ -160,38 +217,7 @@
                 </div>
 
                 <div>
-                    <div style="margin-top: 20px">
-                        <p align="center">
-                            <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
-                                   onclick="convert_code();">
-                            &nbsp;&nbsp;
-                            <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
-                                   onclick="convert_selection();">
-                        </p>
 
-                        <div class="form-group row" align="center">
-                            <label class="col-sm-2 col-form-label">
-                                Conversion Type
-                            </label>
-                            <select class="form-control col-sm-2" id="type">
-                                <option selected value="pythonic">Pythonic code</option>
-                                <option value="exact">Match VB exactly</option>
-                            </select>
-
-                            <label class="col-sm-2 col-form-label">
-                                Context
-                            </label>
-                            <select class="form-control col-sm-2" id="context">
-                                <option selected value="code">Code module</option>
-                                <option value="class">Class module</option>
-                                <option value="form">Form module</option>
-                            </select>
-                            <label class="col-sm-2 col-form-label">
-                                Class Name
-                            </label>
-                            <input class="col-sm-2" id="class-name" value="MyClass"/>
-                        </div>
-                </div>
             </div>
         </td>
     </tr>
@@ -222,6 +248,20 @@
     $(document).ready(function () {
         getExample('initial');
     });
+
+    function get_error_menu_item(name, line_vb, line_py) {
+        let short_name = name;
+        if (name.length > 25) {
+            short_name = name.substring(0, 25) + ' ...';
+        }
+        let text = '<a class="dropdown-item" href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')">' + short_name + '</a>';
+        return text;
+    }
+
+    function move_to(vb_line, py_line) {
+        vbeditor.scrollToLine(vb_line);
+        pyeditor.scrollToLine(py_line);
+    }
 
     function convert_selection() {
         let range = vbeditor.selection.getRange();
@@ -295,13 +335,36 @@
         $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name, 'failure-mode': 'fail-safe'}, function (data) {
             if (data.status === 'OK') {
                 pyeditor.session.setValue(data.result);
+
+                // Initialise the dropdown list of errors
+                let vb_error_list = $('#vb-error-dropdown-menu')[0];
+                let py_error_list = $('#py-error-dropdown-menu')[0];
+                vb_error_list.innerHTML = '';
+                py_error_list.innerHTML = '';
+
                 // Watch for parsing failure
                 if (data.parsing_failed) {
+                    document.getElementsByClassName('error-header')[0].style.display = 'block';
+                    document.getElementsByClassName('error-header')[1].style.display = 'block';
+
                     for (i = 0; i < data.parsing_stopped_vb.length; i++) {
                         let vb_offset = data.parsing_stopped_vb[i] + selection_offset;
+                        let py_offset = data.parsing_stopped_py[i];
                         let Range = ace.require('ace/range').Range;
                         vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                             "errorMarker", "line", true);
+
+                        vb_error_list.innerHTML += get_error_menu_item(
+                            vbeditor.session.getLine(vb_offset),
+                            vb_offset,
+                            data.parsing_stopped_py[i]
+                        );
+                        py_error_list.innerHTML += get_error_menu_item(
+                            pyeditor.session.getLine(py_offset),
+                            vb_offset,
+                            py_offset
+                        );
+
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
                             "errorMarker", "line", true);
 
@@ -317,6 +380,9 @@
                     };
                     language = data.language;
 
+                } else {
+                    document.getElementsByClassName('error-header')[0].style.display = 'none';
+                    document.getElementsByClassName('error-header')[1].style.display = 'none';
                 }
                 if (!DEVELOPMENT) {
                     let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
