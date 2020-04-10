@@ -123,6 +123,16 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParses(text)
 
+    def testIfWithOneBlock(self):
+        """testIfWithOneBlock: should handle a single block if"""
+        text = """
+            If A = 10 Then
+                b = b -
+            End If
+        """
+        self._setSafe()
+        self.assertParsesAndContains(text, "[b = b -]", 1)
+
     def testWhile(self):
         """testWhile: while should work"""
         text = """
@@ -137,6 +147,22 @@ class TestSafeMode(TestGrammarModes):
         """
         self._setSafe()
         self.assertParses(text)
+
+    def testSelect(self):
+        """testSelect: should zoom in on a select clause"""
+        text = """
+                Select Case A
+                    Case 1
+                        B = B + X
+                    Case 2
+                        B = B - 
+                    Case Else
+                        B = 0
+                    End Select
+        """
+        self._setSafe()
+        self.assertParsesAndContains(text, "[B = B -]", 1)
+
 
 class TestDotNet(TestGrammarModes):
     """Test of the .net conversion dialect"""

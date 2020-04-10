@@ -276,7 +276,7 @@ point ::=
 
 
 assignment_statement ::=
-             (c"Let", wsp+)?, assignment_body
+             (c"Let", wsp+)?, assignment_body, ?(line_end / colon / keyword)
 
 assignment_body ::=
 			 object, wsp*, assignment_operator, wsp*, expression

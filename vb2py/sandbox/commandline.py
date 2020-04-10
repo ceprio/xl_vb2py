@@ -45,7 +45,9 @@ def pp(ast, text, indent=0):
         return None
     cleaned_ast = []
     for entry in ast:
-        if len(entry) == 1:
+        if isinstance(entry, vb2py.vbparser.VBFailedElement):
+            print (' ' * indent), entry
+        elif len(entry) == 1:
             print (' ' * indent),
             cleaned_ast.append((indent, pp(entry, text, indent + 1)))
         elif len(entry) == 4:

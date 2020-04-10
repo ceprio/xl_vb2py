@@ -59,7 +59,45 @@ End Class
     """
 ))
 
+# VB.NET
+tests.append("""
+Class MyClass
+    A = 1
+End Class
+""")
 
+# Decorated Class
+tests.append("""
+<Decorator.Thing()> Class MyClass
+    A = 1
+End Class
+""")
+
+tests.append("""
+<Decorator.Thing()> _
+Class MyClass
+    A = 1
+End Class
+""")
+
+# Handlers
+tests.append("""
+Class MyClass
+    Public Sub DoIt() Handles Button.Click
+    End Sub
+    
+End Class
+""")
+
+# Shared methods
+tests.append("""
+Class MyClass
+    Public Shared Sub DoIt()
+    End Sub
+    Public Shared Function DoIt()
+    End Function
+End Class
+""")
 
 
 class ParsingTest(unittest.TestCase):

@@ -2566,26 +2566,7 @@ Public Enum KeyRoot
 End Enum
 """)
 
-# VB.NET
-tests.append("""
-Class MyClass
-    A = 1
-End Class
-""")
 
-# Decorated Class
-tests.append("""
-<Decorator.Thing()> Class MyClass
-    A = 1
-End Class
-""")
-
-tests.append("""
-<Decorator.Thing()> _
-Class MyClass
-    A = 1
-End Class
-""")
 
 # Initialising arrays
 tests.append('Public Shared A() as String = {"one", "two"}')
@@ -2594,27 +2575,12 @@ tests.append('Public Shared A() as Integer = {1, 2, 4, 5}')
 tests.append('Public Shared A() as Integer = {}')
 
 
-# Shared methods
-tests.append("""
-Class MyClass
-    Public Shared Sub DoIt()
-    End Sub
-    Public Shared Function DoIt()
-    End Function
-End Class
-""")
+
 
 # Shared Dim
 tests.append('Public SharedScriptSupport As New clsScriptSupportClass')
 
-# Handlers
-tests.append("""
-Class MyClass
-    Public Sub DoIt() Handles Button.Click
-    End Sub
-    
-End Class
-""")
+
 
 # Using statement
 tests.append("""
