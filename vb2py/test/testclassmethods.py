@@ -370,7 +370,7 @@ tests.append((
 #
 # Class method should alter class properties
 tests.append((
-        VBClassModule(),
+        VBDotNetModule(),
         """
         Class MyClass
 

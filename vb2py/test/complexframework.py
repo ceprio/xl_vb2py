@@ -5,7 +5,7 @@ import unittest
 from unittest import main
 vb2py.extensions.disableLogging()
 
-from vb2py.vbparser import convertVBtoPython, VBClassModule, VBModule, VBFormModule, VBCodeModule
+from vb2py.vbparser import convertVBtoPython, VBClassModule, VBModule, VBFormModule, VBCodeModule, VBDotNetClass, VBDotNetModule
 import vb2py.vbfunctions as vbfunctions
 import vb2py.vbfunctions
 
@@ -25,7 +25,7 @@ def getTestMethod(container, vb, assertions):
                       "vbfunctions" : vbfunctions}
         # << Parse VB >>
         try:					  
-            python = convertVBtoPython(vb, container=container)
+            python = convertVBtoPython(vb, container=container, dialect=container.expected_dialect)
         except Exception, err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
         # -- end -- << Parse VB >>

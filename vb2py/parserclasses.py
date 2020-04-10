@@ -68,6 +68,10 @@ class VBNamespace(object):
     intrinsic_functions = [
         "Dir", "FreeFile", "Rnd", "Timer",
     ]
+
+    #
+    # The dialect expected
+    expected_dialect = 'VB6'
     
     #
     def __init__(self, scope="Private"):
@@ -1488,6 +1492,8 @@ class VBClassModule(VBModule):
 class VBDotNetModule(VBClassModule):
     """A dot net class module"""
 
+    expected_dialect = 'vb.net'
+
     def __init__(self,  *args, **kw):
         """Initialize the class module"""
         super(VBDotNetModule, self).__init__(*args, **kw)
@@ -1515,6 +1521,8 @@ class VBDotNetClass(VBNamespace):
         'scope',
         'identifier',
     ]
+
+    expected_dialect = 'vb.net'
 
     def finalizeObject(self):
         """Do final processing"""
@@ -2962,6 +2970,8 @@ class VBProperty(VBSubroutine):
 class VBDotNetProperty(VBCodeBlock):
     """A dot net version of a property"""
 
+    expected_dialect = 'vb.net'
+
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBDotNetProperty, self).__init__(scope)
@@ -3001,11 +3011,12 @@ class VBDotNetProperty(VBCodeBlock):
 
 class VBDoNetPropertyGet(VBSubroutine):
     block_name = 'block'
+    expected_dialect = 'vb.net'
 
 
 class VBDoNetPropertySet(VBSubroutine):
     block_name = 'block'
-
+    expected_dialect = 'vb.net'
 
 class VBEnum(VBCodeBlock):
     """Represents an enum definition"""
