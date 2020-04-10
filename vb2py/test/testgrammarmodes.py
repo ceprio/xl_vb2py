@@ -7,26 +7,7 @@ import vb2py.vbparser
 import vb2py.parserclasses
 
 
-class TestSafeMode(unittest.TestCase):
-    """Test of the SafeMode class"""
-
-    def setUp(self):
-        """Set up the tests"""
-
-    def tearDown(self):
-        """Tear down the tests"""
-
-    def _setDotNet(self):
-        """Set safe mode on"""
-        vb2py.utils.BASE_GRAMMAR_SETTINGS['dialect'] = 'vb.net'
-
-    def _setSafe(self):
-        """Set safe mode on"""
-        vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
-
-    def _setUnsafe(self):
-        """Set safe mode off"""
-        vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
+class TestGrammarModes(unittest.TestCase):
 
     def assertParserFails(self, text, num_blocks):
         """Check that parsing fails for some text"""
@@ -47,7 +28,26 @@ class TestSafeMode(unittest.TestCase):
         result = vb2py.vbparser.parseVB(text)
         result_text = result.renderAsCode()
         self.assertEqual(0, len(re.findall('UNTRANSLATED', result_text)))
+        self.assertEqual(0, len(re.findall('ParserError', result_text)))
         return result_text
+
+
+class TestSafeMode(TestGrammarModes):
+    """Test of the SafeMode class"""
+
+    def setUp(self):
+        """Set up the tests"""
+
+    def tearDown(self):
+        """Tear down the tests"""
+
+    def _setSafe(self):
+        """Set safe mode on"""
+        vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
+
+    def _setUnsafe(self):
+        """Set safe mode off"""
+        vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
 
     def testSingleLine(self):
         """testSingleLine: single line works in safe mode"""
@@ -138,6 +138,17 @@ class TestSafeMode(unittest.TestCase):
         self._setSafe()
         self.assertParses(text)
 
+class TestDotNet(TestGrammarModes):
+    """Test of the .net conversion dialect"""
+
+    def _setDotNet(self):
+        """Set .net mode on"""
+        vb2py.utils.BASE_GRAMMAR_SETTINGS['dialect'] = 'vb.net'
+
+    def _setVB6(self):
+        """Set VB6 mode on"""
+        vb2py.utils.BASE_GRAMMAR_SETTINGS['dialect'] = 'VB6'
+
     def testDotNetFunctionReturns(self):
         """testDotNetFunctionReturns: return should be simplified in .net"""
         text = """
@@ -149,7 +160,13 @@ class TestSafeMode(unittest.TestCase):
         r = self.assertParses(text)
         self.assertIn('return 10', r)
 
-
+    def testClassAsKeyword(self):
+        """testClassAsKeyword: class as keyword should be OK in VB6"""
+        text = 'Class = 1'
+        self._setVB6()
+        self.assertParses(text)
+        self._setDotNet()
+        self.assertParserFails(text, 1)
 
 
 if __name__ == '__main__':
