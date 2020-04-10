@@ -56,24 +56,57 @@ class FileTester(unittest.TestCase):
         result = client.post(
             ('/single_%s_module' % url_part),
             data={
-                'text': vb_code, 'style': 'vb'
+                'text': vb_code, 'style': 'vb', 'failure_mode': 'line-by-line',
             }
         )
-        data = json.loads(result.data)
-        if data['parsing_failed']:
-            msg = 'Parsing %s failed: %s' % (
-                filename,
-                vb_code.splitlines()[data['parsing_stopped_vb']]
-            )
-            #
-            # Copy file failure
+
+        def store_failed_file():
+            """Copy file failure"""
             failed_name = os.path.split(filename)[1]
             with open(os.path.join(FAILURES_FOLDER, failed_name), 'w') as f:
                 f.write(vb_code)
+        #
+        data = json.loads(result.data)
+        if data['parsing_failed']:
+            store_failed_file()
+            #
+            # Now also see what happens in safe mode
+            result_safe = client.post(
+                ('/single_%s_module' % url_part),
+                data={
+                    'text': vb_code, 'style': 'vb', 'failure_mode': 'fail-safe',
+                }
+            )
+            data_safe = json.loads(result_safe.data)
+            msg = 'Parsing %s failed\nFailsafe result %s, lines %s\n\n%s' % (
+                filename,
+                data_safe['parsing_failed'],
+                data_safe['parsing_stopped_vb'],
+                vb_code.splitlines()[data['parsing_stopped_vb']]
+            )
             #
             self.fail(msg)
+        else:
+            #
+            # Also try in safe mode to see that we get the same success
+            result_safe = client.post(
+                ('/single_%s_module' % url_part),
+                data={
+                    'text': vb_code, 'style': 'vb', 'failure_mode': 'fail-safe',
+                }
+            )
+            data_safe = json.loads(result_safe.data)
+            if data_safe['parsing_failed']:
+                msg = 'Safe mode parsing %s failed when rigorous didn\'t: %s' % (
+                    filename,
+                    '\n\n'.join([vb_code.splitlines()[idx] for idx in data_safe['parsing_stopped_vb']])
+                )
+                store_failed_file()
+                self.fail(msg)
+
         if data['status'] == 'ERROR':
             self.fail('Server reported an error: %s' % data['result'])
+
 
 if __name__ == '__main__':
     #

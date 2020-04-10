@@ -66,7 +66,12 @@ end_terminator ::=
 statement ::=
                multi_statement_line / single_statement
 
-single_statement ::=  
+single_statement ::=  valid_statement
+% if mode == 'safe':
+    / untranslated_text
+% endif
+
+valid_statement ::=
              ( 
                comment_statement /
                external_declaration /
@@ -101,10 +106,7 @@ single_statement ::=
 % if dialect == 'vb.net':
     / return_statement
 % endif
-% if mode == 'safe':
-    / untranslated_text
-% endif
-             )
+)
 
 compound_statement ::= 
              property_definition /
@@ -646,7 +648,7 @@ case_comment_block ::=
 
 inline_if_statement ::= 
              label_definition?, hash?, c"If", wsp+, condition, hash?, c"Then", wsp+, inline_if_block,
-             (wsp*, hash?, c"Else", wsp+, inline_else_block)?
+             (wsp*, hash?, colon?, c"Else", wsp+, inline_else_block)?
 
 if_statement ::= 
              if_start_statement,
@@ -681,7 +683,7 @@ inline_else_block ::=
 			  inline_block
 
 inline_block ::=
-              (?-c"Else", (statement / inline_implicit_call))+
+              (?-c"Else", (valid_statement / inline_implicit_call), colon?)+
 
 for_statement ::=
                 for_start_line,

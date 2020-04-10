@@ -101,6 +101,13 @@ class TestSafeMode(unittest.TestCase):
         self._setSafe()
         self.assertParsesAndContains(text, '[a =]', 1)
 
+    def testSafeInlineIf(self):
+        """testSafeInlineIf: should be able to work with inline if"""
+        self._setUnsafe()
+        self.assertParses('If X Then DoIt')
+        self._setSafe()
+        self.assertParses('If X Then DoIt')
+
     def testIfAndElseIf(self):
         """testIfAndElseIf: should handle ElseIf"""
         text = """
