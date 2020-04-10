@@ -66,6 +66,21 @@ y = _a.A
 ))
 
 
+# Module
+tests.append((
+    """
+    Module _MyClassName
+        a = 1
+    End Module
+    """, {
+        'x': 1,
+    },
+    '''
+    _a = _MyClassName()
+    x = _a.a
+    '''
+))
+
 # Operators
 in_vb_module_tests.extend([
     # IsNot

@@ -100,6 +100,12 @@ End Class
 """)
 
 
+tests.append("""
+Module Digests
+    Public Const a = ""
+End Module
+""")
+
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
 

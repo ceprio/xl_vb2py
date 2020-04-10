@@ -450,8 +450,10 @@ class VBPrimary(VBNamespace):
         """Return the name"""
         if self.identifier:
             return self.identifier.element.text
-        else:
+        elif self.range_definition:
             return self.range_definition.renderAsCode().lstrip('.')
+        else:
+            return 'UnknownPrimaryName'
 
 
 class VBUnrendered(VBConsumer):
@@ -1500,6 +1502,7 @@ class VBDotNetModule(VBClassModule):
         self.definition = []
         self.auto_class_handlers.update({
             "class_definition_start_line" : (VBDotNetClass, self.definition),
+            "module_definition_start_line" : (VBDotNetClass, self.definition),
             "property_definition" : (VBDotNetProperty, self.locals)
         })
 

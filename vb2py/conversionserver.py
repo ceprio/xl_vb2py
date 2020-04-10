@@ -159,7 +159,7 @@ def singleModule(module_type):
                 if failure_mode == 'fail-safe':
                     utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
                 result = ConversionHandler.convertSingleFile(
-                    stripped_text,
+                    'Module A\nb=1\nEnd Module',
                     module_type,
                     conversion_style,
                     dialect=dialect,
@@ -168,6 +168,7 @@ def singleModule(module_type):
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'
         except Exception, err:
+            import traceback; ee = traceback.format_exc()
             result = str(err)
             status = 'ERROR'
         else:

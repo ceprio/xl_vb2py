@@ -123,7 +123,8 @@ compound_statement ::=
              user_type_definition /
              enumeration_definition /
              non_vb_block /
-             class_definition
+             class_definition /
+             module_definition
 
 
 isolated_single_line ::=
@@ -187,7 +188,7 @@ normal_keyword ::=
                 c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" / 
 				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Using"
 % if dialect == 'vb.net':
-    / c"Return" / "Class"
+    / c"Return" / c"Class" / c"Module"
 % endif
             ), (wsp / line_end)
 
@@ -202,6 +203,18 @@ class_definition_start_line ::=
 
 class_definition_end_line ::=
             wsp*, c"End Class", line_end
+
+
+module_definition ::=
+            module_definition_start_line, block?, module_definition_end_line
+
+
+module_definition_start_line ::=
+            wsp*, (decorator, wsp*)?, (scope, wsp)?, c"Module", wsp+, identifier, line_end
+
+module_definition_end_line ::=
+            wsp*, c"End", wsp+, c"Module", line_end
+
 
 decorator ::=
         "<", wsp*, qualified_object, wsp*, ">"
