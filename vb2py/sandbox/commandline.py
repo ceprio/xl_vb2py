@@ -10,8 +10,15 @@ sys.path.append('..')
 
 from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
 import vb2py.vbparser
+import vb2py.logger
 b = vb2py.vbparser.utils.bcolors
 vb2py.vbparser.log.setLevel(0)
+
+def dologging():
+    import vb2py.parserclasses
+    vb2py.parserclasses.log = vb2py.logger.getLogger('CommandLine')
+    vb2py.parserclasses.log.handlers[0].allowed.append('CommandLine')
+    vb2py.parserclasses.log.setLevel(-100)
 
 
 try:

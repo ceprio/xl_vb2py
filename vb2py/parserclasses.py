@@ -1861,22 +1861,22 @@ class VBRSet(VBSpecialAssignment):
 class VBSet(VBAssignment):
     """A set statement"""
 
-    auto_handlers = [
-        "new_keyword",
-    ]
+    def __init__(self, scope="Private"):
+        """Initialise the set"""
+        super(VBSet, self).__init__(scope=scope)
+        self.new_keyword = ""
+        self.auto_handlers.append("new_keyword")
 
-    new_keyword = ""
-
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
+        log.debug('Rendering Set with new "%s" an object %s' % (self.new_keyword, self.object))
         if not self.new_keyword:
             return super(VBSet, self).renderAsCode(indent)
         else:
             return "%s%s = %s()\n" % (
-                        self.getIndent(indent),
-                        self.object.renderAsCode(), 
-                        self.parts[0].renderAsCode(indent))
+                self.getIndent(indent),
+                self.object.renderAsCode(),
+                self.parts[0].renderAsCode(indent))
     
 #
 class VBEnd(VBAssignment):
