@@ -16,19 +16,9 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 tests.append("""
-If c = 2 Then ' bottom centered
-
-ElseIf c = 5 Then ' comment
-    a = 1
-End If
+If Len(l0022) = 0 Then Beep: Exit Sub
 """)
 
-tests.append("""
-If c = 2 Then ' bottom centered
-
-ElseIf c = 5 Then D
-End If
-""")
 
 
 class ParsingTest(unittest.TestCase):

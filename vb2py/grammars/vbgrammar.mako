@@ -36,6 +36,13 @@ block_content ::=
              ?-block_terminator, line
 
 
+block_terminator ::=
+             (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
+
+end_terminator ::=
+			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
+
+
 # The inline_if_statement appears here and also as a statement because sometimes the
 # implicit_call_statement in the inline_if consumes the line_end - presumably there is a way
 # to prevent this and simplify what is going on here!
@@ -44,7 +51,11 @@ line ::=
              (?-label_definition, line_body) / (label_definition, line_body?)
 
 line_body ::=
-			 (explicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?))) / implicit_call_statement / inline_if_statement)
+% if dialect == 'vb.net':
+    (explicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?)))  / inline_if_statement)
+% else:
+    (explicit_call_statement / implicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?)))  / inline_if_statement)
+% endif
 
 
 line_end ::=
@@ -58,16 +69,10 @@ file ::=
              block+
 
 
-block_terminator ::=
-             (end_terminator / c"Else" / c"ElseIf" / c"Case" / c"Next"), (wsp+ / line_end)
-
-end_terminator ::=
-			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
-
 statement ::=
                multi_statement_line / single_statement
 
-single_statement ::=  valid_statement
+single_statement ::=  valid_statement / label_statement
 % if mode == 'safe':
     / untranslated_text
 % endif
@@ -94,7 +99,6 @@ valid_statement ::=
                assignment_statement /
                lset_statement /
                rset_statement /
-               label_statement / 
                goto_statement /
                resume_statement /
                name_statement /
@@ -480,7 +484,7 @@ explicit_call_statement ::=
             label_definition?, ?-keyword, (qualified_object, (line_end / colon))
 
 inline_implicit_call ::=
-            label_definition?, ?-keyword, (simple_expr, bare_list)
+            ?-keyword, (simple_expr, bare_list)
 
 list ::= 
              "(", bare_list, ")"
@@ -629,7 +633,7 @@ else_statement ::=
 
 if_block ::= (?-(c"End If" / c"Else"), line)+
 else_block ::= block
-else_if_block ::= block
+else_if_block ::= (?-block_terminator, line)*
 else_if_inline ::= wsp+, inline_block, line_end
 condition ::= expression
 

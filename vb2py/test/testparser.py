@@ -243,6 +243,10 @@ tests.extend([
 # comments and colons in awkward places
 tests.extend([
 """
+If Len(l0022) = 0 Then Beep: Exit Sub
+""",
+
+"""
 If a =0 Then ' nasty comment
     b=1
 End If ' other nasty comment

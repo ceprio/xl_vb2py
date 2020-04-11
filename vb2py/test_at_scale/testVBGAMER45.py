@@ -92,9 +92,6 @@ class Test_VBGAMER45(file_tester.FileTester):
 	def test28(self):
 		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/VB3 Decompiler OCX/MODULE18.BAS')
 
-	def test29(self):
-		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/VB3 Decompiler OCX/EMPTY.FRM')
-
 	def test30(self):
 		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/VB3 Decompiler OCX/MODULE8.BAS')
 
@@ -112,9 +109,6 @@ class Test_VBGAMER45(file_tester.FileTester):
 
 	def test35(self):
 		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/VB3 Decompiler OCX/F0002.FRM')
-
-	def test36(self):
-		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/VB3 Decompiler OCX/vb3/EMPTY.FRM')
 
 	def test37(self):
 		self._testFile('/Users/paul/Workspace/sandbox/vb2py-git-files/VBGAMER45/vb3 binary to text/modPictureBox.bas')
