@@ -89,29 +89,53 @@
                             &nbsp;&nbsp;
                             <input type="button" class="btn btn-secondary" name="Do" value="Just convert line / selection"
                                    onclick="convert_selection();">
+                            &nbsp;&nbsp;
+                            <input type="button" class="btn btn-secondary" name="Do" value="Show/Hide options ..."
+                                   data-toggle="collapse" data-target="#options-panel" aria-expanded="false" aria-controls="collapseExample">
                         </p>
 
-                        <div class="form-group row" align="center"> <!-- Context -->
-                            <label class="col-sm-2 col-form-label">
-                                Conversion Type
-                            </label>
-                            <select class="form-control col-sm-2" id="type">
-                                <option selected value="pythonic">Pythonic code</option>
-                                <option value="exact">Match VB exactly</option>
-                            </select>
+                        <div id="options-panel" class="collapse">
+                            <div class="form-group row" align="center"> <!-- Context -->
+                                <label class="col-sm-2 col-form-label">
+                                    Dialect
+                                </label>
+                                <select class="form-control col-sm-2" id="dialect">
+                                    <option selected value="detect">Auto detect</option>
+                                    <option value="VB6">VB6</option>
+                                    <option value="VB.NET">VB.NET</option>
+                                    <option value="VBA">VBA (Excel)</option>
+                                    <option value="VBScript">VB Script</option>
+                                </select>
 
-                            <label class="col-sm-2 col-form-label">
-                                Context
-                            </label>
-                            <select class="form-control col-sm-2" id="context">
-                                <option selected value="code">Code module</option>
-                                <option value="class">Class module</option>
-                                <option value="form">Form module</option>
-                            </select>
-                            <label class="col-sm-2 col-form-label">
-                                Class Name
-                            </label>
-                            <input class="col-sm-2" id="class-name" value="MyClass"/>
+                                <label class="col-sm-2 col-form-label">
+                                    Parsing Type
+                                </label>
+                                <select class="form-control col-sm-2" id="failure-mode">
+                                    <option selected value="fail-safe">Fast</option>
+                                    <option value="line-by-line">Fallback</option>
+                                </select>
+
+                                <label class="col-sm-2 col-form-label">
+                                    Conversion Type
+                                </label>
+                                <select class="form-control col-sm-2" id="type">
+                                    <option selected value="pythonic">Pythonic code</option>
+                                    <option value="exact">Match VB exactly</option>
+                                </select>
+
+                                <label class="col-sm-2 col-form-label">
+                                    Context
+                                </label>
+                                <select class="form-control col-sm-2" id="context">
+                                    <option selected value="code">Code module</option>
+                                    <option value="class">Class module</option>
+                                    <option value="form">Form module</option>
+                                </select>
+                                <label class="col-sm-2 col-form-label">
+                                    Class Name
+                                </label>
+                                <input class="col-sm-2" id="class-name" value="MyClass"/>
+                            </div>
                         </div>
                 </div>
 
@@ -331,8 +355,11 @@
         for(item in pyeditor.session.getMarkers(true)) {
             pyeditor.session.removeMarker(item)
         }
+        let failure_mode = $('#failure-mode')[0].value;
+        let dialect = $('#dialect')[0].value;
 
-        $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name, 'failure-mode': 'fail-safe'}, function (data) {
+        $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name,
+            'failure-mode': failure_mode, 'dialect': dialect}, function (data) {
             if (data.status === 'OK') {
                 pyeditor.session.setValue(data.result);
 

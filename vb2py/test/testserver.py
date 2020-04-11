@@ -567,7 +567,7 @@ B =
         End Class
         '''
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'dialect': 'detect'})
         data = json.loads(result.data)
         self.assertEqual(False, data['parsing_failed'])
         self.assertEqual(data['status'], 'OK')
@@ -621,6 +621,49 @@ B =
         self.assertEqual(False, data['parsing_failed'])
         self.assertEqual(data['status'], 'OK')
         self.assertEqual(data['language'], 'VB6')
+
+    def testCanForceDialect(self):
+        """testCanForceDialect: should be able to force dialect"""
+        code = 'A = 10'
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
+        data = json.loads(result.data)
+        self.assertEqual(False, data['parsing_failed'])
+        self.assertEqual(data['status'], 'OK')
+        self.assertEqual(data['language'], 'VB6')
+        self.assertIn('A = 10', data['result'])
+        #
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'dialect': 'VB6'})
+        data = json.loads(result.data)
+        self.assertEqual(False, data['parsing_failed'])
+        self.assertEqual(data['status'], 'OK')
+        self.assertEqual(data['language'], 'VB6')
+        self.assertIn('A = 10', data['result'])
+        #
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'dialect': 'VB.NET'})
+        data = json.loads(result.data)
+        self.assertEqual(False, data['parsing_failed'])
+        self.assertEqual(data['status'], 'OK')
+        self.assertEqual(data['language'], 'VB.NET')
+        self.assertIn('A = Integer(10)', data['result'])
+
+    def testDotNetClassNames(self):
+        """testDotNetClassNames: can manually and automatically set .NET class names"""
+        #
+        # Manually set the name
+        code = "A = 1"
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'dialect': 'VB.NET', 'class_name': 'TEST'})
+        data = json.loads(result.data)
+        self.assertIn('class TEST', data['result'])
+        #
+        # Automatically overrides is
+        code = "class OTHER\nA = 1\nEnd Class"
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_class_module', data={'text': code, 'style': 'vb', 'dialect': 'VB.NET', 'class_name': 'TEST'})
+        data = json.loads(result.data)
+        self.assertNotIn('class TEST', data['result'])
+        self.assertIn('class OTHER', data['result'])
 
     def testCanGetVersionNumber(self):
         """testCanGetVersionNumber: should return the version number used"""

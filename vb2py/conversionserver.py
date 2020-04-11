@@ -96,19 +96,19 @@ def testResult():
 @app.route('/single_code_module', methods=['POST'])
 def singleCodeModule():
     """Return a code module converted"""
-    return singleModule(parserclasses.VBModule())
+    return singleModule(parserclasses.VBModule(), parserclasses.VBDotNetModule())
 
 
 @app.route('/single_class_module', methods=['POST'])
 def singleClassModule():
     """Return a class module converted"""
-    return singleModule(parserclasses.VBClassModule())
+    return singleModule(parserclasses.VBClassModule(), parserclasses.VBDotNetModule())
 
 
 @app.route('/single_form_module', methods=['POST'])
 def singleFormModule():
     """Return a form module converted"""
-    return singleModule(parserclasses.VBFormModule())
+    return singleModule(parserclasses.VBFormModule(), parserclasses.VBDotNetModule())
 
 @app.route('/submit_file', methods=['POST'])
 def submitFile():
@@ -116,7 +116,7 @@ def submitFile():
     return storeSubmittedFile()
 
 
-def singleModule(module_type):
+def singleModule(module_type, dot_net_module_type):
     """Convert a single module"""
     start_time = time.time()
     #
@@ -136,20 +136,22 @@ def singleModule(module_type):
         text = request.values['text']
         class_name = request.values.get('class_name', 'MyClass')
         failure_mode = request.values.get('failure-mode', 'line-by-line')
+        requested_dialect = request.values.get('dialect', 'detect')
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
     else:
         #
-        language = detectLanguage(text)
+        language = requested_dialect if requested_dialect != 'detect' else detectLanguage(text)
         lines = text.splitlines()
         line_count = len(lines)
         if language != 'VB.NET':
             module_type.classname = class_name
             dialect = 'VB6'
         else:
-            module_type = parserclasses.VBDotNetModule()
+            module_type = dot_net_module_type
             dialect = 'vb.net'
+        module_type.classname = class_name
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -168,7 +170,6 @@ def singleModule(module_type):
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'
         except Exception, err:
-            import traceback; ee = traceback.format_exc()
             result = str(err)
             status = 'ERROR'
         else:
@@ -185,8 +186,8 @@ def singleModule(module_type):
                     parsing_stopped_py = getLineMatch('(ParserError)', result)
                     parsing_stopped_vb += locateBadLine(text, parsing_stopped_vb)
                     extra = ' (parser failure after %5.2f%% of lines): [%s]' % (
-                            100.0 * parsing_stopped_vb / line_count,
-                            lines[parsing_stopped_vb]
+                        100.0 * parsing_stopped_vb / line_count,
+                        lines[parsing_stopped_vb]
                     )
                 elif failure_mode == 'quick':
                     parsing_stopped_vb = 0
