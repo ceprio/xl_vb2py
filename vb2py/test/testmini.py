@@ -19,6 +19,8 @@ tests.append("""
 If Len(l0022) = 0 Then Beep: Exit Sub
 """)
 
+tests.append("While A: Wend")
+
 
 
 class ParsingTest(unittest.TestCase):

@@ -2189,6 +2189,8 @@ tests.append("""
         Wend
 """)
 
+tests.append("While A: Wend")
+
 # Nested while wend
 tests.append("""
         a = 0

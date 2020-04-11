@@ -535,7 +535,7 @@ while_statement ::=
                 while_start_statement, while_block?, while_end_statement
 
 while_start_statement ::=
-                c"While", wsp+, expression, line_end
+                c"While", wsp+, expression, (line_end / colon)
 
 while_end_statement ::=
                 label_definition?, (c"End While" / c"Wend")
