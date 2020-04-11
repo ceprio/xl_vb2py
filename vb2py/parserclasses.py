@@ -69,10 +69,7 @@ class VBNamespace(object):
         "Dir", "FreeFile", "Rnd", "Timer",
     ]
 
-    #
-    # The dialect expected
-    expected_dialect = 'VB6'
-    
+
     #
     def __init__(self, scope="Private"):
         """Initialize the namespace"""
@@ -430,11 +427,19 @@ class VBPrimary(VBNamespace):
 
         self.identifier = None
         self.range_definition = None
+        self.parts = []
 
         self.auto_class_handlers.update({
             "identifier" : (VBConsumer, "identifier"),
             "range_definition" : (VBRangeDefinition, "range_definition"),
-        })
+            "integer" : (VBExpressionPart, self.parts),
+            "hexinteger" : (VBExpressionPart, self.parts),
+            "octinteger" : (VBExpressionPart, self.parts),
+            "binaryinteger" : (VBExpressionPart, self.parts),
+            "stringliteral" : (VBStringLiteral, self.parts),
+            "dateliteral" : (VBDateLiteral, self.parts),
+            "floatnumber" : (VBExpressionPart, self.parts),
+            "longinteger" : (VBExpressionPart, self.parts),        })
 
     def processElement(self, element):
         """Process this element"""
@@ -446,14 +451,33 @@ class VBPrimary(VBNamespace):
                 self.identifier.element.text = self.identifier.element.text[:-1]
             self.element = self.identifier.element
 
+
     def getName(self):
         """Return the name"""
         if self.identifier:
             return self.identifier.element.text
         elif self.range_definition:
             return self.range_definition.renderAsCode().lstrip('.')
-        else:
-            return 'UnknownPrimaryName'
+        elif self.parts:
+            if self.checkOptionYesNo('Classes', 'ExplicitlyTypeLiterals') == 'Yes':
+                type_name = {
+                    'integer': 'Integer(',
+                    'hexinteger': 'Integer(',
+                    'octinteger': 'Integer(',
+                    'binaryinteger': 'Integer(',
+                    'stringliteral': 'String(value=',
+                    'dateliteral': 'Date(',
+                    'floatnumber': 'Double(',
+                    'longinteger': 'Integer(',
+                }[self.parts[0].element.name]
+                post = ')'
+            else:
+                type_name = post = ''
+            return '%s%s%s' % (
+                type_name,
+                self.parts[0].renderAsCode(),
+                post
+            )
 
 
 class VBUnrendered(VBConsumer):
@@ -979,8 +1003,17 @@ class VBExpression(VBNamespace):
             idx = self.parts.index(item)
             rh, lh = self.parts.pop(idx+1), self.parts.pop(idx-1)
             item.rh, item.lh = rh, lh
-    
+
+
+class VBExpressionAttribute(VBObject):
+    """Some attributes of an expression"""
+
+    def renderAsCode(self, indent=0):
+        """Render the attributes"""
+        return '.%s' % super(VBExpressionAttribute, self).renderAsCode()
+
 #
+
 class VBParExpression(VBNamespace):
     """A block in an expression"""
 
@@ -1013,6 +1046,7 @@ class VBParExpression(VBNamespace):
             "point" : (VBPoint, self.parts),
             "sign"	: (VBExpressionPart, self.parts),
             "list_literal"	: (VBListLiteral, self.parts),
+            "attributes" : (VBExpressionAttribute, self.parts),
         })
 
         self.l_bracket = self.r_bracket = ""
@@ -1243,6 +1277,7 @@ class VBModule(VBCodeBlock):
     # like Class_Initialize and Class_Terminate for classes
     always_public_attributes = []
 
+    expected_dialect = 'VB6'
     #
     def __init__(self, scope="Private", modulename="unknownmodule", classname="MyClass",
                  superclasses=None):
@@ -1644,12 +1679,13 @@ class VBVariableDefinition(VBVariable):
         local_type = self.resolveName(self.type)
         #
         if self.initial_value: # This is a 'Dim A as String = "hello"'
+            initialised_value = self.initial_value.renderAsCode()
             return "%s%s%s%s = %s\n" % (
-                            warning,
-                            self.getIndent(indent),
-                            pre_identifier,
-                            local_name,
-                            self.initial_value.renderAsCode(),
+                warning,
+                self.getIndent(indent),
+                pre_identifier,
+                local_name,
+                initialised_value,
             )
         elif self.unsized_definition:
             return "%s%s%s%s = vbObjectInitialize(objtype=%s)\n" % (
@@ -2414,7 +2450,7 @@ class VBFunction(VBSubroutine):
         """Render this subroutine"""
         #
         # See if we are using return statements
-        just_use_return = Config["Functions", "JustUseReturnStatement"].lower() == "yes"
+        just_use_return = self.checkOptionYesNo("Functions", "JustUseReturnStatement") == "Yes"
         #
         # Set a name conversion to capture the function name
         # Assignments to this function name should go to the _ret parameter

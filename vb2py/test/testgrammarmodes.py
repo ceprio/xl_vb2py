@@ -63,9 +63,9 @@ class TestSafeMode(TestGrammarModes):
         self._setUnsafe()
         self.assertParserFails(text, 2)
         self._setSafe()
-        self.assertParsesAndContains(text, 'a = 1', 2)
+        self.assertParsesAndContains(text, 'a = Integer(1)', 2)
         self.assertParsesAndContains(text, '[b =]', 2)
-        self.assertParsesAndContains(text, 'c = 2', 2)
+        self.assertParsesAndContains(text, 'c = Integer(2)', 2)
         self.assertParsesAndContains(text, '[d =]', 2)
 
     def testForStart(self):
@@ -184,7 +184,7 @@ class TestDotNet(TestGrammarModes):
         """
         self._setDotNet()
         r = self.assertParses(text)
-        self.assertIn('return 10', r)
+        self.assertIn('return Integer(10)', r)
 
     def testClassAsKeyword(self):
         """testClassAsKeyword: class as keyword should be OK in VB6"""

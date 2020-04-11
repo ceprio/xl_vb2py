@@ -234,10 +234,36 @@ class TestConfig(unittest.TestCase):
         self.c.setLocalOveride('Functions', 'JustUseReturnStatement', 'Yes')
         c2 = convertVBtoPython(code, dialect='vb.net')
         self.assertNotIn('return _ret', c2)
-        self.assertIn('return 20', c2)
+        self.assertIn('return Integer(20)', c2)
         self.c.setLocalOveride('Functions', 'JustUseReturnStatement', 'No')
         c3 = convertVBtoPython(code, dialect='vb.net')
         self.assertIn('return _ret', c3)
+
+    def testCanTurnOffExplicitLiterals(self):
+        """testCanTurnOffExplicitLiterals: should be able to turn off explicit literals"""
+        code = """
+            Dim A As String = "Hello"
+            Dim B As Integer = 10
+            Return 20
+            Return "World"
+        """
+        c1 = convertVBtoPython(code, dialect='vb.net', container=vb2py.vbparser.VBDotNetModule())
+        self.assertIn('A = String(value=\'Hello\')', c1)
+        self.assertIn('return String(value=\'World\')', c1)
+        self.assertIn('B = Integer(10)', c1)
+        self.assertIn('return Integer(20)', c1)
+        self.c.setLocalOveride('Classes', 'ExplicitlyTypeLiterals', 'No')
+        c2 = convertVBtoPython(code, dialect='vb.net')
+        self.assertNotIn('A = String(value=\'Hello\')', c2)
+        self.assertNotIn('return String(value=\'World\')', c2)
+        self.assertNotIn('B = Integer(10)', c2)
+        self.assertNotIn('return Integer(20)', c2)
+        self.c.setLocalOveride('Classes', 'ExplicitlyTypeLiterals', 'Yes')
+        c3 = convertVBtoPython(code, dialect='vb.net')
+        self.assertIn('A = String(value=\'Hello\')', c3)
+        self.assertIn('return String(value=\'World\')', c3)
+        self.assertIn('B = Integer(10)', c3)
+        self.assertIn('return Integer(20)', c3)
 
 
 

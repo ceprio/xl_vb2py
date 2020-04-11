@@ -2,6 +2,7 @@
 
 
 <%include file="basics.mako"/>
+<%include file="expression.mako"/>
 
 
 
@@ -43,7 +44,7 @@ line ::=
              (?-label_definition, line_body) / (label_definition, line_body?)
 
 line_body ::=
-			 (explicit_call_statement / implicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?))) / inline_if_statement)
+			 (explicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?))) / implicit_call_statement / inline_if_statement)
 
 
 line_end ::=
@@ -220,72 +221,9 @@ decorator ::=
         "<", wsp*, qualified_object, wsp*, ">"
 
 
-expression ::= 
-             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,
-             (operation, par_expression)*) / line_expression
-
-par_expression ::=
-% if dialect == 'vb.net':
-    point / (l_bracket, expression, r_bracket, attributes?) / list_literal / base_expression
-
-attributes ::=
-    ".", atom
-
-% else:
-    point / (l_bracket, expression, r_bracket) / list_literal / base_expression
-% endif
-
-
-
-base_expression ::= 
-			  simple_expr, (operation, simple_expr)?
-
-list_literal ::=
-                "{", expression?, (",", expression)*, "}"
-
-simple_expr ::= 
-              pre_operator?, wsp*, (sign, wsp*)*, (call / atom / channelid), wsp*
-
-l_bracket ::= 
-             wsp*, "(", wsp*
-
-r_bracket ::=
-             wsp*, ")", wsp*
-
-operation ::=
-             "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / "\\" / c"Not" / c"Mod" / c"Imp" / compare
-
-compare ::= 
-             (c"And Not") / c"Or Not" / c"Or" / c"And" / c"Xor" / "=" / "<=" / ">=" / "<>" / "<" / ">" / c"IsNot" / c"Is" / c"Like"
-
-sign ::=
-            "-" / "+"                   
-
-pre_named_argument ::=
-            wsp*, named_argument, wsp*, ":=", wsp*
-
-named_argument ::=
-            identifier
-
-
-pre_operator ::=
-			pre_not / pre_typeof
-
-pre_not ::=
-            wsp*, c"Not", wsp+
-
-pre_typeof ::=
-            wsp*, c"TypeOf", wsp+			
-
-channelid ::=
-			"#", atom
-
-line_expression ::=
-        point, wsp*, "-", wsp*, point
 
 point ::=       
         (l_bracket, expression, wsp*, ",", wsp*, expression, r_bracket)
-
 
 
 assignment_statement ::=
@@ -323,7 +261,10 @@ range_definition ::=
 
 primary ::=
 %if dialect == 'vb.net':
-    identifier / range_definition / stringliteral
+    identifier / range_definition / literal_as_object
+
+    literal_as_object ::= literal
+
 %else:
     identifier / range_definition
 %endif
@@ -531,6 +472,9 @@ call_statement ::=
 
 implicit_call_statement ::=
             label_definition?, ?-keyword, (simple_expr, bare_list, (line_end / colon))
+% if dialect == 'vb.net':
+    / (par_expression, (line_end / colon))
+% endif
 
 explicit_call_statement ::=
             label_definition?, ?-keyword, (qualified_object, (line_end / colon))

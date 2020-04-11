@@ -85,7 +85,7 @@ tests.append((
 in_vb_module_tests.extend([
     # IsNot
     ('a = 1 IsNot 2', {'a': True}),
-    ('a = 1 IsNot 1', {'a': False}),
+    ('_x = 1\n_y = _x\na = _x IsNot _y', {'a': False}),
 
     # Assignment
     ('a = 1\na += 1', {'a': 2}),

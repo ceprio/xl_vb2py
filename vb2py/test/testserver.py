@@ -585,7 +585,7 @@ B =
         client = vb2py.conversionserver.app.test_client()
         result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
         data = json.loads(result.data)
-        self.assertIn("return 10", data['result'])
+        self.assertIn("return Integer(10)", data['result'])
 
     def testDotNetRetainsClassName(self):
         """testDotNetRetainsClassName: dot net module should respect the coded class name"""

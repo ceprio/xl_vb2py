@@ -33,7 +33,9 @@ tests.extend([
 
 # Expression calls
 tests.extend([
-    '(a + b).Truncate()',
+    'a = (a + b).Truncate(2)',
+    '(a + b).SendToDestination("email.com")',
+    '(a + b).SendToDestination',
 ])
 
 tests.append(

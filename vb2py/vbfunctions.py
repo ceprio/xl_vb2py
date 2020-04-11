@@ -186,9 +186,9 @@ def InStrRev(text, subtext, start=None, compare=None):
     else:
         return text[:start].rfind(subtext)+1
 # << VBFunctions >> (17 of 57)
-def Int(num):
+def Int(value):
     """Return the int of a value"""
-    n = float(num)
+    n = float(value)
     if -32767 <= n <= 32767: 
         return int(n)
     else:
@@ -515,12 +515,14 @@ def Sgn(num):
     else:
         return 1
 # << VBFunctions >> (43 of 57)
-def String(num=None, text=None):
+def String(num=None, text=None, value=None):
     """Return a repeated number of string items"""
-    if num is None and text is None:
-        return str()
+    if value:
+        return VBString(value)
+    elif num is None and text is None:
+        return VBString()
     else:
-        return text[:1]*CInt(num)
+        return VBString(text[:1]*CInt(num))
 
 def Space(num):
     """Return a repeated number of spaces"""

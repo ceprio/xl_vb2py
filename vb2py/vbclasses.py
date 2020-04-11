@@ -168,7 +168,14 @@ class _TimeClass(str):
     __str__ = __repr__
 
 Time = _TimeClass()
+
 # << VB Classes >> (4 of 16)
+class VBString(str):
+    @property
+    def Length(self):
+        return len(self)
+
+
 class Integer(int):
     """Python version of VB's integer"""
 # << VB Classes >> (5 of 16)
