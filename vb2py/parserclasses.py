@@ -1139,7 +1139,7 @@ class VBExpressionPart(VBConsumer):
             number_text = self.element.text.replace('&', '').replace('H', '')
             return "0x%s" % number_text
         elif self.element.name == "octinteger":
-            number_text = self.element.text.replace('&O', '').replace('&', '')
+            number_text = 'o%s' % self.element.text.replace('&O', '').replace('&', '')
             return "0%s" % number_text
         elif self.element.name == "binaryinteger":
             number_text = list(self.element.text.replace('&B', '').replace('&', '').replace('_', ''))
