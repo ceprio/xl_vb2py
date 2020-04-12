@@ -408,8 +408,10 @@
         HOST = 'http://23.99.213.204:8090';
     }
 
-    let default_config = [];
+    let USE_STATUS_CHECK = false;
 
+    let default_config = [];
+    let status_checker = null;
     $(document).ready(function () {
         // Remember initial config
         $('.form-control').each(function (idx, item) {
@@ -421,6 +423,8 @@
         loadConfigFromCookie();
         getExample('initial');
     });
+
+
 
     function applyConfigChanges(also_convert_code) {
         $('.form-control').each(function (idx, item) {
@@ -525,6 +529,23 @@
         convert_text(vbtext, 0);
     }
 
+    function start_status_checker() {
+        stop_status_checker();
+        status_checker = setInterval(function () {
+            let url = "/test";
+            $.get(HOST + url, function (data) {
+                pyeditor.session.setValue(pyeditor.session.getValue() + '.');
+            });
+        }, 1000);
+    }
+
+    function stop_status_checker() {
+        if (status_checker != null) {
+            clearInterval(status_checker);
+            status_checker = null;
+        }
+    }
+
     function convert_text(vbtext, selection_offset) {
         pyeditor.session.setValue('# Converting code now ...');
         var context = $('#context')[0].value;
@@ -580,8 +601,15 @@
 
         let config = getConfigAsJSON();
 
+        if (USE_STATUS_CHECK) {
+            start_status_checker();
+        };
+
         $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name,
             'failure-mode': failure_mode, 'dialect': dialect, 'options': config}, function (data) {
+            if (USE_STATUS_CHECK) {
+                stop_status_checker();
+            };
             if (data.status === 'OK') {
                 pyeditor.session.setValue(data.result);
 

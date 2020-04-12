@@ -68,6 +68,7 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
 
     nodes = []
     while 1:
+        ##print 'Loop', len(txt)
         success, tree, next = parser.parse(txt)
         if not success:
             if txt.strip():
@@ -150,6 +151,7 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
         m = container
 
     for idx, node in zip(xrange(sys.maxint), nodes):
+        ##print 'Process', idx, len(nodes)
         if verbose:
             print idx,
         try:
