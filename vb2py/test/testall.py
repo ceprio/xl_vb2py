@@ -64,8 +64,8 @@ if __name__ == "__main__":
                 #
                 if result.find(b"FAILED ") > -1:
                     try:
-                        num = int(fail.match(result).groups()[0])
-                        num_fail = int(fail.match(result).groups()[1])
+                        num = int(fail.match(str(result)).groups()[0])
+                        num_fail = int(fail.match(str(result)).groups()[1])
                     except:
                         num, num_fail = 0, 0
                     total_run += num
@@ -76,7 +76,7 @@ if __name__ == "__main__":
                         print(bcolors.FAIL + bcolors.BOLD + "*** %s errors out of %s" % (num_fail, num))
                 else:
                     try:
-                        num = int(ok.match(result).groups()[0])
+                        num = int(ok.match(str(result)).groups()[0])
                     except:
                         print(bcolors.FAIL + bcolors.BOLD + "Failed completely: %s" % result)
                     else:
