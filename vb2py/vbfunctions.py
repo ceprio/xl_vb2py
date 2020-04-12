@@ -18,7 +18,7 @@ import shutil # For FileCopy
 import random # For Rnd, Randomize
 import time   # For timing
 import inspect
-import new
+from types import MethodType as instancemethod
 
 # << Error classes >>
 class VB2PYCodeError(Exception): """An error occured executing a vb2py function"""
@@ -721,7 +721,7 @@ def VBGetMissingArgument(fn, argument_index):
     offset = argument_index - len(args)
     #
     # If this is an instancemethod then we must skip the 'self' argument
-    if isinstance(fn, new.instancemethod):
+    if isinstance(fn, instancemethod):
         offset += 1
     try:
         return defaults[offset]
