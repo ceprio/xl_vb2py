@@ -35,7 +35,7 @@ def preferentialSort(original, preferred_items):
 
 
 if __name__ == "__main__":
-    print "\nStarting testall at %s\n" % time.ctime()
+    print("\nStarting testall at %s\n" % time.ctime())
     #
     files = glob.glob(r"test/test*.py")
     files.sort()
@@ -48,14 +48,14 @@ if __name__ == "__main__":
         for file in files:
             if file not in (r"test/testall.py", r"test/testframework.py", "test/testparser.py"):
                 fname = os.path.join((r"python %s" % vb2py.utils.rootPath()), file)
-                print ((bcolors.ENDC + "Running '%s' " % file) + bcolors.OKGREEN).ljust(55, '.'),
+                print(((bcolors.ENDC + "Running '%s' " % file) + bcolors.OKGREEN).ljust(55, '.'), end=' ')
                 #
                 start_time = time.time()
                 pi, po, pe = os.popen3(fname)
                 result = pe.read()
                 duration = time.time() - start_time
                 #
-                print '[%5.1fs]' % duration,
+                print('[%5.1fs]' % duration, end=' ')
                 #
                 if result.find("FAILED ") > -1:
                     try:
@@ -66,21 +66,21 @@ if __name__ == "__main__":
                     total_run += num
                     total_failed += num_fail
                     if show_errors:
-                        print bcolors.OKBLUE + "\n%s" % result
+                        print(bcolors.OKBLUE + "\n%s" % result)
                     else:
-                        print bcolors.FAIL + bcolors.BOLD + "*** %s errors out of %s" % (num_fail, num)
+                        print(bcolors.FAIL + bcolors.BOLD + "*** %s errors out of %s" % (num_fail, num))
                 else:
                     try:
                         num = int(ok.match(result).groups()[0])
                     except:
-                        print bcolors.FAIL + bcolors.BOLD + "Failed completely: %s" % result
+                        print(bcolors.FAIL + bcolors.BOLD + "Failed completely: %s" % result)
                     else:
-                        print bcolors.OKBLUE + "Passed %s tests" % num
+                        print(bcolors.OKBLUE + "Passed %s tests" % num)
                         total_run += num
                 pi.close()
                 po.close()
                 pe.close()
     except KeyboardInterrupt:
         pass
-    print (bcolors.ENDC + "\nRan %d tests\n" + bcolors.BOLD + bcolors.FAIL + "Failed %d\n" + bcolors.ENDC + "Took %d seconds") % (
-        total_run, total_failed, time.time()-start)
+    print((bcolors.ENDC + "\nRan %d tests\n" + bcolors.BOLD + bcolors.FAIL + "Failed %d\n" + bcolors.ENDC + "Took %d seconds") % (
+        total_run, total_failed, time.time()-start))

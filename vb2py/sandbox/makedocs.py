@@ -50,9 +50,9 @@ if __name__ == "__main__":
     else:
         pattern = sys.argv[1]
     #
-    print "\nvb2Py documentation generator\n"
+    print("\nvb2Py documentation generator\n")
     for fn in glob.glob(os.path.join(vb2py.utils.rootPath(), "doc", pattern)):
-        print "Processing '%s' ... " % fn,
+        print("Processing '%s' ... " % fn, end=' ')
         txt = open(fn, "r").read()
         marked_up_text = doAutomaticVBConversion(txt)
         #
@@ -60,4 +60,4 @@ if __name__ == "__main__":
             marked_up_text = addToTemplate(marked_up_text, sys.argv[2], "DOCSGOHERE")
         #
         open(fn+"l", "w").write(marked_up_text)
-        print "Done!"
+        print("Done!")

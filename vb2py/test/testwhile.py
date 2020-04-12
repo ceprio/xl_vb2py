@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << While tests >> (1 of 5)
 # Simple while / wend

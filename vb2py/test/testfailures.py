@@ -1,8 +1,8 @@
 """Tests that we know fail but are not within the scope of v0.2"""
 
 import vb2py.vbparser
-import complexframework
-from testframework import *
+from . import complexframework
+from .testframework import *
 vb2py.vbparser.log.setLevel(0)
 
 

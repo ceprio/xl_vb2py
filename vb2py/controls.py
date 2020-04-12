@@ -94,7 +94,7 @@ class VBControl:
 		d['position'] = (cls.Left/twips_per_pixel, cls.Top/twips_per_pixel)
 		d['type'] = cls.pycard_name
 		#
-		for attr, pycard_attr in cls._attribute_translations.iteritems():
+		for attr, pycard_attr in cls._attribute_translations.items():
 			if hasattr(cls, attr):
 				d[pycard_attr] = getattr(cls, attr)
 
@@ -287,7 +287,7 @@ class Frame(VBControl):
 		"""Adjust the left and top properties of our children"""
 		for item in cls._getControlList():
 			obj = cls._get(item)
-			print "Offsetting ", obj, cls
+			print("Offsetting ", obj, cls)
 			if hasattr(obj, "Left"):
 				obj.Left += cls.Left
 			if hasattr(obj, "Top"):

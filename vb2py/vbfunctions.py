@@ -2,12 +2,12 @@
 Functions to mimic VB intrinsic functions or things
 """
 
-from __future__ import generators
 
-from vbclasses import *
-from vbconstants import *
-import utils
-import config
+
+from .vbclasses import *
+from .vbconstants import *
+from . import utils
+from . import config
 
 import math
 import sys
@@ -114,7 +114,7 @@ def Environ(envstring):
         return os.environ.get(envstring, "")
     # Is an integer - need to get the envint'th value
     try:
-        return "%s=%s" % (os.environ.keys()[envint], os.environ.values()[envint])
+        return "%s=%s" % (list(os.environ.keys())[envint], list(os.environ.values())[envint])
     except IndexError:
         return ""
 # << VBFunctions >> (7 of 57)
@@ -212,7 +212,7 @@ def CInt(num):
 
 def CLng(num):
     """Return the closest long of a value"""
-    return long(round(float(num)))
+    return int(round(float(num)))
 # << VBFunctions >> (18 of 57)
 def IsArray(obj):
     """Determine if an object is an array"""
@@ -229,7 +229,7 @@ def IsNumeric(text):
 # << VBFunctions >> (20 of 57)
 def Join(sourcearray, delimeter=" "):
     """Join a list of strings"""
-    s_list = map(str, sourcearray)
+    s_list = list(map(str, sourcearray))
     return delimeter.join(s_list)
 # << VBFunctions >> (21 of 57)
 def LCase(text):
@@ -713,7 +713,7 @@ def VBGetMissingArgument(fn, argument_index):
     """Return the default value for a particular argument of a function"""
     try:
         args, varargs, varkw, defaults = inspect.getargspec(fn)
-    except Exception, err:
+    except Exception as err:
         raise VB2PYCodeError("Unable to determine default argument for arg %d of %s: %s" % (
                     argument_index, fn, err))
     #

@@ -3,7 +3,7 @@
 # << Imports >>
 #
 # Configuration options
-import config
+from . import config
 Config = config.VB2PYConfig()
 
 from pprint import pprint as pp
@@ -11,13 +11,13 @@ from simpleparse.common import chartypes
 import sys
 import os
 import re
-import utils
+from . import utils
 
 GRAMMAR_FILE = utils.relativePath("grammars", "vbgrammar.mako")
 
 from simpleparse.parser import Parser
 
-import logger
+from . import logger
 log = logger.getLogger("VBParser")
 # -- end -- << Imports >>
 # << Error Classes >>
@@ -83,9 +83,9 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
                 # -- end -- << Handle failure >>
             break
         if verbose:
-            print success, next
+            print(success, next)
             pp(tree)
-            print "."
+            print(".")
         if not returnast:
             nodes.extend(convertToElements(tree, txt))
         else:
@@ -102,7 +102,7 @@ def makeSafeFromUnicode(text):
 
     """
     result = []
-    letters = map(ord, text)
+    letters = list(map(ord, text))
     marker1 = [ord('x'), ord('X')]
     marker2 = [ord('X'), ord('x')]    
     #
@@ -112,7 +112,7 @@ def makeSafeFromUnicode(text):
             result.append(letter)
         else:
             result.extend(marker1)
-            result.extend(map(ord, str(letter)))
+            result.extend(list(map(ord, str(letter))))
             result.extend(marker2)
     #
     return "".join(map(chr, result))
@@ -129,7 +129,7 @@ def makeUnicodeFromSafe(text):
         text = match.groups()[1]
         code = int(text)
         try:
-            return unichr(code)
+            return chr(code)
         except ValueError:
             raise
 
@@ -150,10 +150,10 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
     else:
         m = container
 
-    for idx, node in zip(xrange(sys.maxint), nodes):
+    for idx, node in zip(range(sys.maxsize), nodes):
         ##print 'Process', idx, len(nodes)
         if verbose:
-            print idx,
+            print(idx, end=' ')
         try:
             m.processElement(node)
         except UnhandledStructureError:
@@ -191,7 +191,7 @@ def applyPlugins(methodname, txt):
         if plugin.isEnabled() and plugin.system_plugin or use_user_plugins:
             try:
                 txt = getattr(plugin, methodname)(txt)	
-            except Exception, err:
+            except Exception as err:
                 if plugin.system_plugin:
                     raise SystemPluginFailure(
                         "System plugin '%s' had an exception (%s) while doing %s. Unable to continue" % (
@@ -238,11 +238,11 @@ def parseVBFile(filename, text=None, parent=None, **kw):
 # caused by poor structuring of the package. This needs to be refactored!
 
 # Plug-ins
-import extensions
+from . import extensions
 plugins = extensions.loadAllPlugins()
 
-from parserclasses import *
+from .parserclasses import *
 
 if __name__ == "__main__":	
-    from testparse import txt
+    from .testparse import txt
     m = parseVB(txt)

@@ -215,9 +215,9 @@ if __name__ == "__main__":
         for line in chunk.splitlines():
             match = pattern.match(line.strip())
             if not match:
-                print "Unable to match: '%s'" % line
+                print(("Unable to match: '%s'" % line))
             else:
                 f.write("%s = %s # %s\n" % match.groups())
-                print "Wrote: '%s'" % match.groups()[0]
+                print(("Wrote: '%s'" % match.groups()[0]))
         f.write("\n\n")
     f.close()

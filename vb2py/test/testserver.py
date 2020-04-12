@@ -2,13 +2,13 @@
 
 """Test the conversion server"""
 
-from testframework import *
+from .testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
 import vb2py.config
 import vb2py.converter
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import threading
 import json
 import vb2py.utils
@@ -61,7 +61,7 @@ class TestServer(unittest.TestCase):
     def _getResult(self, url):
         """Return a result from a URL"""
         try:
-            f = urllib.urlopen('http://localhost:8123/%s' % url)
+            f = urllib.request.urlopen('http://localhost:8123/%s' % url)
             result = f.read()
         finally:
             f.close()
@@ -181,7 +181,7 @@ class TestServer(unittest.TestCase):
         """testUnicodeCharacters: should be able to handle unicode characters"""
         vb2py.conversionserver.app.config['TESTING'] = True
         client = vb2py.conversionserver.app.test_client()
-        result = client.post('/single_class_module', data={'text': u'a="Ä"', 'style': 'vb'})
+        result = client.post('/single_class_module', data={'text': 'a="Ä"', 'style': 'vb'})
         data = json.loads(result.data)
         self.assertEqual(data['status'], 'OK')
         d = {}

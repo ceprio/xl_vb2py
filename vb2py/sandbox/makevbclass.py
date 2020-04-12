@@ -93,15 +93,15 @@ def makeVBMethod(cls, method_name):
 
 if __name__ == "__main__":
     # << In situ-testing >>
-    if len(sys.argv) <> 3:
-        print "Usage: makevbclass <class>, filename\n"
+    if len(sys.argv) != 3:
+        print("Usage: makevbclass <class>, filename\n")
     else:
         class_name, filename = sys.argv[1:]
         imports = class_name.split(".")
         if len(imports) > 1:
-            exec "from %s import %s" % (".".join(imports[:-1]), imports[-1])
+            exec("from %s import %s" % (".".join(imports[:-1]), imports[-1]))
         cls = eval(imports[-1])
         #
-        print "Using %s" % cls
+        print(("Using %s" % cls))
         makeVBClassFile(cls, filename)
     # -- end -- << In situ-testing >>

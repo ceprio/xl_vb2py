@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Intrinsic tests >> (1 of 10)
 # Concatenation

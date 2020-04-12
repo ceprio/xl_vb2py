@@ -26,14 +26,14 @@ def getTestMethod(container, vb, assertions):
         # << Parse VB >>
         try:					  
             python = convertVBtoPython(vb, container=container, dialect=container.expected_dialect)
-        except Exception, err:
+        except Exception as err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
         # -- end -- << Parse VB >>
         # << Execute the Python code >>
         try:
-            exec "from vb2py.vbfunctions import *" in local_dict
-            exec python in local_dict
-        except Exception, err:
+            exec("from vb2py.vbfunctions import *", local_dict)
+            exec(python, local_dict)
+        except Exception as err:
             self.fail("Error (%s):\n%s\n....\n%s" % (err, vb, python))
         # -- end -- << Execute the Python code >>
         # << Check assertions >>
@@ -48,13 +48,13 @@ def getTestMethod(container, vb, assertions):
             else:
                 dct = local_dict
             try:
-                exec assertion in dct
-            except Exception, err:
+                exec(assertion, dct)
+            except Exception as err:
                 reason += "%s (%s)\n" % (Exception, err)
         # -- end -- << Check assertions >>
         #print vb, "\n\n", python, "\n\n--------------------------------"
         #
-        self.assert_(reason == "", "Failed: %s\n%s\n\n%s" % (reason, vb, python))
+        self.assertTrue(reason == "", "Failed: %s\n%s\n\n%s" % (reason, vb, python))
 
     return testMethod
 

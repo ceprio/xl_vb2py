@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Operators tests >> (1 of 2)
 tests.extend([

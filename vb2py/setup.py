@@ -53,7 +53,7 @@ def makeDataDirs(rootDir=APPLICATION_NAME, dataDirs=[]):
             # Add this directory and its contents to list
             files=[]
             for file in os.listdir(directory):
-                if file!='CVS' and file!='.cvsignore' and os.path.splitext(file)[1].lower() <> ".htm":
+                if file!='CVS' and file!='.cvsignore' and os.path.splitext(file)[1].lower() != ".htm":
                     if os.path.isfile(os.path.join(directory, file)):
                         files.append(os.path.join(directory, file))
             listX.append((rootDir+'/'+directory, files))

@@ -1,5 +1,5 @@
 # << basesource declarations >>
-from Tkinter import *
+from tkinter import *
 
 #
 # VB constants

@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Random tests >>
 # Rnd produces different numbers

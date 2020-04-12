@@ -18,7 +18,7 @@ class VBElement(object):
     #
     def printTree(self, offset=0):
         """Print out this tree"""
-        print "%s%s : '%s'" % (" "*offset, self.name, self.text.split("\n")[:20])
+        print("%s%s : '%s'" % (" "*offset, self.name, self.text.split("\n")[:20]))
         for subelement in self.elements:
             subelement.printTree(offset+1)
     
@@ -887,7 +887,7 @@ class VBParameterList(VBCodeBlock):
         # for any missing positional parameters we have to do some introspection
         # to dig out the default value
         param_list = []
-        for idx, element in zip(xrange(1000), self.expressions):
+        for idx, element in zip(range(1000), self.expressions):
             element.parameter_index_position = idx # Needed so that the element can get its default
             param_list.append(element.renderAsCode())
         #
@@ -1360,7 +1360,7 @@ class VBModule(VBCodeBlock):
         # Now render all the properties
         for property in properties:
             if properties[property]:
-                    ret.append(properties[property].values()[0].renderPropertyGroup(indent, property, **properties[property]))
+                    ret.append(list(properties[property].values())[0].renderPropertyGroup(indent, property, **properties[property]))
         #		
         self.rendering_locals = 0
         #
@@ -1627,7 +1627,7 @@ class VBCOMExternalModule(VBModule):
 
         """
         library_code = []
-        for library, members in self.names.iteritems():
+        for library, members in self.names.items():
             member_code = []
             for member in members:
                 member_code.append(
@@ -1962,7 +1962,7 @@ class VBCall(VBCodeBlock):
             # for any missing positional parameters we have to do some introspection
             # to dig out the default value
             param_list = []
-            for idx, element in zip(xrange(1000), self.parameters):
+            for idx, element in zip(range(1000), self.parameters):
                 element.parameter_index_position = idx # Needed so that the element can get its default
                 param_list.append(element.renderAsCode())
             params = ", ".join(param_list)
@@ -2403,7 +2403,7 @@ class VBSubroutine(VBCodeBlock):
         """Render the global statement if we need it"""
         if self.globals_required:
             return "%sglobal %s\n" % (self.getIndent(indent),
-                                      ", ".join(self.globals_required.keys()))
+                                      ", ".join(list(self.globals_required.keys())))
         else:
             return ""
     #
@@ -2643,7 +2643,7 @@ class VBSelect(VBCodeBlock):
         if self.blocks:
             self.blocks[0].if_or_elif = "if"
         #
-        if Config["Select", "EvaluateVariable"] <> "EachTime":
+        if Config["Select", "EvaluateVariable"] != "EachTime":
             ret = "%s%s = %s\n" % (self.getIndent(indent),
                                      self.getSelectVariable(),
                                      self.expression.renderAsCode())
@@ -3228,7 +3228,7 @@ class VBUntranslatedText(VBConsumer):
         return "%sassert False, '# UNTRANSLATED VB LINE [%s]'\n" % (self.getIndent(indent), self.element.text)
 
 
-from vbparser import *
+from .vbparser import *
 
 # Blocks which do not contain valid statements
 # If a block contains only these then it needs a pass

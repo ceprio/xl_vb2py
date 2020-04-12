@@ -4,18 +4,18 @@ import glob
 import os
 import imp
 
-from utils import rootPath
-from config import VB2PYConfig
+from .utils import rootPath
+from .config import VB2PYConfig
 
 Config = VB2PYConfig()
 
-import logger
+from . import logger
 log = logger.getLogger("PlugInLoader")
 
 # << Plug-in functions >> (1 of 2)
 def loadAllPlugins():
     """Load all plug-ins from the plug-in directory and return a list of all the classes"""
-    import plugins
+    from . import plugins
     mods = []
     for mod in plugins.mods:
         log.info("Checking '%s' for plugins" % mod)
@@ -27,7 +27,7 @@ def loadAllPlugins():
                 m = imp.load_module(mod, f, filename, ('*.py', 'r', 1))
             finally:
                 f.close()
-        except Exception, err:
+        except Exception as err:
             log.warn("Error importing '%s' (%s). Module skipped" % (mod, err))
             continue
         #
@@ -43,7 +43,7 @@ def loadAllPlugins():
                     p = cls()               
                     log.info("Added new plug-in: '%s" % p.name)
                     mods.append(p)
-                except Exception, err:
+                except Exception as err:
                     log.warn("Error creating plugin '%s' (%s). Class skipped" % (cls, err))
     #
     # Now sort
@@ -182,7 +182,7 @@ class RenderHookPlugin(BasePlugin):
         super(RenderHookPlugin, self).__init__()
         #
         # Look for class and replace its renderAsCode method
-        import parserclasses
+        from . import parserclasses
         self.hooked_class = getattr(parserclasses, self.hooked_class_name)
         old_render_method = self.hooked_class.renderAsCode
         #

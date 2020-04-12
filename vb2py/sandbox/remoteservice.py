@@ -1,6 +1,6 @@
 """Test of using vb2py as a remote service"""
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 
 SERVICE = "http://vb2py.sourceforge.net/cgi-bin/remote.py"
@@ -20,11 +20,11 @@ End Select
 
 """
 
-result = urllib.urlopen("%s?code=%s" % (SERVICE, urllib.quote(code)))
+result = urllib.request.urlopen("%s?code=%s" % (SERVICE, urllib.parse.quote(code)))
 text = result.read()
 parts = EXTRACT.match(text)
 
 if parts:
-    print "%s\n%s" % parts.groups()
+    print(("%s\n%s" % parts.groups()))
 else:
-    print "Unable to decifer result! (%s)" % text
+    print(("Unable to decifer result! (%s)" % text))

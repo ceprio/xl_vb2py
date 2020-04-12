@@ -206,7 +206,7 @@ class VBControl:
             pass
         #
         # Convert VB attributes to PythonCard attributes
-        for attr, pycard_attr in cls._attribute_translations.iteritems():
+        for attr, pycard_attr in cls._attribute_translations.items():
             if hasattr(cls, attr):
                 value = getattr(cls, attr)
                 # Check for colours - these are bad news!

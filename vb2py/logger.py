@@ -2,7 +2,7 @@
 
 import logging
 import fnmatch
-from config import VB2PYConfig
+from .config import VB2PYConfig
 Config = VB2PYConfig()
 
 class VB2PYLogger(logging.StreamHandler):

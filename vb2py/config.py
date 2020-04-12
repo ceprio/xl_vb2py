@@ -1,5 +1,5 @@
-from utils import rootPath
-import ConfigParser
+from .utils import rootPath
+import configparser
 import os
 
 class VB2PYConfigObject(dict):
@@ -25,7 +25,7 @@ class VB2PYConfigObject(dict):
         """Read the values"""
         if path is None:
             path = rootPath()
-        self._config = ConfigParser.ConfigParser()
+        self._config = configparser.ConfigParser()
         self._config.read(os.path.join(path, filename))
         self._local_overide = {}	
 
@@ -39,7 +39,7 @@ class VB2PYConfigObject(dict):
         if self._config.has_section(section):
             self._local_overide["%s.%s" % (section, name)] = value
         else:
-            raise ConfigParser.NoSectionError("No such section '%s'" % section)
+            raise configparser.NoSectionError("No such section '%s'" % section)
 
     def removeLocalOveride(self, section, name,):
         """Remove a local overide"""

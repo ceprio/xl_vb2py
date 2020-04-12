@@ -8,7 +8,7 @@ import getopt # For command line arguments
 
 from vb2py.converter import BaseResource
 from vb2py import vbparser
-from controls import *
+from .controls import *
 
 
 twips_per_pixel = 15

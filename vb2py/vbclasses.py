@@ -6,7 +6,7 @@ Classes which mimic the behaviour of VB classes
 - Collection
 """
 
-import vbfunctions
+from . import vbfunctions
 import time
 import os
 import sys
@@ -45,7 +45,7 @@ class Collection(dict):
             Key = int(Key)
             if Key < 1:
                 raise IndexError
-            list = self.values()
+            list = list(self.values())
             list.sort(self._order)
             return list[Key-1][0]
         except ValueError:
@@ -54,7 +54,7 @@ class Collection(dict):
     def __delitem__(self, Key):
         try:
             key = int(Key)
-            list = self.values()
+            list = list(self.values())
             list.sort(self._order)
             _, _, key = list[Key-1]
         except ValueError:
@@ -65,13 +65,13 @@ class Collection(dict):
         return self.Item(Key)
     # << Collection Methods >> (6 of 12)
     def __iter__(self):
-        lst = self.values()
+        lst = list(self.values())
         lst.sort(self._order)
         return iter([val[0] for val in lst])
     # << Collection Methods >> (7 of 12)
     def _getElement(self, Key):
         if isinstance(Key, int):
-            list = self.values()
+            list = list(self.values())
             list.sort(self._order)
             return list[Key-1]
         else:
@@ -100,7 +100,7 @@ class Collection(dict):
 
         elif Before is not None and After is None:
             _, order, _ = self._getElement(Before)
-            for k, entry in self.iteritems():
+            for k, entry in self.items():
                 if entry[1] >= order:
                     dict.__setitem__(self, k, (entry[0], entry[1]+1, k))
             if not isinstance(Key, str):
@@ -110,7 +110,7 @@ class Collection(dict):
 
         elif After is not None and Before is None:
             _, order, _ = self._getElement(After)
-            for k, entry in self.iteritems():
+            for k, entry in self.items():
                 if entry[1] > order:
                     dict.__setitem__(self, k, (entry[0], entry[1]+1, k))
             if not isinstance(Key, str):
@@ -142,10 +142,10 @@ if __name__ == '__main__':
     c = Collection()
     c['a'] = 'va'
     c['b'] = 'vb'
-    print c['a']
-    print c[2]
+    print(c['a'])
+    print(c[2])
     del c[1]
-    print c[1]
+    print(c[1])
 # << VB Classes >> (2 of 16)
 class _DebugClass:
     """Intercept calls to Debug.Print"""
@@ -384,7 +384,7 @@ class _VBFiles:
 
         """
         if channelid is None:
-            for channel in self._channels.keys():
+            for channel in list(self._channels.keys()):
                 self.closeFile(channel)
         else:
             self._channels[channelid].close()
@@ -412,7 +412,7 @@ class _VBFiles:
             buffer = ""
             while len(vars) < number:
                 char = f.read(1)
-                if char <> '\r':            
+                if char != '\r':            
                     if char in separators:
                         if evaloutput:
                             # Try to eval it - if we get a syntax error then assume it is a string
@@ -449,7 +449,7 @@ class _VBFiles:
         """
         output = "".join([str(arg) for arg in args])
         if channelid is None:
-            print output
+            print(output)
         else:
             self._lock.acquire()
             try:
@@ -474,7 +474,7 @@ class _VBFiles:
     # << VBFiles methods >> (10 of 11)
     def getOpenChannels(self):
         """Return a list of currently open channels"""
-        return self._channels.keys()
+        return list(self._channels.keys())
     # << VBFiles methods >> (11 of 11)
     def EOF(self, channelid): 
         """Determine if the named channel is at the end of the file"""

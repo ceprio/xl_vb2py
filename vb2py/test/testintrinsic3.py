@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 import sys
 
 # << Intrinsic tests >> (1 of 6)

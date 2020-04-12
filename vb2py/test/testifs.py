@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << If tests >> (1 of 7)
 # Test main branch of If

@@ -200,7 +200,7 @@ class TypeBrowseDialog(TypeBrowseDialog_Parent):
         elif pos >= 0:
             return pos, 0
         else:
-            raise error, "The position is not valid"
+            raise error("The position is not valid")
     # << class TypeBrowseDialog methods >> (13 of 18)
     def CmdMemberListbox(self, id, code):
         if code == win32con.LBN_SELCHANGE:
@@ -290,7 +290,7 @@ class TypeBrowseDialog(TypeBrowseDialog_Parent):
         try:	
             realPos, isMethod = self._GetRealMemberPos(pos)
         except:
-            print "oops!"
+            print("oops!")
             return [None]
         if isMethod:
             id = self.typeinfo.GetFuncDesc(realPos)[0]
@@ -345,19 +345,19 @@ class VBMethod(object):
         return "VBMethod('%s', %s)" % (self.name, self.parameters)
     # << VBMethod methods >> (3 of 3)
     def __str__(self):
-    """String representation of this method"""
-    try:
-        if self.parameters:
-            return "%s(*%s*)" % (self.name, ", ".join([str(item) for item in self.parameters]))
-        else:
-            return "%s()" % (self.name,)
-    except:
-        print "Failed on ", self.name
+        """String representation of this method"""
+        try:
+            if self.parameters:
+                return "%s(*%s*)" % (self.name, ", ".join([str(item) for item in self.parameters]))
+            else:
+                return "%s()" % (self.name,)
+        except:
+            print(("Failed on ", self.name))
     # -- end -- << VBMethod methods >>
 # << tlbrowse methods >> (4 of 4)
 def enumerate(lst):
     "Mimic 2.3's enumerate function"
-    return zip(xrange(sys.maxint), lst)
+    return list(zip(list(range(sys.maxsize)), lst))
 # -- end -- << tlbrowse methods >>
 
 
@@ -386,12 +386,12 @@ if __name__=='__main__':
     for control in controls:
         l("\n%s\n%s\n\n" % (control, "="*len(control)))
 
-        properties = controls[control].properties.keys()
+        properties = list(controls[control].properties.keys())
         properties.sort()
         l("    *Properties*\n%s" % ("\n\n".join(["        %s" % 
                     prop for prop in properties]),)	)						
 
-        methods = controls[control].methods.keys()
+        methods = list(controls[control].methods.keys())
         methods.sort()					
         l("\n    *Methods*\n%s" % ("\n\n".join(["        %s" % 
                     str(controls[control].methods[method]) for method in methods]),))
@@ -399,8 +399,8 @@ if __name__=='__main__':
     text = "\n".join(results)
 
     # << Convert to HTML >>
-    import StringIO
-    rstFile = StringIO.StringIO(text)
+    import io
+    rstFile = io.StringIO(text)
 
     from docutils.core import Publisher
     from docutils.io import StringOutput, StringInput
@@ -413,5 +413,5 @@ if __name__=='__main__':
     pub.set_writer('html')
     output = pub.publish()
 
-    print output
+    print(output)
     # -- end -- << Convert to HTML >>

@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Fn tests >> (1 of 5)
 # Simple function

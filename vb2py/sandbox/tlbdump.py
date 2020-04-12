@@ -200,7 +200,7 @@ class TypeBrowseDialog(TypeBrowseDialog_Parent):
 		elif pos >= 0:
 			return pos, 0
 		else:
-			raise error, "The position is not valid"
+			raise error("The position is not valid")
 			
 	def CmdMemberListbox(self, id, code):
 		if code == win32con.LBN_SELCHANGE:
@@ -239,11 +239,11 @@ def dumpLibrary(path):
 	"""Dump a library"""
 	tlb = pythoncom.LoadTypeLib(path)
 	for i in range(tlb.GetTypeInfoCount()):
-		print tlb.GetDocumentation(i)[0]
+		print((tlb.GetDocumentation(i)[0]))
 		try:
 			pprint(getInfoFrom(tlb, i))
-		except Exception, err:
-			print "Failed: '%s'" % err
+		except Exception as err:
+			print(("Failed: '%s'" % err))
 		
 
 		
@@ -267,7 +267,7 @@ def GetRealMemberPos(attr, pos):
 	elif pos >= 0:
 		return pos, 0
 	else:
-		raise error, "The position is not valid"
+		raise error("The position is not valid")
 
 	
 	

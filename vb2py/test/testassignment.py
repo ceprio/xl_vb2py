@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Assignment tests >> (1 of 8)
 numeric = [

@@ -28,4 +28,4 @@ def translateScript(match):
 
 converter = re.compile(r"\<%(.*?)%\>", re.DOTALL + re.MULTILINE)
 
-print converter.sub(translateScript, test)
+print(converter.sub(translateScript, test))

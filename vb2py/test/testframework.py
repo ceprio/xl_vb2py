@@ -13,7 +13,7 @@ import vb2py.parserclasses
 #
 # Import script testing
 try:
-    import scripttest
+    from . import scripttest
 except ImportError:
     scripttest = None
 
@@ -49,7 +49,7 @@ def getTestMethod(vb, result, test_code=None):
                 dialect=self.dialect,
                 container=self.container()
             )
-        except Exception, err:
+        except Exception as err:
             self.fail("Error while parsing (%s)\n%s" % (err, vb))
 
         try:
@@ -60,26 +60,26 @@ def getTestMethod(vb, result, test_code=None):
                 test_code.replace("\r\n", "\n"),
                 dialect=self.dialect,
             )
-        except Exception, err:
+        except Exception as err:
             self.fail("Error while parsing test code (%s)\n%s" % (err, test_code))
 
         # -- end -- << Parse VB >>
         # << Execute the Python code >>
         try:
-            exec "from vb2py.vbfunctions import *" in local_dict
-            exec python in local_dict
+            exec("from vb2py.vbfunctions import *", local_dict)
+            exec(python, local_dict)
             if python_test_code:
-                exec python_test_code in local_dict
-        except Exception, err:
-            if not result.has_key("FAIL"):
+                exec(python_test_code, local_dict)
+        except Exception as err:
+            if "FAIL" not in result:
                 self.fail("Error (%s):\n%s\n....\n%s\n%s" % (err, vb, python, python_test_code))
         else:
-            if result.has_key("FAIL"):
+            if "FAIL" in result:
                 self.fail("Should have failed:%s\n\n%s\n%s" % (vb, python, python_test_code))
         # -- end -- << Execute the Python code >>
         # << Work out what is expected >>
         expected = {}
-        exec "" in expected
+        exec("", expected)
         expected.update(result)
         expected["convertVBtoPython"] = convertVBtoPython
         expected["vbfunctions"] = vbfunctions
@@ -92,14 +92,14 @@ def getTestMethod(vb, result, test_code=None):
         for key in local_dict:
             if not (key.startswith("_") or hasattr(vb2py.vbfunctions, key) or key == "MyClass"):
                 try:
-                    if expected[key] <> local_dict[key]:
+                    if expected[key] != local_dict[key]:
                         reason += "%s (exp, act): '%s' <> '%s'\n" % (key, expected[key], local_dict[key])
                 except KeyError:
                     if key not in skip_variables:
                         reason += "Variable didn't exist: '%s'\n" % key
         # -- end -- << Check for discrepancies >>
         #
-        self.assert_(reason == "", "Failed: %s\n%s\n\n%s\n%s" % (reason, vb, python, python_test_code))
+        self.assertTrue(reason == "", "Failed: %s\n%s\n\n%s\n%s" % (reason, vb, python, python_test_code))
 
     return testMethod
 # << Test functions >> (2 of 2)

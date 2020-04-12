@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Erase tests >>
 # Simple test of erase

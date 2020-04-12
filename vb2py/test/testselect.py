@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Select tests >> (1 of 5)
 test_string = """

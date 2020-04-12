@@ -12,7 +12,7 @@ class TestCollection(unittest.TestCase):
         """testAddNumeric: should be able to add with numeric indexes"""
         for i in range(10):
             self.c.Add(i)
-        for expect, actual in zip(range(10), self.c):
+        for expect, actual in zip(list(range(10)), self.c):
             self.assertEqual(expect, actual)
         self.assertEqual(self.c.Count(), 10)
     # << Collection tests >> (2 of 9)
@@ -20,10 +20,10 @@ class TestCollection(unittest.TestCase):
         """testAddBeforeNumeric: should be able to add something before something else"""
         # Put 1 ... 9 in with 5 missing
         for i in range(1, 10):
-            if i <> 5:
+            if i != 5:
                 self.c.Add(i)
         self.c.Add(5, Before=5) # ie before the index 5
-        for expect, actual in zip(range(1, 10), self.c):
+        for expect, actual in zip(list(range(1, 10)), self.c):
             self.assertEqual(expect, actual)
         self.assertEqual(self.c.Count(), 9)
     # << Collection tests >> (3 of 9)
@@ -31,10 +31,10 @@ class TestCollection(unittest.TestCase):
         """testAddAfterNumeric: should be able to add something after something else"""
         # Put 1 ... 9 in with 5 missing
         for i in range(1, 10):
-            if i <> 5:
+            if i != 5:
                 self.c.Add(i)
         self.c.Add(5, After=4)
-        for expect, actual in zip(range(1, 10), self.c):
+        for expect, actual in zip(list(range(1, 10)), self.c):
             self.assertEqual(expect, actual)
         self.assertEqual(self.c.Count(), 9)
     # << Collection tests >> (4 of 9)
@@ -42,7 +42,7 @@ class TestCollection(unittest.TestCase):
         """testAddText: should be able to add with text indexes"""
         for i in range(10):
             self.c.Add(i, "txt%d" % i)
-        for expect, actual in zip(range(10), self.c):
+        for expect, actual in zip(list(range(10)), self.c):
             self.assertEqual(expect, actual)
         self.assertEqual(self.c.Count(), 10)
     # << Collection tests >> (5 of 9)

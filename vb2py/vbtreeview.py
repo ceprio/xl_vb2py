@@ -16,11 +16,9 @@ from vb2py.vbclasses import Collection
 
 
 # << Classes >> (1 of 2)
-class VBTreeView(VBWidget): 
+class VBTreeView(VBWidget, metaclass=VBWrapped): 
 
     # << class VBTreeView declarations >>
-    __metaclass__ = VBWrapped 
-
     _translations = { 
             "ListImages" : "items",
             "Enabled" : "enabled", 
@@ -102,7 +100,7 @@ class TreeNodeCollection(Collection):
     # << class TreeNodeCollection methods >> (5 of 5)
     def __iter__(self): 
         """Return an iterator over the nodes"""
-        for node in self._nodes.values():
+        for node in list(self._nodes.values()):
             yield vb2py.custom.comctllib.Node(node, self._parent)
     # -- end -- << class TreeNodeCollection methods >>
 # -- end -- << Classes >>

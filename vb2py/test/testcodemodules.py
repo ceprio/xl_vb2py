@@ -1,4 +1,4 @@
-from complexframework import *
+from .complexframework import *
 
 
 # << CodeModule tests >>

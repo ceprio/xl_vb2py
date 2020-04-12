@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 import vb2py.utils
 
 TEST_FILE_NAME = vb2py.utils.relativePath('test', 'vbtestfile.txt')

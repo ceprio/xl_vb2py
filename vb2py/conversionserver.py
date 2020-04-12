@@ -1,14 +1,14 @@
 """A simple server to convert files from VB to Python"""
 
-import vbparser
-import parserclasses
-import converter
-import config
+from . import vbparser
+from . import parserclasses
+from . import converter
+from . import config
 import json
 import re
 import os
 import tempfile
-import utils
+from . import utils
 from flask import Flask, request
 from flask_cors import CORS
 import time
@@ -60,7 +60,7 @@ class ConversionHandler(object):
         ConversionHandler.clearHistory()
         try:
             return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial, dialect=dialect)
-        except vbparser.VBParserError, err:
+        except vbparser.VBParserError as err:
             raise ConversionError('Error converting VB. %s' % err)
 
     @staticmethod
@@ -176,7 +176,7 @@ def singleModule(module_type, dot_net_module_type):
             finally:
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'
-        except Exception, err:
+        except Exception as err:
             result = str(err)
             status = 'ERROR'
         else:

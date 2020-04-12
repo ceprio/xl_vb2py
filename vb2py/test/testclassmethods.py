@@ -1,4 +1,4 @@
-from complexframework import *
+from .complexframework import *
 
 
 # << ClassMethod tests >> (1 of 7)

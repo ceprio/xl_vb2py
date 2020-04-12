@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 import sys
 
 # << External tests >>

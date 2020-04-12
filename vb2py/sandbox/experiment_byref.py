@@ -19,11 +19,11 @@ if __name__ == "__main__":
         x = 1
         y = 1
         def doit(n, locs, delay):
-            print "Thread %d before x, y = %s, %s" % (n, x, y)
+            print(("Thread %d before x, y = %s, %s" % (n, x, y)))
             change2(x, 'y', locs)
-            print "Thread %d sleeping for %s" % (n, delay)
+            print(("Thread %d sleeping for %s" % (n, delay)))
             sleep(delay)
-            print "Thread %d after x, y = %s, %s" % (n, x, y)
+            print(("Thread %d after x, y = %s, %s" % (n, x, y)))
 
         for delay in (0, .00001, 1):	
             t1 = Thread(target=doit, args=(1, locals(), delay))

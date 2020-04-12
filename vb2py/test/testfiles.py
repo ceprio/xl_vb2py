@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 import os 
 import vb2py.utils
 PATH = vb2py.utils.rootPath()
@@ -289,7 +289,7 @@ except OSError:
 
 try:
     os.rmdir(vb2py.utils.relativePath("test/mytest2"))
-except OSError, err:
+except OSError as err:
     pass
 
 # Dir

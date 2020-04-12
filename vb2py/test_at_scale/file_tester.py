@@ -120,7 +120,7 @@ if __name__ == '__main__':
     for repo in args.repos:
         name_match = re.match('https://github.com/(.*?)/', repo)
         if not name_match:
-            print 'Repo format not recognized: %s' % repo
+            print('Repo format not recognized: %s' % repo)
             sys.exit(1)
         #
         name = name_match.groups()[0]
@@ -128,9 +128,9 @@ if __name__ == '__main__':
         #
         # Clone if it is not there
         if os.path.isdir(folder_name):
-            print 'Folder exists. Skipping clone'
+            print('Folder exists. Skipping clone')
         else:
-            print 'Cloning repository %s as %s' % (repo, name)
+            print('Cloning repository %s as %s' % (repo, name))
             subprocess.call(['git', 'clone', repo, folder_name])
         #
         # Now try to find all the files
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                 filepath = os.path.join(subdir, filename)
                 extn = os.path.splitext(filepath)[1]
                 if extn.lower() in ['.frm', '.bas', '.cls', '.vb']:
-                    print 'Creating tests for %s' % filepath
+                    print('Creating tests for %s' % filepath)
                     filenames.append(filepath)
         #
         # Now create the test file
@@ -171,4 +171,4 @@ if __name__ == '__main__':
         with open(test_file_name, 'w') as f:
             f.write(file_text)
         #
-        print 'Complete\n'
+        print('Complete\n')

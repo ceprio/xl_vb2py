@@ -60,17 +60,17 @@ def testCode(code, verbose=0):
         values = eval(value_code)
         for value in values:
             #
-            if var <> "_dummy":
+            if var != "_dummy":
                 line = "%s = %s" % (var, repr(value).replace("'", '"'))
                 if verbose:
-                    print "Doing '%s'" % line
+                    print(("Doing '%s'" % line))
                 #
                 vbhost.addcode(line)
 
             # Run VB	
             try:
                 runTestCode(code, vbhost)
-            except Exception, vberr:
+            except Exception as vberr:
                 vbcode_failed = 1
             else:
                 vbcode_failed = 0
@@ -80,8 +80,8 @@ def testCode(code, verbose=0):
             vars = findVars(python)
             namespace = {var : value}
             try:
-                exec python in namespace
-            except Exception, pythonerr:
+                exec(python, namespace)
+            except Exception as pythonerr:
                 pythoncode_failed = 1
             else:
                 pythoncode_failed = 0
@@ -93,22 +93,22 @@ def testCode(code, verbose=0):
                 raise PythonFailed("Python failed on '%s' but VB didn't (%s)" % (line, pythonerr))
             elif pythoncode_failed and vbcode_failed:
                 if verbose:
-                    print "Both failed VB\n%s\nPython\n%s" % (vberr, pythonerr)
+                    print(("Both failed VB\n%s\nPython\n%s" % (vberr, pythonerr)))
             else:				
                 if verbose:
-                    print "\tVB\tPython"
+                    print("\tVB\tPython")
                 for name in vars:
                     if verbose:
-                        print "%s\t%s\t%s" % (name, vbhost.eval(name), namespace[name])	
+                        print(("%s\t%s\t%s" % (name, vbhost.eval(name), namespace[name])))	
                     else:
-                        if vbhost.eval(name) <> namespace[name]:
+                        if vbhost.eval(name) != namespace[name]:
                             raise ValueNotEqual("%s: VB(%s), Python(%s)" % (name, vbhost.eval(name), namespace[name]))
 
     if verbose:
         # Compare
-        print "VB Code\n%s\n\n" % code
-        print "Python Code\n%s\n\n" % python
+        print(("VB Code\n%s\n\n" % code))
+        print(("Python Code\n%s\n\n" % python))
 # -- end -- << Functions >>
 
 testCode(code, verbose=1)			
-print "Finished"
+print("Finished")

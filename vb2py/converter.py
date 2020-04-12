@@ -19,14 +19,14 @@ import sys    # For getting Exec prefix
 import getopt # For command line arguments
 import imp    # For dynamic import of classes
 
-from utils import rootPath
-from config import VB2PYConfig
+from .utils import rootPath
+from .config import VB2PYConfig
 Config = VB2PYConfig()
 
-import logger   # For logging output and debugging 
+from . import logger   # For logging output and debugging 
 log = logger.getLogger("vb2Py")
 
-import vbparser
+from . import vbparser
 
 #from controls import *
 twips_per_pixel = 15
@@ -166,11 +166,11 @@ class VBConverter(object):
             try:
                 tlb = readtlb.TypeLibReader(os.path.join(root, path))
                 self.logText("Found '%s' in DLL '%s'" % (tlb.name, path))
-                for cls in tlb.coclasses.values():
+                for cls in list(tlb.coclasses.values()):
                     self.logText(" - Member class %s" % cls.name)
                     global_names.setdefault(tlb.name, []).append(cls.name)
                     project.global_objects["%s.%s" % (tlb.name, cls.name)] = externals
-            except Exception, err:
+            except Exception as err:
                 self.logText("Failed while reading library '%s': %s" % (path, err))
             # -- end -- << Resolve references >>
 
@@ -230,7 +230,7 @@ class BaseParser(object):
         container.assignParent(project)
         try:
             self.code_structure = vbparser.parseVB(self.code_block, container=container)		
-        except vbparser.VBParserError, err:
+        except vbparser.VBParserError as err:
             log.error("Unable to parse '%s'(%s): %s" % (self.name, self.filename, err))
             self.code_structure = vbparser.VBMessage(
                         messagetype="ParsingError",
@@ -340,7 +340,7 @@ class FormParser(BaseParser):
                             event.updateMethodDefinition(item, name)
 
 
-            self.code_structure.local_names.extend(distinct_names.keys())
+            self.code_structure.local_names.extend(list(distinct_names.keys()))
 
             # Probably need to get self.form._getControlList()
             # then strip front of name (vbobj_txtName) and add to
@@ -457,8 +457,8 @@ class FormParser(BaseParser):
             log.debug(self.form_data)
         self.namespace = {"resource" : resource, "Object" : NameSpace()}
         try:
-            exec self.form_data.replace("\r", "") in self.namespace
-        except Exception, err:
+            exec(self.form_data.replace("\r", ""), self.namespace)
+        except Exception as err:
             log.error("Failed during conversion of '%s'" % self.name)
             self.form = None
         else:
@@ -648,7 +648,7 @@ def main():
     # << Parse options >>
     try:
         opts, args = getopt.getopt(sys.argv[1:], "dfchvst:", ["help", "code", "version", "supports"])
-    except getopt.GetoptError, err:
+    except getopt.GetoptError as err:
         # print help information and exit:
         usage(error=err)
         sys.exit(2)
@@ -667,7 +667,7 @@ def main():
         if o in ("-c", "--code"):
             do_code = 1
         if o in ("-v" , "--version"):
-            print "%s v%s" % (__app_name__, __version__)
+            print("%s v%s" % (__app_name__, __version__))
             sys.exit(2)
         if o in ("-t", ):
             target = a
@@ -676,7 +676,7 @@ def main():
         if o in ("-d", ):
             Config.setLocalOveride("General", "DumpFormData", "Yes")
 
-    if len(args) <> 2:
+    if len(args) != 2:
         usage("Converter needs two arguments (a file and a path)")
         sys.exit(2)
 
@@ -684,10 +684,10 @@ def main():
     # -- end -- << Parse options >>	
     # << Validate arguments >>
     if not os.path.isfile(project_file):
-        print "First parameter must be a valid VB file"
+        print("First parameter must be a valid VB file")
         sys.exit(2)
     elif not os.path.isdir(destination_dir):
-        print "Second argument must be a valid directory"
+        print("Second argument must be a valid directory")
         sys.exit(2)
     # -- end -- << Validate arguments >>
     TargetResource = importTarget(target)
@@ -699,7 +699,7 @@ def importTarget(target):
     """Import the target resource"""
     global event_translator, resource
 
-    from targets.pythoncard	import resource
+    from .targets.pythoncard	import resource
     TargetResource = resource.Resource
 
     try:
@@ -717,8 +717,8 @@ def renderTo(conv, destination_dir, do_code=1):
 def usage(error=None):
     """Print usage statement"""
     if error:
-        print "\n\nInvalid option! (%s)" % error
-    print "\nconverter -chvs project.vpb destination\n\n" \
+        print("\n\nInvalid option! (%s)" % error)
+    print("\nconverter -chvs project.vpb destination\n\n" \
           "   project.vbp = VB project file\n" \
           "   desination  = Destination directory for files\n\n" \
           "   -tTarget = Target platform" \
@@ -726,18 +726,18 @@ def usage(error=None):
           "   -v = Print version and exit\n" \
           "   -h = Print this message\n" \
           "   -f = Just process the given file\n" \
-          "   -d = Dump out the form definition classes\n"
+          "   -d = Dump out the form definition classes\n")
 # << VBConverter >> (15 of 15)
 def supports():
     """Show a list of controls supported by this converter"""
-    print "This command line option is not currently available"
+    print("This command line option is not currently available")
     return
-    print "\nSupported controls\n"
+    print("\nSupported controls\n")
     for control in possible_controls:
         ctrl = possible_controls[control]
-        if ctrl <> VBUnknownControl:
-            print "   - %s (as %s)" % (control, ctrl.pycard_name)
-    print
+        if ctrl != VBUnknownControl:
+            print("   - %s (as %s)" % (control, ctrl.pycard_name))
+    print()
 # -- end -- << VBConverter >>
 
 if __name__ == "__main__":

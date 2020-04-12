@@ -16,9 +16,9 @@ class Resource(vb2py.BaseResource):
     # << class Resource methods >> (1 of 2)
     def __init__(self, *args, **kw):
         """Initialize the PythonCard resource"""
-        print "Resource init"
+        print("Resource init")
         vb2py.BaseResource.__init__(self, *args, **kw)
-        print "After supre"
+        print("After supre")
         self._rsc = eval(open("%s.txt" % self.basesourcefile, "r").read())
         self._rsc["controls"] = []
         self._code = open("%s.py" % self.basesourcefile, "r").read()

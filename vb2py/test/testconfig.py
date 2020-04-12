@@ -7,7 +7,7 @@ import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff
 
 import vb2py.config
-import ConfigParser
+import configparser
 from vb2py.vbparser import convertVBtoPython
 import re
 
@@ -55,7 +55,7 @@ class TestConfig(unittest.TestCase):
                               ("Functionsyy", "ReturnVariableName"),
                               ("Labelsyy", "IgnoreLabels"),
                              ):
-            self.assertRaises(ConfigParser.NoSectionError, self.c.__getitem__, (section, name))
+            self.assertRaises(configparser.NoSectionError, self.c.__getitem__, (section, name))
     # << Config tests >> (3 of 14)
     def testSetLocalOveride(self):
         """testSetLocalOveride: should be able to overide config items"""
@@ -76,7 +76,7 @@ class TestConfig(unittest.TestCase):
                               ("Functillons", "ReturnVariableName"),
                               ("Labelkks", "IgnoreLabels"),
                              ):
-            self.assertRaises(ConfigParser.NoSectionError, self.c.setLocalOveride, section, name, "ok")
+            self.assertRaises(configparser.NoSectionError, self.c.setLocalOveride, section, name, "ok")
 
     def testRemoveLocalOverideDoesntExist(self):
         """testRemoveLocalOverideDoesntExist: should raise an error if remove overide non-existant value"""
@@ -84,7 +84,7 @@ class TestConfig(unittest.TestCase):
                               ("Functillons", "ReturnVariableName"),
                               ("Labelkks", "IgnoreLabels"),
                              ):
-            self.assertRaises(ConfigParser.NoSectionError, self.c.removeLocalOveride, section, name)
+            self.assertRaises(configparser.NoSectionError, self.c.removeLocalOveride, section, name)
     # << Config tests >> (5 of 14)
     def testRemoveLocalOveride(self):
         """testRemoveLocalOveride: should be able to remove overide of config items"""
@@ -219,7 +219,7 @@ class TestConfig(unittest.TestCase):
         c_2 = convertVBtoPython(self.code3)
         #
         r = re.compile("_ret")
-        self.assert_(len(r.findall(c_1)) > 1)	
+        self.assertTrue(len(r.findall(c_1)) > 1)	
         self.assertEqual(len(r.findall(c_2)), 0)
     # -- end -- << Config tests >>
     def testReturnStatements(self):

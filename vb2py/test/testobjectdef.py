@@ -43,7 +43,7 @@ class TestObjectDef(unittest.TestCase):
         a = vbObjectInitialize((10,), Integer)		
         for i in range(0, 11):
             a[i] = i
-        for i, j in zip(range(11), a):
+        for i, j in zip(list(range(11)), a):
             self.assertEqual(i, j)
     # << ObjectDef tests >> (6 of 8)
     def test1DIterationOffsetRange(self):
@@ -51,7 +51,7 @@ class TestObjectDef(unittest.TestCase):
         a = vbObjectInitialize(((5, 10),), Integer)		
         for i in range(5, 11):
             a[i] = i
-        for i, j in zip(range(5, 11), a):
+        for i, j in zip(list(range(5, 11)), a):
             self.assertEqual(i, j)
     # << ObjectDef tests >> (7 of 8)
     def test2DIteration(self):
@@ -60,8 +60,8 @@ class TestObjectDef(unittest.TestCase):
         for i in range(0, 11):
             for j in range(0, 21):
                 a[i, j] = i*j
-        for i, arr in zip(range(11), a):
-            for j, result in zip(range(21), arr):
+        for i, arr in zip(list(range(11)), a):
+            for j, result in zip(list(range(21)), arr):
                 self.assertEqual(i*j, result)
     # << ObjectDef tests >> (8 of 8)
     def test2DIterationOffsetRange(self):
@@ -70,8 +70,8 @@ class TestObjectDef(unittest.TestCase):
         for i in range(5, 11):
             for j in range(10, 21):
                 a[i, j] = i*j
-        for i, arr in zip(range(5, 11), a):
-            for j, result in zip(range(10, 21), arr):
+        for i, arr in zip(list(range(5, 11)), a):
+            for j, result in zip(list(range(10, 21)), arr):
                 self.assertEqual(i*j, result)
     # -- end -- << ObjectDef tests >>
 

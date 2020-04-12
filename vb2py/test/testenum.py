@@ -1,4 +1,4 @@
-from testframework import *
+from .testframework import *
 
 # << Enum tests >>
 # Simple test

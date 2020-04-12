@@ -21,38 +21,21 @@ def dologging():
     vb2py.parserclasses.log.setLevel(-100)
 
 
-try:
-    from win32clipboard import *
-    import win32con
-
-    def getClipBoardText():
-        """Get text from the clipboard"""
-        OpenClipboard()
-        try:
-            got = GetClipboardData(win32con.CF_UNICODETEXT)
-        finally:
-            CloseClipboard()
-        return str(got)
-    v = getClipBoardText
-except ImportError:
-    print "Clipboard copy not working!"
-
-
 def pp(ast, text, indent=0):
     """Print out a pretified version of the ast"""
     if not ast:
-        print
+        print()
         return None
     cleaned_ast = []
     for entry in ast:
         if isinstance(entry, vb2py.vbparser.VBFailedElement):
-            print (' ' * indent), entry
+            print((' ' * indent), entry)
         elif len(entry) == 1:
-            print (' ' * indent),
+            print((' ' * indent), end=' ')
             cleaned_ast.append((indent, pp(entry, text, indent + 1)))
         elif len(entry) == 4:
             production, start, end, contents = entry
-            print ' ' * indent + nice_text(text, production, start, end)
+            print(' ' * indent + nice_text(text, production, start, end))
             cleaned_ast.append((indent, nice_text(text, production, start, end), pp(contents, text, indent + 1)))
         else:
             import pdb; pdb.set_trace()
@@ -65,9 +48,9 @@ def n(text, *args, **kw):
     ast = t(text, *args, **kw)
     pp(ast, text)
     try:
-        print c(text, *args, **kw)
+        print(c(text, *args, **kw))
     except:
-        print 'Cannot convert text'
+        print('Cannot convert text')
 
 
 def nice_text(text, name, start, finish):
@@ -88,4 +71,4 @@ def unsafe():
 
 if __name__ == "__main__":
     def c(*args, **kw):
-        print convertVBtoPython(*args, **kw)
+        print(convertVBtoPython(*args, **kw))

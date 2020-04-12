@@ -55,7 +55,7 @@ def findDirectives(code):
 def sendOutput(text, lines, verbose):
     """Send some output"""
     if verbose == 1:
-        print text
+        print(text)
     lines.append(text)
 # << Functions >> (5 of 5)
 def testCode(code, verbose=0):
@@ -71,7 +71,7 @@ def testCode(code, verbose=0):
         values = eval(value_code)
         for value in values:
             #
-            if var <> "_dummy":
+            if var != "_dummy":
                 line = "%s = %s" % (var, repr(value).replace("'", '"'))
                 if verbose:
                     sendOutput("Doing '%s'" % line, output, verbose)
@@ -83,7 +83,7 @@ def testCode(code, verbose=0):
             # Run VB	
             try:
                 runTestCode(code, vbhost)
-            except Exception, vberr:
+            except Exception as vberr:
                 vbcode_failed = 1
             else:
                 vbcode_failed = 0
@@ -93,8 +93,8 @@ def testCode(code, verbose=0):
             vars = findVars(python)
             namespace = {var : value}
             try:
-                exec python in namespace
-            except Exception, pythonerr:
+                exec(python, namespace)
+            except Exception as pythonerr:
                 pythoncode_failed = 1
             else:
                 pythoncode_failed = 0
@@ -115,18 +115,18 @@ def testCode(code, verbose=0):
                         if verbose:
                             sendOutput("%s\t%s\t%s" % (name, repr(vbhost.eval(name)), repr(namespace[name])), output, verbose)
                         else:
-                            if vbhost.eval(name) <> namespace[name]:
+                            if vbhost.eval(name) != namespace[name]:
                                 raise ValueNotEqual("%s: VB(%s), Python(%s)\n%s" % (
                                         name, repr(vbhost.eval(name)), repr(namespace[name]), python))
 
     if verbose==1:
         # Compare
-        print "VB Code\n%s\n\n" % code
-        print "Python Code\n%s\n\n" % python
+        print("VB Code\n%s\n\n" % code)
+        print("Python Code\n%s\n\n" % python)
 
     return output
 # -- end -- << Functions >>
 
 if __name__ == "__main__":
     testCode(code, verbose=1)			
-    print "Finished"
+    print("Finished")

@@ -23,7 +23,7 @@
 # << Declarations >>
 import re
 from Plex import *
-from StringIO import StringIO
+from io import StringIO
 # -- end -- << Declarations >>
 # << VBCode classes >> (1 of 3)
 class BaseVariable(object):
@@ -87,13 +87,13 @@ class BaseNameSpace(object):
 		scan = Scanner(self.lexicon, s)
 		while 1:
 			tok = scan.read()
-			print tok
+			print(tok)
 			if tok[0] == "declare":
 				v = StringIO(tok[1])
 				inner_scan = Scanner(self.sub_lex, v)
 				while 1:
 					inner_tok = inner_scan.read()
-					print inner_tok
+					print(inner_tok)
 					if inner_tok[0] is None:
 						break
 			if tok[0] is None:
@@ -124,6 +124,6 @@ if __name__ == "__main__":
 	m = BaseModule()
 	m.initFromText(text)
 	for v in m.public_names:
-		print "Public ", v.name, v.vartype
+		print("Public ", v.name, v.vartype)
 	for v in m.private_names:
-		print "Private ", v.name, v.vartype
+		print("Private ", v.name, v.vartype)
