@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 #
                 print('[%5.1fs]' % duration, end=' ')
                 #
-                if result.find("FAILED ") > -1:
+                if result.find(b"FAILED ") > -1:
                     try:
                         num = int(fail.match(result).groups()[0])
                         num_fail = int(fail.match(result).groups()[1])
