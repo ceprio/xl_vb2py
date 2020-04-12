@@ -32,7 +32,7 @@ import vbparser
 twips_per_pixel = 15
 
 __app_name__ = "VB2Py"
-__version__ = "0.3.0.6"
+__version__ = "0.3.0.7"
 
 # Try to import ctypes module to read type libraries
 try:

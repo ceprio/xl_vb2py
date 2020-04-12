@@ -7,7 +7,6 @@
     <orderEntry type="module" module-name="vb2py-git-files" />
   </component>
   <component name="TestRunnerService">
-    <option name="projectConfiguration" value="Nosetests" />
     <option name="PROJECT_TEST_RUNNER" value="Nosetests" />
   </component>
 </module>
