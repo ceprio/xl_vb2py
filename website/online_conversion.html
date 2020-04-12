@@ -139,7 +139,7 @@
                                 <label class="col-sm-2 col-form-label">
                                     Advanced Options
                                 </label>
-                                <button id="advanced-options-button" type="button" class="col-sm-2 btn btn-info" data-toggle="modal" data-target="#conversion-options" value="Open">
+                                <button id="advanced-options-button" type="button" class="col-sm-2 btn btn-info" data-toggle="modal" data-target="#conversion-options" value="Open" onclick="recordOptionsOpen()">
                                     Open ...
                                 </button>
                             </div>
@@ -397,6 +397,7 @@
     var vb_marker = null;
     var py_marker = null;
     var unchanged_hash = hashFnv32a(vbeditor.getValue());
+    let start_time = null;
 
 
     var DEVELOPMENT = !location.host.startsWith('vb2py');
@@ -425,6 +426,13 @@
     });
 
 
+    function recordOptionsOpen() {
+        if (!DEVELOPMENT) {
+            gtag('event', 'Options', {
+                'event_category': 'Open Options',
+            });
+        }
+    }
 
     function applyConfigChanges(also_convert_code) {
         $('.form-control').each(function (idx, item) {
@@ -605,8 +613,23 @@
             start_status_checker();
         };
 
+        if (!DEVELOPMENT && window.performance) {
+            start_time = window.performance.now();
+        }
+
         $.post(HOST + url, {'text': vbtext, 'style': conversion_style, 'class_name': class_name,
             'failure-mode': failure_mode, 'dialect': dialect, 'options': config}, function (data) {
+            if (!DEVELOPMENT && window.performance) {
+                let end_time = window.performance.now();
+                let duration = end_time - start_time;
+                let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
+                gtag('event', 'timing_complete', {
+                    'name': 'Conversion',
+                    'value': duration,
+                    'event_category': category,
+                    'event_label': label,
+                })
+            }
             if (USE_STATUS_CHECK) {
                 stop_status_checker();
             };
