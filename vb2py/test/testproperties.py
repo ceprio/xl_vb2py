@@ -1,4 +1,4 @@
-from .complexframework import *
+from vb2py.test.complexframework import *
 
 # << Property tests >> (1 of 3)
 #

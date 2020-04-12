@@ -1,4 +1,4 @@
-from .complexframework import *
+from vb2py.test.complexframework import *
 
 # << Private tests >> (1 of 4)
 #

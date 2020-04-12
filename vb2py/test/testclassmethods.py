@@ -1,4 +1,4 @@
-from .complexframework import *
+from vb2py.test.complexframework import *
 
 
 # << ClassMethod tests >> (1 of 7)
