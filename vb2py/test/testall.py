@@ -4,6 +4,8 @@ import sys
 import re
 import time
 import vb2py.utils
+import subprocess
+
 
 bcolors = vb2py.utils.bcolors
 
@@ -51,7 +53,10 @@ if __name__ == "__main__":
                 print(((bcolors.ENDC + "Running '%s' " % file) + bcolors.OKGREEN).ljust(55, '.'), end=' ')
                 #
                 start_time = time.time()
-                pi, po, pe = os.popen3(fname)
+                p = subprocess.Popen(fname, shell=True, stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    close_fds=True)
+                pi, po, pe = (p.stdin, p.stdout, p.stderr)
                 result = pe.read()
                 duration = time.time() - start_time
                 #
