@@ -754,7 +754,7 @@ Fix = Int
 CStr = Str = str
 CSng = CDbl = float
 Len = len
-StrComp = cmp
+StrComp = lambda a, b: (a > b) - (a < b)
 Round = round
 
 #
