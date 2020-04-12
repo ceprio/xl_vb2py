@@ -48,16 +48,26 @@ class ConversionHandler(object):
     """A server to convert files"""
 
     @staticmethod
-    def convertSingleFile(text, container=None, style='vb', returnpartial=True, dialect='VB6'):
-        """Convert a single file of text"""
+    def convertSingleFile(text, container=None, style='vb', returnpartial=True, dialect='VB6', options=None):
+        """Convert a single file of text
+        :param options:
+        """
         if container is None:
             container = parserclasses.VBModule()
         ConversionHandler.setPythonic(style)
+        if options:
+            ConversionHandler.setOptions(options)
         ConversionHandler.clearHistory()
         try:
             return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial, dialect=dialect)
         except vbparser.VBParserError, err:
             raise ConversionError('Error converting VB. %s' % err)
+
+    @staticmethod
+    def setOptions(options):
+        """Set some user defined options"""
+        for section, name, value in options:
+            Config.setLocalOveride(section, name, value)
 
     @staticmethod
     def setPythonic(style):
@@ -137,6 +147,7 @@ def singleModule(module_type, dot_net_module_type):
         class_name = request.values.get('class_name', 'MyClass')
         failure_mode = request.values.get('failure-mode', 'line-by-line')
         requested_dialect = request.values.get('dialect', 'detect')
+        options = json.loads(request.values.get('options', '[]').strip())
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
@@ -160,12 +171,8 @@ def singleModule(module_type, dot_net_module_type):
             try:
                 if failure_mode == 'fail-safe':
                     utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
-                result = ConversionHandler.convertSingleFile(
-                    stripped_text,
-                    module_type,
-                    conversion_style,
-                    dialect=dialect,
-                )
+                result = ConversionHandler.convertSingleFile(stripped_text, module_type, conversion_style,
+                                                             dialect=dialect, options=options)
             finally:
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'

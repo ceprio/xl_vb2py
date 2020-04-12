@@ -718,6 +718,52 @@ B =
         self.assertEqual(True, data['parsing_failed'])
         self.assertEqual([3, 5, 6, 8], data['parsing_stopped_vb'])
 
-    
+    def testCanSendYesNoOptions(self):
+        """testCanSendYesNoOptions: should be able to send yes/no options"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            Return A
+        End Function      
+        '''
+        default_options = """[
+                ["Classes", "ExplicitlyTypeLiterals", "Yes"],
+                ["Functions", "JustUseReturnStatement", "No"]
+            ]"""
+        non_default_options = """[
+                ["Classes", "ExplicitlyTypeLiterals", "No"],
+                ["Functions", "JustUseReturnStatement", "Yes"]
+            ]"""
+        #
+        # Out of the box defaults
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe', 'dialect': 'VB.NET',
+        })
+        data = json.loads(result.data)
+        self.assertIn('Integer(20)', data['result'])
+        self.assertIn('return _ret', data['result'])
+        #
+        # Send non-default
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe', 'dialect': 'VB.NET',
+            'options': non_default_options,
+        })
+        data = json.loads(result.data)
+        self.assertNotIn('Integer(20)', data['result'])
+        self.assertNotIn('return _ret', data['result'])
+        #
+        # Send default
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe', 'dialect': 'VB.NET',
+            'options': default_options,
+        })
+        data = json.loads(result.data)
+        self.assertIn('Integer(20)', data['result'])
+        self.assertIn('return _ret', data['result'])
+
+
 if __name__ == '__main__':
     main()
