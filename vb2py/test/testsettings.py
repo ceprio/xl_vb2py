@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << Settings tests >> (1 of 3)
 # Simple test of get with default

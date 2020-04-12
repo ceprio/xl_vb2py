@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << While tests >> (1 of 5)
 # Simple while / wend

@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 import vb2py.utils
 import vb2py.vbparser
 import vb2py.parserclasses

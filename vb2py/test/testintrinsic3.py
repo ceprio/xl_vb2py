@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 import sys
 
 # << Intrinsic tests >> (1 of 6)

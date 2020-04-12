@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << Enum tests >>
 # Simple test

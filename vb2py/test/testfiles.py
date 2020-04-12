@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 import os 
 import vb2py.utils
 PATH = vb2py.utils.rootPath()

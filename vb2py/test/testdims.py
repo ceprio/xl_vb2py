@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 #
 # Array of integers
 tests.append(("""

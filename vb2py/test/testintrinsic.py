@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << Intrinsic tests >> (1 of 10)
 # Concatenation

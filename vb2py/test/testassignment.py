@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << Assignment tests >> (1 of 8)
 numeric = [

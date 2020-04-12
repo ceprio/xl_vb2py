@@ -2,7 +2,7 @@
 
 """Test the conversion server"""
 
-from .testframework import *
+from vb2py.test.testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
 import vb2py.config

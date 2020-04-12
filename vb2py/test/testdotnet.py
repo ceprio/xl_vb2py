@@ -2,7 +2,7 @@
 
 #
 # Turn off logging in extensions (too loud!)
-from .testframework import *
+from vb2py.test.testframework import *
 import vb2py.extensions
 import vb2py.utils
 vb2py.extensions.disableLogging()

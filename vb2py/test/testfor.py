@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << For tests >> (1 of 4)
 # Simple test - note we are not interested in the value of the loop variable at the end of the loop

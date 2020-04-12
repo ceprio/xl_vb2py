@@ -1,4 +1,4 @@
-from .testframework import *
+from vb2py.test.testframework import *
 
 # << With tests >> (1 of 2)
 # Simple test
