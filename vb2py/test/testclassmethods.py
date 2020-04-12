@@ -303,7 +303,7 @@ tests.append((
         End Sub
 
         """,
-        ("$assert python.find('def __del__(self') <> -1, '__del__ method not created'", )
+        ("$assert python.find('def __del__(self') != -1, '__del__ method not created'", )
 ))
 # << ClassMethod tests >> (6 of 7)
 #
