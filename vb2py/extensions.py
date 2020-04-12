@@ -47,7 +47,7 @@ def loadAllPlugins():
                     log.warn("Error creating plugin '%s' (%s). Class skipped" % (cls, err))
     #
     # Now sort
-    mods.sort()                
+    mods.sort(key=lambda plugin: plugin.order)
     return mods
 # << Plug-in functions >> (2 of 2)
 def disableLogging():
