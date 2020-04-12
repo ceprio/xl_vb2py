@@ -757,9 +757,6 @@ Len = len
 StrComp = cmp
 Round = round
 
-True = 1
-False = 0
-
 #
 # Command line parameters are retrieved as a whole
 Command = " ".join(sys.argv[1:])
