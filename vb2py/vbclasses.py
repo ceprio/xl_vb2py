@@ -324,7 +324,7 @@ class VBArray(list):
             try:
                 element.erase()
             except AttributeError:
-                self[:] = []
+                self.clear()
                 self.__init__((self._min, self._max), self.init_type)
     # -- end -- << VBArray methods >>
 # << VB Classes >> (15 of 16)
