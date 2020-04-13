@@ -1,8 +1,8 @@
-from PythonCard import registry
-PythonCardRegistry = registry.Registry.getInstance()
+from vb2py.PythonCard import registry
+vb2py.PythonCardRegistry = registry.Registry.getInstance()
 
 def Register(control):
-    """Register a control for PythonCard"""
+    """Register a control for vb2py.PythonCard"""
     #
     #import pdb; pdb.set_trace()
-    PythonCardRegistry.register(control)
+    vb2py.PythonCardRegistry.register(control)

@@ -15,7 +15,7 @@ class Resource(vb2py.BaseResource):
 
     # << class Resource methods >> (1 of 2)
     def __init__(self, *args, **kw):
-        """Initialize the PythonCard resource"""
+        """Initialize the vb2py.PythonCard resource"""
         print("Resource init")
         vb2py.BaseResource.__init__(self, *args, **kw)
         print("After supre")

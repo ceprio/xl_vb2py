@@ -1,7 +1,7 @@
 # << Documentation >>
-"""VB2Py - VB to Python + PythonCard conversion
+"""VB2Py - VB to Python + vb2py.PythonCard conversion
 
-This application converts VB projects to Python and PythonCard projects.
+This application converts VB projects to Python and vb2py.PythonCard projects.
 The form layouts are converted and you can optionally convert the VB
 to Python, including translation of the VB events.
 
@@ -334,7 +334,7 @@ class FormParser(BaseParser):
                     # Look for local definitions of methods which match the VB events for this object
                     for item in self.code_structure.locals:
                         if event_name % name == item.identifier:
-                            # Add a name substitution to translate references to this name to the PythonCard version
+                            # Add a name substitution to translate references to this name to the vb2py.PythonCard version
                             self.code_structure.name_substitution[event_name % name] = "self." + new_name % name
                             # Change the definition
                             event.updateMethodDefinition(item, name)
@@ -654,7 +654,7 @@ def main():
         sys.exit(2)
 
     do_code = 0
-    target = "PythonCard"
+    target = "vb2py.PythonCard"
     parser = ProjectParser
 
     for o, a in opts:
@@ -699,7 +699,7 @@ def importTarget(target):
     """Import the target resource"""
     global event_translator, resource
 
-    from .targets.pythoncard	import resource
+    from .targets.vb2py.PythonCard	import resource
     TargetResource = resource.Resource
 
     try:

@@ -1,10 +1,10 @@
 """The main form for the application"""
 
-from PythonCard import model
+from vb2py.PythonCard import model
 
 # Allow importing of our custom controls
-import PythonCard.resource
-PythonCard.resource.APP_COMPONENTS_PACKAGE = "vb2py.targets.pythoncard.vbcontrols"
+import vb2py.PythonCard.resource
+vb2py.PythonCard.resource.APP_COMPONENTS_PACKAGE = "vb2py.targets.vb2py.PythonCard.vbcontrols"
 
 class Background(model.Background):
 

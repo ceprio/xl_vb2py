@@ -1,12 +1,12 @@
-from vb2py.targets.pythoncard.controlclasses import VBWrapped, VBWidget
-from vb2py.targets.pythoncard import Register
+from vb2py.targets.vb2py.PythonCard.controlclasses import VBWrapped, VBWidget
+from vb2py.targets.vb2py.PythonCard import Register
 import vb2py.logger
 log = vb2py.logger.getLogger("VBComboBox")
 
-from PythonCard.components import combobox
+from vb2py.PythonCard.components import combobox
 from wxPython import wx
 import sys
-from PythonCard import event, registry, widget
+from vb2py.PythonCard import event, registry, widget
 
 
 class VBComboBox(VBWidget): 
@@ -42,7 +42,7 @@ class VBComboBox(VBWidget):
     def AddItem(self, item, position=None):
         """Add an item to the list
 
-        We cannot just map this to a PythonCard control event because it only has
+        We cannot just map this to a vb2py.PythonCard control event because it only has
         an 'append' and an 'insertItems' method, which isn't exactly the same
 
         """
@@ -54,7 +54,7 @@ class VBComboBox(VBWidget):
     def getNumber(self):
         """Get the number of items in the Combo
 
-        This doesn't appear to be in the PythonCard control
+        This doesn't appear to be in the vb2py.PythonCard control
 
         """
         return len(self.items)
@@ -62,7 +62,7 @@ class VBComboBox(VBWidget):
     def getSelectionIndex(self):
         """Get the index of the currently selected item
 
-        This doesn't appear to be in the PythonCard control
+        This doesn't appear to be in the vb2py.PythonCard control
 
         """
         try:
@@ -73,7 +73,7 @@ class VBComboBox(VBWidget):
     def delete(self, position):
         """Remove the specified item from the Combo
 
-        This doesn't appear to be in the PythonCard control
+        This doesn't appear to be in the vb2py.PythonCard control
 
         """
         del(self.items[position]) # TODO - this doesn't actually work

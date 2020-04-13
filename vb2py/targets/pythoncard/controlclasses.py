@@ -1,11 +1,11 @@
-"""Classes to support mapping of VB Control Properties to PythonCard
+"""Classes to support mapping of VB Control Properties to vb2py.PythonCard
 
 The classes fall into two types,
 - a MetaClass VBWrapped to create wrapped classes
-- a ProxyClass to sit between the PythonCard class and the Mimicked VB one
+- a ProxyClass to sit between the vb2py.PythonCard class and the Mimicked VB one
 
-Although it may appear to be simpler to just subclass the PythonCard classes there
-are two things that work against it. The main thing is that the PythonCard classes
+Although it may appear to be simpler to just subclass the vb2py.PythonCard classes there
+are two things that work against it. The main thing is that the vb2py.PythonCard classes
 must be old style classes. This means that you cannot use properties, which are
 required to map things like .Top, .Width to .position[0] etc.
 
@@ -14,7 +14,7 @@ turns out to be really slow (probably because of an interaction between this hoo
 and a hook in a lower class which is doing a similar thing.
 
 The solution is to use a proxy class (VBWidget) which hands off most references to 
-the PythonCard class. The VBWidget is a new style class and can therefore use properties.
+the vb2py.PythonCard class. The VBWidget is a new style class and can therefore use properties.
 
 The metaclass (VBWrapped) is used to automatically generate properties for names which
 are similar ('Text' -> 'text') and names which require mapping ('Left' -> 'position[1]').
@@ -81,7 +81,7 @@ class VBWidget(object):
         self._proxy[name] = value
 # << classes >> (2 of 2)
 class VBWrapped(type): 
-    """A meta class to wrap PythonCard classes so VB converted code can use them""" 
+    """A meta class to wrap vb2py.PythonCard classes so VB converted code can use them"""
 
     # << VBWrapped methods >> (1 of 6)
     def __new__(cls, name, bases, dict): 
@@ -100,7 +100,7 @@ class VBWrapped(type):
         # Method names 
         for method_name in obj._method_translations: 
             setattr(obj, method_name, cls.createMethodLookup(method_name)) 
-        # Attributes which are properties in PythonCard
+        # Attributes which are properties in vb2py.PythonCard
         for attr_name in obj._name_to_method_translations: 
             set = cls.createAttributeSet(attr_name)
             setattr(obj, attr_name, property(fget=cls.createAttributeLookup(attr_name),

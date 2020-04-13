@@ -23,7 +23,7 @@ class Resource(BaseResource):
     """Represents a Python Card resource object"""
 
     # << PyCardResource declarations >>
-    target_name = "pythoncard"
+    target_name = "vb2py.PythonCard"
     name = "basePyCardResource"
 
     form_class_name = "MAINFORM"
@@ -32,7 +32,7 @@ class Resource(BaseResource):
     # -- end -- << PyCardResource declarations >>
     # << class PyCardResource methods >> (1 of 2)
     def __init__(self, *args, **kw):
-        """Initialize the PythonCard resource"""
+        """Initialize the vb2py.PythonCard resource"""
         BaseResource.__init__(self, *args, **kw)
         self._rsc = eval(open("%s.txt" % self.basesourcefile, "r").read().replace("\r\n", "\n"))
         self._code = open("%s.py" % self.basesourcefile, "r").read()

@@ -1,12 +1,12 @@
-from vb2py.targets.pythoncard.controlclasses import VBWrapped, VBWidget
-from vb2py.targets.pythoncard import Register
+from vb2py.targets.vb2py.PythonCard.controlclasses import VBWrapped, VBWidget
+from vb2py.targets.vb2py.PythonCard import Register
 import vb2py.logger
 log = vb2py.logger.getLogger("VBImageList")
 
-from PythonCard.components import statictext
+from vb2py.PythonCard.components import statictext
 from wxPython import wx
 import sys
-from PythonCard import event, registry, widget
+from vb2py.PythonCard import event, registry, widget
 
 
 class VBImageList(VBWidget): 
@@ -27,7 +27,7 @@ class VBImageList(VBWidget):
     _method_translations = {			
     }
 
-    _proxy_for = statictext.StaticText # Not a PythonCard object at all but this at least works!
+    _proxy_for = statictext.StaticText # Not a vb2py.PythonCard object at all but this at least works!
 
     # << VBImageList methods >>
     pass

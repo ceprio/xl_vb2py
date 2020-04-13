@@ -4,10 +4,10 @@ except ImportError:
     import extensions
 
 class TranslateAttributes(extensions.SystemPluginREPlugin):
-    """Plugin to convert attribute names from VB to Pythoncard
+    """Plugin to convert attribute names from VB to vb2py.PythonCard
 
     There are attribute like 'Text' and 'Visible' which are in lower
-    case in Pythoncard and others are simply different. We do the conversion
+    case in vb2py.PythonCard and others are simply different. We do the conversion
     here. 
 
     Note that this means we will convert these names even if they don't belong

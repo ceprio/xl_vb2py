@@ -1,6 +1,6 @@
 """Install vb2Py
 
-Much of the following code is copied from the PythonCard installation script
+Much of the following code is copied from the vb2py.PythonCard installation script
 because the original setup.py would copy files to all sorts of weird location
 on Linux.
 
@@ -69,7 +69,7 @@ setup(name=APPLICATION_NAME,
       author_email="paulpaterson@users.sourceforge.net",
       url="http://vb2py.sourceforge.net",
       packages=["vb2py", "vb2py.test", "vb2py.sandbox", 
-                "vb2py.plugins", "vb2py.targets", "vb2py.targets.pythoncard"],
+                "vb2py.plugins", "vb2py.targets", "vb2py.targets.vb2py.PythonCard"],
       package_dir={APPLICATION_NAME: '.'},
       license="BSD",
       cmdclass = { 'install_data': smart_install_data},

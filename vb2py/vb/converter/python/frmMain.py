@@ -6,7 +6,7 @@ __version__ = "$Revision: 1.2 $"
 __date__ = "$Date: 2003/08/04 00:09:15 $"
 """
 
-from PythonCardPrototype import model
+from vb2py.PythonCardPrototype import model
 
 #
 # VB constants
@@ -28,5 +28,5 @@ class MAINFORM(model.Background):
 # -- end -- << basesource methods >>
 
 if __name__ == '__main__':
-	app = model.PythonCardApp(MAINFORM)
+	app = model.vb2py.PythonCardApp(MAINFORM)
 	app.MainLoop()

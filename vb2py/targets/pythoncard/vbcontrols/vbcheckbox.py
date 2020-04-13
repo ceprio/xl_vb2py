@@ -1,12 +1,12 @@
-from vb2py.targets.pythoncard.controlclasses import VBWrapped, VBWidget
-from vb2py.targets.pythoncard import Register
+from vb2py.targets.vb2py.PythonCard.controlclasses import VBWrapped, VBWidget
+from vb2py.targets.vb2py.PythonCard import Register
 import vb2py.logger
 log = vb2py.logger.getLogger("VBCheckBox")
 
-from PythonCard.components import checkbox
+from vb2py.PythonCard.components import checkbox
 from wxPython import wx
 import sys
-from PythonCard import event, registry, widget
+from vb2py.PythonCard import event, registry, widget
 
 
 class VBCheckBox(VBWidget): 

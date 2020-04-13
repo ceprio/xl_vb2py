@@ -1,12 +1,12 @@
-from vb2py.targets.pythoncard.controlclasses import VBWrapped, VBWidget
-from vb2py.targets.pythoncard import Register
+from vb2py.targets.vb2py.PythonCard.controlclasses import VBWrapped, VBWidget
+from vb2py.targets.vb2py.PythonCard import Register
 import vb2py.logger
 log = vb2py.logger.getLogger("VBListBox")
 
-from PythonCard.components import list
+from vb2py.PythonCard.components import list
 from wxPython import wx
 import sys
-from PythonCard import event, registry, widget
+from vb2py.PythonCard import event, registry, widget
 
 
 class VBList(VBWidget): 
@@ -42,7 +42,7 @@ class VBList(VBWidget):
     def AddItem(self, item, position=None):
         """Add an item to the list
 
-        We cannot just map this to a PythonCard control event because it only has
+        We cannot just map this to a vb2py.PythonCard control event because it only has
         an 'append' and an 'insertItems' method, which isn't exactly the same
 
         """

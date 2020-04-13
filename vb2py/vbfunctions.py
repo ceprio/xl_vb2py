@@ -297,7 +297,7 @@ def Imp(x, y):
         return result
 
 # << VBFunctions >> (24 of 57)
-from PythonCard.graphic import Bitmap
+from vb2py.PythonCard.graphic import Bitmap
 
 def LoadPicture(filename):
     """Load an image as a bitmap for display in a BitmapImage control"""
@@ -671,7 +671,7 @@ def vbGetEventArgs(names, arguments):
     """Return arguments passed in an event
 
     VB Control events have parameters passed in the call, eg MouseMove(Button, Shift, X, Y).
-    In PythonCard the event parameters are all passed as a single event object. We
+    In vb2py.PythonCard the event parameters are all passed as a single event object. We
     can easily unpack the attributes back to the values in the Event Handler but
     we also have to account for the fact that someone might call the Handler
     directly and therefore assume that they can pass parameters individually.

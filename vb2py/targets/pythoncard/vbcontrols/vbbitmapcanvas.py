@@ -1,12 +1,12 @@
-from vb2py.targets.pythoncard.controlclasses import VBWrapped, VBWidget
-from vb2py.targets.pythoncard import Register
+from vb2py.targets.vb2py.PythonCard.controlclasses import VBWrapped, VBWidget
+from vb2py.targets.vb2py.PythonCard import Register
 import vb2py.logger
 log = vb2py.logger.getLogger("VBBitmapCanvas")
 
-from PythonCard.components import bitmapcanvas
+from vb2py.PythonCard.components import bitmapcanvas
 from wxPython import wx
 import sys
-from PythonCard import event, registry, widget
+from vb2py.PythonCard import event, registry, widget
 
 
 class VBBitmapCanvas(VBWidget): 
@@ -39,7 +39,7 @@ class VBBitmapCanvas(VBWidget):
             try:
                 bitmap.setSize(self.size)
             except NotImplementedError:
-                log.error("PythonCard bitmap resize not implemented, Stretch mode will not work")
+                log.error("vb2py.PythonCard bitmap resize not implemented, Stretch mode will not work")
         else:
             self.size = bitmap.getSize()
         self.drawBitmap(bitmap)

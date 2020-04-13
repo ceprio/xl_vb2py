@@ -3,17 +3,17 @@ from vb2py.config import VB2PYConfig
 Config = VB2PYConfig()
 
 from vb2py import logger   # For logging output and debugging 
-log = logger.getLogger("PythonCardControls")
+log = logger.getLogger("vb2py.PythonCardControls")
 
 twips_per_pixel = 15
 
 # << Events >>
 # << EventSupport >>
 class ControlEvent:
-    """Represents a control event mapping from VB to PythonCard
+    """Represents a control event mapping from VB to vb2py.PythonCard
 
     A control event (eg MouseClick) is defined in VB with a certain name
-    and list of parameters. PythonCard has an analogus event with a
+    and list of parameters. vb2py.PythonCard has an analogus event with a
     different name and all the parameters are bound up in an event
     object.
 
@@ -50,7 +50,7 @@ evtClick = ControlEvent("%s_Click", "on_%s_mouseClick")
 evtDblClick = ControlEvent("%s_DblClick", "on_%s_mouseDoubleClick")
 evtClickAll = (evtClick, evtDblClick)
 
-evtRefresh = ControlEvent("%s_Refresh", "on_%s_Refresh_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
+evtRefresh = ControlEvent("%s_Refresh", "on_%s_Refresh_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
 
 evtChange = ControlEvent("%s_Change", "on_%s_textUpdate")
 
@@ -58,7 +58,7 @@ evtChange = ControlEvent("%s_Change", "on_%s_textUpdate")
 # Focus
 evtGotFocus = ControlEvent("%s_GotFocus", "on_%s_gainFocus")
 evtLostFocus = ControlEvent("%s_LostFocus", "on_%s_loseFocus")
-evtSetFocus = ControlEvent("%s_SetFocus", "on_%s_setFocus_NOTSUPPORTED")  # TODO: what is the Pythoncard equivalent
+evtSetFocus = ControlEvent("%s_SetFocus", "on_%s_setFocus_NOTSUPPORTED")  # TODO: what is the vb2py.PythonCard equivalent
 evtFocusAll = (evtGotFocus, evtLostFocus, evtSetFocus)
 
 #
@@ -90,16 +90,16 @@ evtMouseAllLC = (evtMouseMoveLC, evtMouseDownLC, evtMouseUpLC)
 
 #
 # Keys
-evtKeyUp = ControlEvent("%s_KeyUp", "on_%s_keyUp_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
-evtKeyDown = ControlEvent("%s_KeyDown", "on_%s_keyDown_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
-evtKeyPress = ControlEvent("%s_KeyPress", "on_%s_keyPress_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
+evtKeyUp = ControlEvent("%s_KeyUp", "on_%s_keyUp_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
+evtKeyDown = ControlEvent("%s_KeyDown", "on_%s_keyDown_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
+evtKeyPress = ControlEvent("%s_KeyPress", "on_%s_keyPress_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
 evtKeyAll = (evtKeyUp, evtKeyDown, evtKeyPress)
 
 #
 # Dragging
-evtDrag = ControlEvent("%s_Drag", "on_%s_Drag_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
-evtDragDrop = ControlEvent("%s_DragDrop", "on_%s_DragDrop_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
-evtDragOver = ControlEvent("%s_DragOver", "on_%s_DragOver_NOTSUPPORTED") # TODO: what is the Pythoncard equivalent
+evtDrag = ControlEvent("%s_Drag", "on_%s_Drag_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
+evtDragDrop = ControlEvent("%s_DragDrop", "on_%s_DragDrop_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
+evtDragOver = ControlEvent("%s_DragOver", "on_%s_DragOver_NOTSUPPORTED") # TODO: what is the vb2py.PythonCard equivalent
 evtDragAll = (evtDrag, evtDragDrop, evtDragOver)
 # -- end -- << Events >>
 # << SupportedControls >> (1 of 2)
@@ -117,7 +117,7 @@ class VBControl:
                 }
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = ()
 
     # Some standard attributes which can be absent
@@ -205,7 +205,7 @@ class VBControl:
         except AttributeError:
             pass
         #
-        # Convert VB attributes to PythonCard attributes
+        # Convert VB attributes to vb2py.PythonCard attributes
         for attr, pycard_attr in cls._attribute_translations.items():
             if hasattr(cls, attr):
                 value = getattr(cls, attr)
@@ -216,7 +216,7 @@ class VBControl:
 
         d.update(cls._getClassSpecificControlEntries())
         # Set the type - we do this here because occasionally the type will change after _getClassSpecificControlEntries
-        if Config["General", "UseVBPythonCardControls"].find(cls.pycard_name) > -1:
+        if Config["General", "UseVBvb2py.PythonCardControls"].find(cls.pycard_name) > -1:
             d['type'] = "VB%s" % cls.pycard_name
         else:
             d['type'] = cls.pycard_name
@@ -285,7 +285,7 @@ class VBControl:
         """Return a list of the events that this control has
 
         This is a list of tuples of the form
-          (VBEventName, PythonCardEventName)
+          (VBEventName, vb2py.PythonCardEventName)
 
 
         """
@@ -309,7 +309,7 @@ class VBControl:
     _getAttribute = classmethod(_getAttribute)
     # << class VBControl methods >> (14 of 14)
     def _getPyCardColours(cls, vbcolour): 
-            """Convert a VB colour to a PythonCard colour
+            """Convert a VB colour to a vb2py.PythonCard colour
 
             There are a number of issues here. The main one is that VB often
             uses the System colours which are not valid colour references.
@@ -355,7 +355,7 @@ class CommandButton(VBControl):
 
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = evtClickAll + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 
 
@@ -371,7 +371,7 @@ class ComboBox(VBControl):
     pycard_name = "ComboBox"
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = (evtChange,) + evtClickAll + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 
     def _getEntriesFromFRX(cls, data):
@@ -407,7 +407,7 @@ class ListBox(ComboBox):
 
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = evtClickAll + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 # << Controls >> (5 of 16)
 class Label(VBControl):
@@ -429,7 +429,7 @@ class Image(VBControl):
     Stretch = 0
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = evtClickAll + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 
     def _getClassSpecificControlEntries(cls):
@@ -444,7 +444,7 @@ class CheckBox(VBControl):
     pycard_name = "CheckBox"
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = evtClickAll + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 
 
@@ -468,7 +468,7 @@ class TextBox(VBControl):
     Text = ""
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = (evtClick, evtChange) + evtFocusAll + evtDragAll + evtMouseAll + evtKeyAll
 
     _attribute_translations = { 
@@ -560,7 +560,7 @@ class TreeView(VBControl):
     pycard_name = "TreeView"
 
     #
-    # Lookup table showing the VB event name and the Pythoncard event name
+    # Lookup table showing the VB event name and the vb2py.PythonCard event name
     _events = (evtClick, evtChange) + evtFocusAll + evtDragAll + evtMouseAllLC + evtKeyAll
 
     def _getClassSpecificControlEntries(cls):

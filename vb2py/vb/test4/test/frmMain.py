@@ -2,11 +2,11 @@
 
 """The main form for the application"""
 
-from PythonCardPrototype import model
+from vb2py.PythonCardPrototype import model
 
 # Allow importing of our custom controls
-import PythonCardPrototype.res
-PythonCardPrototype.res.APP_COMPONENTS_PACKAGE = "vb2py.targets.pythoncard.vbcontrols"
+import vb2py.PythonCardPrototype.res
+vb2py.PythonCardPrototype.res.APP_COMPONENTS_PACKAGE = "vb2py.targets.vb2py.PythonCard.vbcontrols"
 
 class Background(model.Background):
 
@@ -230,5 +230,5 @@ class MAINFORM(Background):
 
 
 if __name__ == '__main__':
-    app = model.PythonCardApp(MAINFORM)
+    app = model.vb2py.PythonCardApp(MAINFORM)
     app.MainLoop()
