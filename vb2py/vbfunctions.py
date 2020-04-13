@@ -485,7 +485,7 @@ def GetSetting(appname, section, key, default=None):
     settings = _OptionsDB(appname)
     try:
         return settings[section, key]
-    except config.ConfigParser.Error:
+    except config.configparser.Error:
         if default is not None:
             return default
         raise
