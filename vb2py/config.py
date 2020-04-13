@@ -2,6 +2,7 @@ from .utils import rootPath
 import configparser
 import os
 
+
 class VB2PYConfigObject(dict):
     """A dictionary of configuration options
 
@@ -12,6 +13,9 @@ class VB2PYConfigObject(dict):
 
     def __init__(self, *args, **kw):
         """Initialize the dictionary"""
+        super().__init__()
+        self._config = None
+        self._local_overide = {}
         self.initConfig(*args, **kw)
 
     def __getitem__(self, key):
@@ -48,7 +52,7 @@ class VB2PYConfigObject(dict):
 
     def checkValue(self, section, name):
         """Make sure we have this section and name"""
-        dummy = self[section, name]    
+        _ = self[section, name]
 
     def getItemNames(self, section):
         """Return the list of items in a section"""
@@ -59,9 +63,12 @@ class VB2PYConfigObject(dict):
             if section_name == section:
                 local.append(option)
         return base + local
+
+
 #
 # We always want people to use the same one
 _VB2PYConfig = VB2PYConfigObject()
+
 
 def VB2PYConfig(init=0):
     ret = _VB2PYConfig
