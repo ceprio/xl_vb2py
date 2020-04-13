@@ -13,14 +13,12 @@ from . import utils
 from flask import Flask, request
 from flask_cors import CORS
 import time
-
-
-class ConversionError(Exception): """There was an error converting a line of text"""
-
-
-#
-# Logging config
 from logging.config import dictConfig
+
+
+class ConversionError(Exception):
+    """There was an error converting a line of text"""
+
 
 dictConfig({
     'version': 1,
@@ -38,7 +36,6 @@ dictConfig({
     }
 })
 
-
 app = Flask('VB2PY')
 CORS(app)
 Config = config.VB2PYConfig()
@@ -54,9 +51,7 @@ class ConversionHandler(object):
 
     @staticmethod
     def convertSingleFile(text, container=None, style='vb', returnpartial=True, dialect='VB6', options=None):
-        """Convert a single file of text
-        :param options:
-        """
+        """Convert a single file of text"""
         if container is None:
             container = parserclasses.VBModule()
         ConversionHandler.setPythonic(style)
@@ -125,6 +120,7 @@ def singleFormModule():
     """Return a form module converted"""
     return singleModule(parserclasses.VBFormModule(), parserclasses.VBDotNetModule())
 
+
 @app.route('/submit_file', methods=['POST'])
 def submitFile():
     """Submit a file as a test"""
@@ -188,9 +184,9 @@ def singleModule(module_type, dot_net_module_type):
             #
             # Check for errors and store them
             if failure_mode == 'fail-safe':
-                match = re.match(".*UNTRANSLATED VB LINE.*", result, re.DOTALL)
+                match = re.match(r".*UNTRANSLATED VB LINE.*", result, re.DOTALL)
             else:
-                match = re.match(".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
+                match = re.match(r".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
             if match:
                 parsing_failed = True
                 if failure_mode == 'line-by-line':
@@ -206,8 +202,7 @@ def singleModule(module_type, dot_net_module_type):
                     parsing_stopped_py = 0
                     extra = ' Quick fail mode'
                 elif failure_mode == 'fail-safe':
-                    parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(
-                        text, result, module_type, conversion_style)
+                    parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(text, result)
                     extra = ' Fail safe mode'
 
     #
@@ -274,7 +269,7 @@ def storeSubmittedFile():
 
 def removeFormCruft(text):
     """Remove form stuff if it is there"""
-    match = re.match('.*?^Begin.*?^End\s*$(.*)', text, re.DOTALL + re.MULTILINE)
+    match = re.match(r'.*?^Begin.*?^End\s*$(.*)', text, re.DOTALL + re.MULTILINE)
     if match:
         app.logger.debug('Removed form information')
         stripped = match.groups()[0]
@@ -291,8 +286,8 @@ def locateBadLine(vb, error_line):
     """
     for idx, line in enumerate(vb.splitlines()[error_line:]):
         try:
-            parsed = vbparser.buildParseTree(line, 'isolated_single_line', returnpartial=False)
-        except:
+            _ = vbparser.buildParseTree(line, 'isolated_single_line', returnpartial=False)
+        except parserclasses.VBParserError:
             return idx
     else:
         return 0
@@ -312,7 +307,7 @@ def detectLanguage(text):
         return 'VB6'
 
 
-def getErrorLinesBySafeMode(vbtext, pytext, module_type, conversion_style):
+def getErrorLinesBySafeMode(vbtext, pytext):
     """Return all the failing lines using the safe mode approach"""
     untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*')
     py_lines = []
