@@ -4,6 +4,7 @@ from . import vbparser
 from . import parserclasses
 from . import converter
 from . import config
+import logging
 import json
 import re
 import os
@@ -41,6 +42,10 @@ dictConfig({
 app = Flask('VB2PY')
 CORS(app)
 Config = config.VB2PYConfig()
+
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
+app.logger.setLevel(gunicorn_logger.level)
 app.logger.info('Starting conversion server')
 
 

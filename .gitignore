@@ -1,0 +1,3 @@
+/gunicorn.access.log
+/gunicorn.error.log
+/gunicorn.main.log
