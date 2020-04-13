@@ -356,7 +356,7 @@ def Oct(num):
     if n == 0:
         return "0"
     else:
-        return oct(n)[1:]
+        return oct(n)[2:]
 # << VBFunctions >> (31 of 57)
 def RGB(r, g, b):
     """Return a Long whole number representing an RGB color value
