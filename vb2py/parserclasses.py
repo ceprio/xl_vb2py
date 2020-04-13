@@ -1818,7 +1818,7 @@ class VBAssignment(VBNamespace):
         if self.assignment_operator == '^=':
             self.assignment_operator = '**='
         elif self.assignment_operator == r'\=':
-            self.assignment_operator = '/='
+            self.assignment_operator = '//='
         #
         self.checkForModuleGlobals()
         self.object.brackets_are_indexes = 1 # Convert brackets on LHS to []
