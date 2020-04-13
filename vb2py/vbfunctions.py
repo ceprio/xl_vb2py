@@ -660,7 +660,7 @@ def vbForRange(start, stop, step=1):
     """
     num_repeats = (stop-start)/step
     if num_repeats < 0:
-        raise StopIteration
+        return
     current = start
     while num_repeats >= 0:
         yield current
