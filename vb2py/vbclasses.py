@@ -10,6 +10,8 @@ from . import vbfunctions
 import time
 import os
 import sys
+from operator import itemgetter
+
 
 # << VB Classes >> (1 of 16)
 class Collection(dict):
@@ -45,18 +47,18 @@ class Collection(dict):
             Key = int(Key)
             if Key < 1:
                 raise IndexError
-            list = list(self.values())
-            list.sort(self._order)
-            return list[Key-1][0]
+            l = list(self.values())
+            l.sort(key=itemgetter(1))
+            return l[Key-1][0]
         except ValueError:
             return dict.__getitem__(self, Key)[0]
     # << Collection Methods >> (4 of 12)
     def __delitem__(self, Key):
         try:
             key = int(Key)
-            list = list(self.values())
-            list.sort(self._order)
-            _, _, key = list[Key-1]
+            l = list(self.values())
+            l.sort(key=itemgetter(1))
+            _, _, key = l[Key-1]
         except ValueError:
             pass
         dict.__delitem__(self, Key)
@@ -65,24 +67,18 @@ class Collection(dict):
         return self.Item(Key)
     # << Collection Methods >> (6 of 12)
     def __iter__(self):
-        lst = list(self.values())
-        lst.sort(self._order)
-        return iter([val[0] for val in lst])
+        l = list(self.values())
+        l.sort(key=itemgetter(1))
+        return iter([val[0] for val in l])
     # << Collection Methods >> (7 of 12)
     def _getElement(self, Key):
         if isinstance(Key, int):
-            list = list(self.values())
-            list.sort(self._order)
-            return list[Key-1]
+            l = list(self.values())
+            l.sort(key=itemgetter(1))
+            return l[Key-1]
         else:
             return dict.__getitem__(self, Key)
-    # << Collection Methods >> (8 of 12)
-    def _order(self, a, b):
-        # Equality is impossible
-        if a[1] < b[1]:
-            return -1
-        else:
-            return 1
+
     # << Collection Methods >> (9 of 12)
     def Add(self, Item, Key=None, Before=None, After=None):
         """
