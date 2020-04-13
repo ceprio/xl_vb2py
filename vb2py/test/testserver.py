@@ -187,7 +187,8 @@ class TestServer(unittest.TestCase):
         d = {}
         exec(data['result'], globals(), d)
         obj = d['MyClass']()
-        self.assertEqual(2, len(obj.a))
+        self.assertEqual(1, len(obj.a))
+        self.assertEqual("Ä", obj.a)
 
     def testCanSendClassName(self):
         """testCanSendClassName: should be able to send class name"""

@@ -221,7 +221,7 @@ def singleModule(module_type, dot_net_module_type):
         'parsing_stopped_py': parsing_stopped_py,
         'language': language,
         'version': version,
-    }, encoding='latin1')
+    })
     #
     # app.logger.info('[%s] Ended     %d lines %s %s' % (
     #     request.remote_addr,
