@@ -50,7 +50,6 @@ def loadAllPlugins():
     return mods
 
 
-# << Plug-in functions >> (2 of 2)
 def disableLogging():
     """Disable logging in all plugins"""
     #
@@ -61,8 +60,6 @@ def disableLogging():
     BasePlugin.logging_level = 0
 
 
-# -- end -- << Plug-in functions >>
-# << Plug-in classes >> (1 of 4)
 class BasePlugin(object):
     """All plug-ins should inherit from this base class or define __is_plugin__"""
 
@@ -74,7 +71,6 @@ class BasePlugin(object):
 
     logging_level = int(Config["General", "LoggingLevel"])
 
-    # << BasePlugin methods >> (1 of 6)
     def __init__(self):
         """Initialize the plugin
 
@@ -87,7 +83,6 @@ class BasePlugin(object):
         self.log = logger.getLogger(self.name)
         self.log.setLevel(self.logging_level)
 
-    # << BasePlugin methods >> (2 of 6)
     def preProcessVBText(self, text):
         """Process raw VB text prior to any conversion
 
@@ -97,7 +92,6 @@ class BasePlugin(object):
         """
         return text
 
-    # << BasePlugin methods >> (3 of 6)
     def postProcessPythonText(self, text):
         """Process Python text following the conversion
 
@@ -107,17 +101,14 @@ class BasePlugin(object):
         """
         return text
 
-    # << BasePlugin methods >> (4 of 6)
     def disable(self):
         """Disable the plugin"""
         self.__enabled = 0
 
-    # << BasePlugin methods >> (5 of 6)
     def isEnabled(self):
         """Return 1 if plugin is enabled"""
         return self.__enabled
 
-    # << BasePlugin methods >> (6 of 6)
     def __cmp__(self, other):
         """Used to allow plugins to be sorted to run in a certain order"""
         return cmp(self.order, other.order)
@@ -141,21 +132,18 @@ class RETextMarkup(BasePlugin):
     pre_process_patterns = ()
     post_process_patterns = ()
 
-    # << RETextMarkup methods >> (1 of 3)
     def preProcessVBText(self, text):
         """Process raw VB text prior to any conversion"""
         if self.pre_process_patterns:
             self.log.info("Processing pre patterns")
         return self.processText(text, self.pre_process_patterns)
 
-    # << RETextMarkup methods >> (2 of 3)
     def postProcessPythonText(self, text):
         """Process Python text following the conversion"""
         if self.post_process_patterns:
             self.log.info("Processing post patterns")
         return self.processText(text, self.post_process_patterns)
 
-    # << RETextMarkup methods >> (3 of 3)
     def processText(self, text, patterns):
         """Process the text and mark it up"""
         for re_pattern, replace in patterns:
@@ -179,7 +167,6 @@ class RenderHookPlugin(BasePlugin):
     name = "RenderHookPlugin"
     hooked_class_name = None  # Name of class should go here
 
-    # << RenderHookPlugin methods >> (1 of 2)
     def __init__(self):
         """Initialize the plugin
 
@@ -201,14 +188,11 @@ class RenderHookPlugin(BasePlugin):
         #
         self.hooked_class.renderAsCode = newRender
 
-    # << RenderHookPlugin methods >> (2 of 2)
     def addMarkup(self, indent, text):
         """Add markup to the rendered text"""
         return text
-    # -- end -- << RenderHookPlugin methods >>
 
 
-# << Plug-in classes >> (4 of 4)
 class SystemPlugin(BasePlugin):
     """Special kind of plug-in which is used by the system and cannot be disabled"""
 
@@ -220,8 +204,6 @@ class SystemPluginREPlugin(RETextMarkup):
 
     system_plugin = 1
 
-
-# -- end -- << Plug-in classes >>
 
 if __name__ == "__main__":
     loadAllPlugins()
