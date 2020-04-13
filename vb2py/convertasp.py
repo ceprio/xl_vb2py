@@ -1,4 +1,7 @@
-# << convertasp declarations >>
+from vb2py.vbparser import parseVB, VBCodeModule
+import re
+
+
 test = """
 <html>
 <%
@@ -15,17 +18,13 @@ end function
 </html>
 """
 
-from vb2py.vbparser import parseVB, VBCodeModule
-import re
-# -- end -- << convertasp declarations >>
-# << convertasp methods >>
+
 def translateScript(match):
     """Translate VBScript fragment to Python"""
     block = parseVB(match.groups()[0], container=VBCodeModule())
     return "<%%\n%s\n%%>" % block.renderAsCode()
-# -- end -- << convertasp methods >>
 
 
-converter = re.compile(r"\<%(.*?)%\>", re.DOTALL + re.MULTILINE)
+converter = re.compile(r"<%(.*?)%>", re.DOTALL + re.MULTILINE)
 
 print(converter.sub(translateScript, test))
