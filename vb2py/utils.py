@@ -3,7 +3,7 @@ import mako.template
 import mako.lookup
 
 
-class bcolors:
+class TextColours:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -18,6 +18,7 @@ BASE_GRAMMAR_SETTINGS = {
     'dialect': 'VB6',
     'mode': 'rigorous',
 }
+
 
 def rootPath():
     """Return the root path"""
@@ -44,4 +45,3 @@ def loadGrammarFrom(filename, data=None):
                 base_data[k] = v
     #
     return str(template.render(**base_data))
-

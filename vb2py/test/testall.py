@@ -7,7 +7,7 @@ import vb2py.utils
 import subprocess
 
 
-bcolors = vb2py.utils.bcolors
+bcolors = vb2py.utils.TextColours
 
 
 ok = re.compile(r".*Ran\s(\d+).*", re.DOTALL+re.MULTILINE)

@@ -11,7 +11,7 @@ sys.path.append('..')
 from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
 import vb2py.vbparser
 import vb2py.logger
-b = vb2py.vbparser.utils.bcolors
+b = vb2py.vbparser.utils.TextColours
 vb2py.vbparser.log.setLevel(0)
 
 def dologging():
