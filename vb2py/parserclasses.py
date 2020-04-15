@@ -1,38 +1,39 @@
 """A set of classes used during the parsing of VB code"""
 
 #
-StopSearch = -9999 # Used to terminate searches for parent properties
+StopSearch = -9999  # Used to terminate searches for parent properties
 TYPE_IDENTIFIERS = '#$%&!@'
+
 
 #
 class VBElement(object):
     """An element of VB code"""
 
-    #
     def __init__(self, details, text):
         """Initialize from the details"""
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         self.name = details[0]
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
         self.elements = convertToElements(details[3], text)
-    #
+
     def printTree(self, offset=0):
         """Print out this tree"""
-        print("%s%s : '%s'" % (" "*offset, self.name, self.text.split("\n")[:20]))
+        print("%s%s : '%s'" % (" " * offset, self.name, self.text.split("\n")[:20]))
         for subelement in self.elements:
-            subelement.printTree(offset+1)
-    
+            subelement.printTree(offset + 1)
+
+
 #
 class VBFailedElement(object):
     """An failed element of VB code"""
 
-    #
     def __init__(self, name, text):
         """Initialize from the details"""
         self.name = name
         self.text = text
         self.elements = []
-    
+
+
 #
 class VBNamespace(object):
     """Handles a VB Namespace"""
@@ -50,7 +51,6 @@ class VBNamespace(object):
     # Used to translate () into [] under certain circumstances (LHS of an assign)
     brackets_are_indexes = 0
 
-
     default_scope = "Private"
 
     # 
@@ -61,7 +61,6 @@ class VBNamespace(object):
     # Set to 1 for types which would mark the end of the docstrings
     would_end_docstring = 1
 
-
     #
     # Intrinsic VB functions - we need to know these to be able to convert
     # bare references (eg Dir) to function references (Dir())
@@ -69,17 +68,15 @@ class VBNamespace(object):
         "Dir", "FreeFile", "Rnd", "Timer",
     ]
 
-
-    #
     def __init__(self, scope="Private"):
         """Initialize the namespace"""
         self.locals = []
         self.local_default_scope = self.default_scope
         self.auto_class_handlers = {
-            "object_definition" : (VBVariableDefinition, self.locals),
-            "const_definition"   : (VBConstant, self.locals),
-            "user_type_definition" : (VBUserType, self.locals),
-            "event_definition" : (VBUnrendered, self.locals),
+            "object_definition": (VBVariableDefinition, self.locals),
+            "const_definition": (VBConstant, self.locals),
+            "user_type_definition": (VBUserType, self.locals),
+            "event_definition": (VBUnrendered, self.locals),
         }
         #
         # This dictionary stores names which are to be substituted if found 
@@ -95,8 +92,7 @@ class VBNamespace(object):
             raise InvalidOption("Indent character option not understood: '%s'" % char_spec)
 
         self._indent_amount = int(Config["General", "IndentAmount"])
-        
-    #
+
     def amGlobal(self, scope):
         """Decide if a variable will be considered a global
 
@@ -114,7 +110,7 @@ class VBNamespace(object):
                 log.info("We are global!")
                 return 1
         return 0
-    #
+
     def assignParent(self, parent):
         """Set our parent
 
@@ -123,37 +119,38 @@ class VBNamespace(object):
 
             """
         self.parent = parent
-    #
+
     def asString(self):
         """Convert to a nice representation"""
         return repr(self)
-    #
+
     def checkIfFunction(self, name):
         """Check if the name is a function or not"""
         for loc in self.locals:
             if loc.identifier == name:
                 return loc.is_function
         raise UnresolvableName("Name '%s' is not known in this context" % name)
-    #
-    def checkOptionChoice(self, section, name, choices):
+
+    @staticmethod
+    def checkOptionChoice(section, name, choices):
         """Return the index of a config option in a list of choices
 
             We return the actual choice name which may seem odd but is done to make
             the code readable. The main purpose of this method is to allow the choice
             to be selected with the error trapping hidden.
 
-            """
+        """
         value = Config[section, name]
         try:
             return choices[list(choices).index(value)]
         except ValueError:
             raise InvalidOption("Invalid option for %s.%s, must be one of %s" % (
-                                        section, name, choices))
-    #
+                section, name, choices))
+
     def checkOptionYesNo(self, section, name):
         """Return the yes/no value of an option checking for invalid answers"""
         return self.checkOptionChoice(section, name, ("Yes", "No"))
-    #
+
     def containsStatements(self):
         """Check if we contain statements"""
         #
@@ -169,26 +166,29 @@ class VBNamespace(object):
             return 0
         else:
             return 1
-    #
+
     def createExtractHandler(self, token):
         """Create a handler which will extract a certain token value"""
+
         def handler(element):
             log.info("Grabbed attribute '%s' for %s as '%s'" % (token, self, element.text))
             setattr(self, token, element.text)
+
         return handler
-    #
-    def filterListByClass(self, sequence, cls): 
+
+    @staticmethod
+    def filterListByClass(sequence, cls):
         """Return all elements of sequence that are an instance of the given class"""
         return [item for item in sequence if isinstance(item, cls)]
-    #
+
     def finalizeObject(self):
         """Finalize the object
 
-            This method is called once the object has been completely parsed and can
-            be used to do any processing required.
+        This method is called once the object has been completely parsed and can
+        be used to do any processing required.
 
-            """
-    #
+        """
+
     def findParentOfClass(self, cls):
         """Return our nearest parent who is a subclass of cls"""
         try:
@@ -199,7 +199,7 @@ class VBNamespace(object):
             return parent
         else:
             return parent.findParentOfClass(cls)
-    #
+
     def getHandler(self, element):
         """Find a handler for the element"""
         if element.name in self.skip_handlers:
@@ -213,32 +213,32 @@ class VBNamespace(object):
             obj_class, add_to = self.auto_class_handlers[element.name]
 
             if obj_class == self.__class__:
-                # Ooops, recursive handling - we should handle the sub elements
-                def class_handler(element):
-                    for sub_element in element.elements:
+                # Oops, recursive handling - we should handle the sub elements
+                def class_handler(elem):
+                    for sub_element in elem.elements:
                         self.handleSubObject(sub_element, obj_class, add_to)
-            else:	
-                def class_handler(element):
-                    self.handleSubObject(element, obj_class, add_to)
+            else:
+                def class_handler(elem):
+                    self.handleSubObject(elem, obj_class, add_to)
 
             return class_handler
-            
+
         try:
             return getattr(self, "handle_%s" % element.name)
         except AttributeError:
             return None
-    #
+
     def getIndent(self, indent):
         """Return some spaces to do indenting"""
-        return self._indent_char*indent*self._indent_amount
-    #
+        return self._indent_char * indent * self._indent_amount
+
     def getLocalNameFor(self, name):
         """Get the local version of a name
 
-            We look for any ancestor with a name conversion in operation for this name and
-            return the first one that has it. If there are none then we just use the name
+        We look for any ancestor with a name conversion in operation for this name and
+        return the first one that has it. If there are none then we just use the name
 
-            """
+        """
         try:
             return self.name_substitution[name]
         except KeyError:
@@ -246,7 +246,7 @@ class VBNamespace(object):
                 return self.parent.getLocalNameFor(name)
             except AttributeError:
                 return name
-    #
+
     def getParentProperty(self, name, default=None):
         """Get a property from our nearest ancestor who has it"""
         try:
@@ -259,18 +259,18 @@ class VBNamespace(object):
                 if default is not None:
                     return default
                 raise NestingError("Reached outer level when trying to access a parent property: '%s'" % name)
-    #
+
     def getWarning(self, warning_type, text, indent=0, crlf=0):
         """Construct a warning comment"""
         ret = "%s# %s (%s) %s" % (
-                self.getIndent(indent),
-                Config["General", "AttentionMarker"],
-                warning_type,
-                text)
+            self.getIndent(indent),
+            Config["General", "AttentionMarker"],
+            warning_type,
+            text)
         if crlf:
             ret += "\n"
         return ret
-    #
+
     def handleSubObject(self, element, obj_class, add_to):
         """Handle an object which creates a sub object"""
         v = obj_class(self.local_default_scope)
@@ -281,12 +281,12 @@ class VBNamespace(object):
         # Assume that we are supposed to add this to a list of items
         # if this fails then perhaps this is an attribute we are supposed to set
         try:
-            add_to.append(v)	
+            add_to.append(v)
         except AttributeError:
             setattr(self, add_to, v)
         #
         log.info("Added new %s to %s" % (obj_class, self.asString()))
-    #
+
     def isAFunction(self, name):
         """Check if the name is a function or not
 
@@ -302,8 +302,8 @@ class VBNamespace(object):
             try:
                 return self.parent.isAFunction(name)
             except (AttributeError, UnresolvableName):
-                return 0	# Nobody knew the name so we can't know if it is or not
-    #
+                return 0  # Nobody knew the name so we can't know if it is or not
+
     def processElement(self, element):
         """Process our tree"""
         handler = self.getHandler(element)
@@ -315,7 +315,7 @@ class VBNamespace(object):
                     self.processElement(subelement)
             else:
                 log.info("Unhandled element '%s' from %s\n%s" % (element.name, self, element.text))
-    #
+
     def registerAsGlobal(self):
         """Register ourselves as a global object
 
@@ -331,7 +331,7 @@ class VBNamespace(object):
         else:
             global_objects[self.identifier] = self
             log.info("Registered a new global object: '%s'" % self)
-    #
+
     def registerImportRequired(self, modulename):
         """Register a need to import a certain module
 
@@ -351,15 +351,15 @@ class VBNamespace(object):
             if modulename not in module_imports:
                 module_imports.append(modulename)
             log.info("Registered a new module import: '%s'" % modulename)
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        return self.getIndent(indent) + "# Unrendered object %s\n" % (self.asString(), )
-    #
+        return self.getIndent(indent) + "# Unrendered object %s\n" % (self.asString(),)
+
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
         """Convert a local name to a fully resolved name"""
         raise UnresolvableName("Name '%s' is not known in this namespace" % name)
-    #
+
     def resolveName(self, name, rendering_locals=None, requestedby=None):
         """Convert a local name to a fully resolved name
 
@@ -371,15 +371,15 @@ class VBNamespace(object):
         if rendering_locals is None:
             rendering_locals = self.getParentProperty("rendering_locals")
         if not requestedby:
-            requestedby = self		
+            requestedby = self
         try:
             return self.resolveLocalName(name, rendering_locals, requestedby=requestedby)
         except UnresolvableName:
             try:
                 return self.parent.resolveName(name, rendering_locals, requestedby=requestedby)
             except AttributeError:
-                return name	# Nobody knew the name so it must be local
-    #
+                return name  # Nobody knew the name so it must be local
+
     def searchParentProperty(self, name):
         """Search for any ancestor who has the named parameter set to true
 
@@ -398,17 +398,17 @@ class VBNamespace(object):
             return parent.searchParentProperty(name)
         except AttributeError:
             return 0
-    #
+
     def handle_scope(self, element):
         """Handle a scope definition"""
         self.local_default_scope = element.text
         log.info("Changed default scope to %s" % self.local_default_scope)
-    #
+
     def handle_line_end(self, element):
         """Handle the end of a line"""
         self.local_default_scope = self.default_scope
-    
-#
+
+
 class VBConsumer(VBNamespace):
     """Consume and store elements"""
 
@@ -416,7 +416,7 @@ class VBConsumer(VBNamespace):
         """Eat this element"""
         self.element = element
         log.info("Consumed element: %s" % element)
-#
+
 
 class VBPrimary(VBNamespace):
     """A primary object in an expression"""
@@ -430,16 +430,16 @@ class VBPrimary(VBNamespace):
         self.parts = []
 
         self.auto_class_handlers.update({
-            "identifier" : (VBConsumer, "identifier"),
-            "range_definition" : (VBRangeDefinition, "range_definition"),
-            "integer" : (VBExpressionPart, self.parts),
-            "hexinteger" : (VBExpressionPart, self.parts),
-            "octinteger" : (VBExpressionPart, self.parts),
-            "binaryinteger" : (VBExpressionPart, self.parts),
-            "stringliteral" : (VBStringLiteral, self.parts),
-            "dateliteral" : (VBDateLiteral, self.parts),
-            "floatnumber" : (VBExpressionPart, self.parts),
-            "longinteger" : (VBExpressionPart, self.parts),        })
+            "identifier": (VBConsumer, "identifier"),
+            "range_definition": (VBRangeDefinition, "range_definition"),
+            "integer": (VBExpressionPart, self.parts),
+            "hexinteger": (VBExpressionPart, self.parts),
+            "octinteger": (VBExpressionPart, self.parts),
+            "binaryinteger": (VBExpressionPart, self.parts),
+            "stringliteral": (VBStringLiteral, self.parts),
+            "dateliteral": (VBDateLiteral, self.parts),
+            "floatnumber": (VBExpressionPart, self.parts),
+            "longinteger": (VBExpressionPart, self.parts), })
 
     def processElement(self, element):
         """Process this element"""
@@ -450,7 +450,6 @@ class VBPrimary(VBNamespace):
             if self.identifier.element.text[-1:] in TYPE_IDENTIFIERS:
                 self.identifier.element.text = self.identifier.element.text[:-1]
             self.element = self.identifier.element
-
 
     def getName(self):
         """Return the name"""
@@ -483,7 +482,7 @@ class VBPrimary(VBNamespace):
 class VBUnrendered(VBConsumer):
     """Represents an unrendered statement"""
 
-    would_end_docstring = 0 
+    would_end_docstring = 0
 
     def renderAsCode(self, indent):
         """Render the unrendrable!"""
@@ -491,6 +490,8 @@ class VBUnrendered(VBConsumer):
             return self.getWarning("UntranslatedCode", self.element.text.replace("\n", "\\n"), indent, crlf=1)
         else:
             return ""
+
+
 #
 class VBMessage(VBUnrendered):
     """Allows a message to be placed in the python output"""
@@ -503,8 +504,10 @@ class VBMessage(VBUnrendered):
 
     def renderAsCode(self, indent=0):
         """Render the message"""
-        return self.getWarning(self.messagetype, 
+        return self.getWarning(self.messagetype,
                                self.message, indent, crlf=1)
+
+
 #
 class VBMissingArgument(VBConsumer):
     """Represents an missing argument"""
@@ -512,65 +515,66 @@ class VBMissingArgument(VBConsumer):
     def renderAsCode(self, indent=0):
         """Render the unrendrable!"""
         return "VBMissingArgument"
+
+
 #
 class VBCodeBlock(VBNamespace):
     """A block of VB code"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the block"""
         super(VBCodeBlock, self).__init__()
         self.blocks = []
         self.auto_class_handlers.update({
-            "assignment_statement" : (VBAssignment, self.blocks),
-            "lset_statement" : (VBLSet, self.blocks),
-            "rset_statement" : (VBRSet, self.blocks),
-            "set_statement" : (VBSet, self.blocks),
-            "comment_body" : (VBComment, self.blocks),
-            "vb2py_directive" : (VB2PYDirective, self.blocks),
-            "if_statement" : (VBIf, self.blocks),
-            "inline_if_statement" : (VBInlineIf, self.blocks),
-            "select_statement" : (VBSelect, self.blocks),
-            "exit_statement" : (VBExitStatement, self.blocks),
-            "while_statement" : (VBWhile, self.blocks),
-            "do_statement" : (VBDo, self.blocks),
-            "redim_statement" : (VBReDim, self.blocks),
-            "explicit_call_statement" : (VBExplicitCall, self.blocks),
-            "implicit_call_statement" : (VBCall, self.blocks),
-            "inline_implicit_call" : (VBCall, self.blocks),
-            "label_statement" : (VBLabel, self.blocks),
-            "with_statement" : (VBWith, self.blocks),
-            "using_statement" : (VBUsing, self.blocks),
-            "end_statement" : (VBEnd, self.blocks),
-            "return_statement" : (VBReturnStatement, self.blocks),
+            "assignment_statement": (VBAssignment, self.blocks),
+            "lset_statement": (VBLSet, self.blocks),
+            "rset_statement": (VBRSet, self.blocks),
+            "set_statement": (VBSet, self.blocks),
+            "comment_body": (VBComment, self.blocks),
+            "vb2py_directive": (VB2PYDirective, self.blocks),
+            "if_statement": (VBIf, self.blocks),
+            "inline_if_statement": (VBInlineIf, self.blocks),
+            "select_statement": (VBSelect, self.blocks),
+            "exit_statement": (VBExitStatement, self.blocks),
+            "while_statement": (VBWhile, self.blocks),
+            "do_statement": (VBDo, self.blocks),
+            "redim_statement": (VBReDim, self.blocks),
+            "explicit_call_statement": (VBExplicitCall, self.blocks),
+            "implicit_call_statement": (VBCall, self.blocks),
+            "inline_implicit_call": (VBCall, self.blocks),
+            "label_statement": (VBLabel, self.blocks),
+            "with_statement": (VBWith, self.blocks),
+            "using_statement": (VBUsing, self.blocks),
+            "end_statement": (VBEnd, self.blocks),
+            "return_statement": (VBReturnStatement, self.blocks),
 
-            "for_statement" : (VBFor, self.blocks),
-            "inline_for_statement" : (VBFor, self.blocks),
-            "for_each_statement" : (VBForEach, self.blocks),
+            "for_statement": (VBFor, self.blocks),
+            "inline_for_statement": (VBFor, self.blocks),
+            "for_each_statement": (VBForEach, self.blocks),
 
-            "open_statement" : (VBOpen, self.blocks),
-            "close_statement" : (VBClose, self.blocks),
-            "input_statement" : (VBInput, self.blocks),
-            "print_statement" : (VBPrint, self.blocks),
-            "line_input_statement" : (VBLineInput, self.blocks),
-            "seek_statement" : (VBSeek, self.blocks),
-            "name_statement" : (VBName, self.blocks),
+            "open_statement": (VBOpen, self.blocks),
+            "close_statement": (VBClose, self.blocks),
+            "input_statement": (VBInput, self.blocks),
+            "print_statement": (VBPrint, self.blocks),
+            "line_input_statement": (VBLineInput, self.blocks),
+            "seek_statement": (VBSeek, self.blocks),
+            "name_statement": (VBName, self.blocks),
 
-            "attribute_statement" : (VBUnrendered, self.blocks),
-            "resume_statement" : (VBUnrendered, self.blocks),
-            "goto_statement" : (VBUnrendered, self.blocks),
-            "on_statement" : (VBUnrendered, self.blocks),
-            "external_declaration" : (VBUnrendered, self.blocks),
-            "get_statement" : (VBUnrendered, self.blocks),
-            "put_statement" : (VBUnrendered, self.blocks),
-            "option_statement" : (VBUnrendered, self.blocks),
-            "class_header_block" : (VBUnrenderedBlock, self.blocks),
+            "attribute_statement": (VBUnrendered, self.blocks),
+            "resume_statement": (VBUnrendered, self.blocks),
+            "goto_statement": (VBUnrendered, self.blocks),
+            "on_statement": (VBUnrendered, self.blocks),
+            "external_declaration": (VBUnrendered, self.blocks),
+            "get_statement": (VBUnrendered, self.blocks),
+            "put_statement": (VBUnrendered, self.blocks),
+            "option_statement": (VBUnrendered, self.blocks),
+            "class_header_block": (VBUnrenderedBlock, self.blocks),
 
-            "parser_failure" : (VBParserFailure, self.blocks),
-            "untranslated_text" : (VBUntranslatedText, self.blocks),
+            "parser_failure": (VBParserFailure, self.blocks),
+            "untranslated_text": (VBUntranslatedText, self.blocks),
 
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         #
@@ -579,21 +583,23 @@ class VBCodeBlock(VBNamespace):
             self.blocks.append(VBPass())
         #
         return "".join([block.renderAsCode(indent) for block in self.blocks])
-    
+
+
 #
 class VBUnrenderedBlock(VBCodeBlock):
     """Represents an unrendered block"""
 
-    would_end_docstring = 0 
+    would_end_docstring = 0
 
     def renderAsCode(self, indent):
         """Render the unrendrable!"""
         return ""
+
+
 #
 class VBOptionalCodeBlock(VBCodeBlock):
     """A block of VB code which can be empty and still sytactically correct"""
 
-    #
     def containsStatements(self, indent=0):
         """Return true if this block contains statements
 
@@ -601,7 +607,8 @@ class VBOptionalCodeBlock(VBCodeBlock):
 
             """
         return 1
-    
+
+
 #
 
 class VBExpressionObjectPart(VBNamespace):
@@ -617,8 +624,8 @@ class VBExpressionObjectPart(VBNamespace):
         self.size_definitions = []
         self.unsized_definitions = []
         self.auto_class_handlers = {
-            "size"	: (VBSizeDefinition, self.size_definitions),
-            "unsized_definition"	: (VBConsumer, self.unsized_definitions),
+            "size": (VBSizeDefinition, self.size_definitions),
+            "unsized_definition": (VBConsumer, self.unsized_definitions),
         }
 
     def renderAsCode(self, indent=0):
@@ -630,28 +637,28 @@ class VBExpressionObjectPart(VBNamespace):
             parts.extend([('(%s)' % item.renderAsCode()) for item in self.size_definitions])
         return ''.join(parts)
 
+
 class VBVariable(VBNamespace):
     """Handles a VB Variable"""
 
     #
     auto_handlers = [
-            "scope",
-            "type",
-            "string_size_indicator",
-            "value",
-            "identifier",
-            "optional",
-            "new_keyword",
-            "preserve_keyword",
-            "implicit_object",
-            "param_array",
+        "scope",
+        "type",
+        "string_size_indicator",
+        "value",
+        "identifier",
+        "optional",
+        "new_keyword",
+        "preserve_keyword",
+        "implicit_object",
+        "param_array",
     ]
 
     skip_handlers = [
-            "const_statement",
+        "const_statement",
     ]
-    
-    #
+
     def __init__(self, scope="Private"):
         """Initialize the variable"""
         super(VBVariable, self).__init__(scope)
@@ -673,21 +680,21 @@ class VBVariable(VBNamespace):
         self.initial_value = None
 
         self.auto_class_handlers = {
-            "expression"	: (VBExpression, "expression"),
-            "object_initial_value"	: (VBExpression, "initial_value"),
-            "size"	: (VBSizeDefinition, self.size_definitions),
-            "size_range"	: (VBSizeDefinition, self.size_definitions),
-            "unsized_definition"	: (VBConsumer, "unsized_definition"),
-            "dim_expression_object_part" : (VBExpressionObjectPart, self.expression_object_parts)
+            "expression": (VBExpression, "expression"),
+            "object_initial_value": (VBExpression, "initial_value"),
+            "size": (VBSizeDefinition, self.size_definitions),
+            "size_range": (VBSizeDefinition, self.size_definitions),
+            "unsized_definition": (VBConsumer, "unsized_definition"),
+            "dim_expression_object_part": (VBExpressionObjectPart, self.expression_object_parts)
         }
-    #
+
     def finalizeObject(self):
         """We can use this opportunity to now determine if we are a global"""
         if self.amGlobal(self.scope):
             self.registerAsGlobal()
         if self.param_array:
             self.getParentProperty('registerParamArraysVariable')(self.identifier)
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.optional:
@@ -696,15 +703,11 @@ class VBVariable(VBNamespace):
             return '*%s' % self.identifier
         else:
             return self.identifier
-    
-#
-
 
 
 class VBSizeDefinition(VBNamespace):
     """Handles a VB Variable size definition"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the size definition"""
         super(VBSizeDefinition, self).__init__(scope)
@@ -714,10 +717,10 @@ class VBSizeDefinition(VBNamespace):
         self.size_ranges = []
         #
         self.auto_class_handlers = {
-            "size"	: (VBExpression, self.sizes),
-            "size_range"	: (VBSizeDefinition, self.size_ranges),
+            "size": (VBExpression, self.sizes),
+            "size_range": (VBSizeDefinition, self.size_ranges),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.sizes:
@@ -730,8 +733,8 @@ class VBRangeDefinition(VBCodeBlock):
     """An implict range call (eg in Excel)"""
 
     auto_handlers = [
-            "stringliteral",
-            "object",
+        "stringliteral",
+        "object",
     ]
 
     def __init__(self, scope="Private"):
@@ -756,13 +759,13 @@ class VBRangeDefinition(VBCodeBlock):
             content = "Unknown!"
         return ".Range(%s)" % content
 
+
 #
 class VBObject(VBNamespace):
     """Handles a VB Object"""
 
-    am_on_lhs = 0 # Set to 1 if the object is on the LHS of an assignment
+    am_on_lhs = 0  # Set to 1 if the object is on the LHS of an assignment
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the object"""
         super(VBObject, self).__init__(scope)
@@ -772,20 +775,20 @@ class VBObject(VBNamespace):
         self.implicit_object = None
 
         self.auto_class_handlers.update({
-            "primary" : (VBPrimary, "primary"),
-            "attribute" : (VBAttribute, self.modifiers),
-            "range_definition" : (VBRangeDefinition, self.modifiers),
-            "parameter_list" : (VBParameterList, self.modifiers),
+            "primary": (VBPrimary, "primary"),
+            "attribute": (VBAttribute, self.modifiers),
+            "range_definition": (VBRangeDefinition, self.modifiers),
+            "parameter_list": (VBParameterList, self.modifiers),
         })
 
         self.auto_handlers = (
             "implicit_object",
         )
-    #
+
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
         return self._renderPartialObject(indent)
-    #
+
     def finalizeObject(self):
         """Finalize the object
 
@@ -796,24 +799,24 @@ class VBObject(VBNamespace):
             try:
                 ending = obj.element.text[-1:] or " "
             except AttributeError:
-                pass # It isn't a consumer so we can't check it
+                pass  # It isn't a consumer so we can't check it
             else:
                 if ending in TYPE_IDENTIFIERS:
                     log.info("Removed type identifier from '%s'" % obj.element.text)
                     obj.element.text = obj.element.text[:-1]
-    #
+
     def asString(self):
         """Return a string representation"""
         if self.implicit_object:
             log.info("Ooops an implicit object in definition")
         ret = [self.primary.getName()] + [item.asString() for item in self.modifiers]
         return ".".join(ret)
-    #
-    def fnPart(self): 
+
+    def fnPart(self):
         """Return the function part of this object (ie without any parameters"""
         return self._renderPartialObject(indent=0, modifier=VBAttribute)
-    #
-    def _renderPartialObject(self, indent=0, modifier=None): 
+
+    def _renderPartialObject(self, indent=0, modifier=None):
         """Render this object but only including modifiers of a certain class"""
         #
         # Check for implicit object and if we are one then find the nearest "With"
@@ -844,12 +847,15 @@ class VBObject(VBNamespace):
         return "%s%s%s" % (implicit_name,
                            resolved_name,
                            "".join([item.renderAsCode() for item in valid_modifiers]))
-    
+
+
 #
 class VBLHSObject(VBObject):
     """Handles a VB Object appearing on the LHS of an assignment"""
 
-    am_on_lhs = 1 # Set to 1 if the object is on the LHS of an assignment
+    am_on_lhs = 1  # Set to 1 if the object is on the LHS of an assignment
+
+
 #
 class VBAttribute(VBConsumer):
     """An attribute of an object"""
@@ -857,21 +863,22 @@ class VBAttribute(VBConsumer):
     def renderAsCode(self, indent=0):
         """Render this attribute"""
         return ".%s" % self.element.text
+
+
 #
 class VBParameterList(VBCodeBlock):
     """An parameter list for an object"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the object"""
         super(VBParameterList, self).__init__(scope)
 
         self.expressions = []
         self.auto_class_handlers.update({
-            "expression" : (VBExpression, self.expressions),
-            "missing_positional" : (VBMissingPositional, self.expressions),
+            "expression": (VBExpression, self.expressions),
+            "missing_positional": (VBMissingPositional, self.expressions),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this attribute"""
         #
@@ -879,7 +886,7 @@ class VBParameterList(VBCodeBlock):
         # elsewhere since __call__ is mapped to __getitem__ for array types
         if self.searchParentProperty("brackets_are_indexes"):
             fmt = "[%s]"
-            self.brackets_are_indexes = StopSearch	# Prevents double accounting in a(b(5)) expressions where b is a function		
+            self.brackets_are_indexes = StopSearch  # Prevents double accounting in a(b(5)) expressions where b is a function
         else:
             fmt = "(%s)"
         #	
@@ -888,7 +895,7 @@ class VBParameterList(VBCodeBlock):
         # to dig out the default value
         param_list = []
         for idx, element in zip(range(1000), self.expressions):
-            element.parameter_index_position = idx # Needed so that the element can get its default
+            element.parameter_index_position = idx  # Needed so that the element can get its default
             param_list.append(element.renderAsCode())
         #
         content = ", ".join(param_list)
@@ -917,7 +924,7 @@ class VBUsing(VBNamespace):
 
     def renderAsCode(self, indent=0):
         """Render this attribute"""
-        code_block = self.block.renderAsCode(indent + 1) if self.block else '%spass\n' % self.getIndent(indent+1)
+        code_block = self.block.renderAsCode(indent + 1) if self.block else '%spass\n' % self.getIndent(indent + 1)
         return '%swith %s as %s:\n%s' % (
             self.getIndent(indent),
             self.expression.renderAsCode(),
@@ -925,15 +932,15 @@ class VBUsing(VBNamespace):
             code_block,
         )
 
+
 #
 class VBMissingPositional(VBCodeBlock):
     """A positional argument that is missing from the argument list"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the object"""
         super(VBMissingPositional, self).__init__(scope)
-    #
+
     def renderAsCode(self, indent=0):
         """Render this attribute"""
         #
@@ -949,34 +956,34 @@ class VBMissingPositional(VBCodeBlock):
                 raise UnresolvableName("Could not locate function name when supplying missing argument")
         #
         return "VBGetMissingArgument(%s, %d)" % (
-                         function_name,
-                         self.parameter_index_position)
-    
+            function_name,
+            self.parameter_index_position)
+
+
 #
 class VBExpression(VBNamespace):
     """Represents an comment"""
 
     auto_handlers = [
-            "new_keyword",
+        "new_keyword",
     ]
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBExpression, self).__init__(scope)
         self.parts = []
         self.new_keyword = None
         self.auto_class_handlers.update({
-            "sign"	: (VBExpressionPart, self.parts),
-            "pre_not" : (VBExpressionPart, self.parts),
-            "par_expression" : (VBParExpression, self.parts),
-            "point" : (VBPoint, self.parts),
-            "operation" : (VBOperation, self.parts),
-            "pre_named_argument" : (VBExpressionPart, self.parts),
-            "pre_typeof" : (VBUnrendered, self.parts),
+            "sign": (VBExpressionPart, self.parts),
+            "pre_not": (VBExpressionPart, self.parts),
+            "par_expression": (VBParExpression, self.parts),
+            "point": (VBPoint, self.parts),
+            "operation": (VBOperation, self.parts),
+            "pre_named_argument": (VBExpressionPart, self.parts),
+            "pre_typeof": (VBUnrendered, self.parts),
         })
-        self.operator_groupings = [] # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
-    #
+        self.operator_groupings = []  # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.checkForOperatorGroupings()
@@ -990,7 +997,7 @@ class VBExpression(VBNamespace):
                 code += '()'
         #
         return code
-    #
+
     def checkForOperatorGroupings(self):
         """Look for operators who requested regrouping
 
@@ -1001,7 +1008,7 @@ class VBExpression(VBNamespace):
             """
         for item in self.operator_groupings:
             idx = self.parts.index(item)
-            rh, lh = self.parts.pop(idx+1), self.parts.pop(idx-1)
+            rh, lh = self.parts.pop(idx + 1), self.parts.pop(idx - 1)
             item.rh, item.lh = rh, lh
 
 
@@ -1011,6 +1018,7 @@ class VBExpressionAttribute(VBObject):
     def renderAsCode(self, indent=0):
         """Render the attributes"""
         return '.%s' % super(VBExpressionAttribute, self).renderAsCode()
+
 
 #
 
@@ -1022,37 +1030,36 @@ class VBParExpression(VBNamespace):
         "r_bracket",
     ]
 
-    #
     def __init__(self, scope="Private"):
         """Initialize"""
         super(VBParExpression, self).__init__(scope)
         self.parts = []
         self.named_argument = ""
         self.auto_class_handlers.update({
-            "integer" : (VBExpressionPart, self.parts),
-            "hexinteger" : (VBExpressionPart, self.parts),
-            "octinteger" : (VBExpressionPart, self.parts),
-            "binaryinteger" : (VBExpressionPart, self.parts),
-            "stringliteral" : (VBStringLiteral, self.parts),
-            "dateliteral" : (VBDateLiteral, self.parts),
-            "floatnumber" : (VBExpressionPart, self.parts),
-            "longinteger" : (VBExpressionPart, self.parts),
-            "object" : (VBObject, self.parts),
-            "par_expression" : (VBParExpression, self.parts),
-            "operation" : (VBOperation, self.parts),
-            "named_argument" : (VBConsumer, "named_argument"),
-            "pre_not" : (VBExpressionPart, self.parts),
-            "pre_typeof" : (VBUnrendered, self.parts),
-            "point" : (VBPoint, self.parts),
-            "sign"	: (VBExpressionPart, self.parts),
-            "list_literal"	: (VBListLiteral, self.parts),
-            "attributes" : (VBExpressionAttribute, self.parts),
+            "integer": (VBExpressionPart, self.parts),
+            "hexinteger": (VBExpressionPart, self.parts),
+            "octinteger": (VBExpressionPart, self.parts),
+            "binaryinteger": (VBExpressionPart, self.parts),
+            "stringliteral": (VBStringLiteral, self.parts),
+            "dateliteral": (VBDateLiteral, self.parts),
+            "floatnumber": (VBExpressionPart, self.parts),
+            "longinteger": (VBExpressionPart, self.parts),
+            "object": (VBObject, self.parts),
+            "par_expression": (VBParExpression, self.parts),
+            "operation": (VBOperation, self.parts),
+            "named_argument": (VBConsumer, "named_argument"),
+            "pre_not": (VBExpressionPart, self.parts),
+            "pre_typeof": (VBUnrendered, self.parts),
+            "point": (VBPoint, self.parts),
+            "sign": (VBExpressionPart, self.parts),
+            "list_literal": (VBListLiteral, self.parts),
+            "attributes": (VBExpressionAttribute, self.parts),
         })
 
         self.l_bracket = self.r_bracket = ""
         self.list_literal = ''
-        self.operator_groupings = [] # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
-    #
+        self.operator_groupings = []  # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.checkForOperatorGroupings()
@@ -1062,7 +1069,7 @@ class VBParExpression(VBNamespace):
             arg = ""
         ascode = " ".join([item.renderAsCode(indent) for item in self.parts])
         return "%s%s%s%s" % (arg, self.l_bracket, ascode, self.r_bracket)
-    #
+
     def checkForOperatorGroupings(self):
         """Look for operators who requested regrouping
 
@@ -1075,9 +1082,9 @@ class VBParExpression(VBNamespace):
         while self.operator_groupings:
             item = self.operator_groupings.pop()
             idx = self.parts.index(item)
-            rh, lh = self.parts.pop(idx+1), self.parts.pop(idx-1)
+            rh, lh = self.parts.pop(idx + 1), self.parts.pop(idx - 1)
             item.rh, item.lh = rh, lh
-    
+
 
 class VBListLiteral(VBParExpression):
     """Represents a literal list in code
@@ -1092,7 +1099,7 @@ class VBListLiteral(VBParExpression):
         self.items = []
 
         self.auto_class_handlers = ({
-            "expression" : (VBParExpression, self.items),
+            "expression": (VBParExpression, self.items),
         })
 
     def renderAsCode(self, indent=0):
@@ -1109,16 +1116,15 @@ class VBPoint(VBExpression):
         "point",
     ]
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return "(%s)" % ", ".join([item.renderAsCode() for item in self.parts])
-    
+
+
 #
 class VBExpressionPart(VBConsumer):
     """Part of an expression"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.element.name == "object":
@@ -1153,7 +1159,7 @@ class VBExpressionPart(VBConsumer):
             return str(total)
         #
         return self.element.text
-    #
+
     def finalizeObject(self):
         """Finalize the object
 
@@ -1164,45 +1170,44 @@ class VBExpressionPart(VBConsumer):
         if ending in TYPE_IDENTIFIERS:
             log.info("Removed type identifier from '%s'" % self.element.text)
             self.element.text = self.element.text[:-1]
-    
-#
+
+
 class VBOperation(VBExpressionPart):
     """An operation in an expression"""
 
     translation = {
-        "&" : "+",
-        "^" : "**",
-        "=" : "==",
-        "\\" : "//",  # TODO: Is this right?
-        "is" : "is",
-        "or" : "or",
-        "and" : "and", # TODO: are there any more?
+        "&": "+",
+        "^": "**",
+        "=": "==",
+        "\\": "//",  # TODO: Is this right?
+        "is": "is",
+        "or": "or",
+        "and": "and",  # TODO: are there any more?
         "and not": "and not",
         "or not": "or not",
         "isnot": "is not",
-        "xor" : "^",
-        "mod" : "%", 
+        "xor": "^",
+        "mod": "%",
     }
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.element.text.lower() in self.translation:
             return self.translation[self.element.text.lower()]
         else:
             return super(VBOperation, self).renderAsCode(indent)
-    #
+
     def finalizeObject(self):
         """Finalize the object"""
         if self.element.text.lower() in ("like", "imp"):
             log.info("Found regrouping operator, reversing order of operands")
             self.parent.operator_groupings.append(self)
-    
+
+
 #
 class VBStringLiteral(VBExpressionPart):
     """Represents a string literal"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         #
@@ -1213,11 +1218,12 @@ class VBStringLiteral(VBExpressionPart):
         if self.checkOptionYesNo("General", "AlwaysUseRawStringLiterals") == "Yes":
             body = body.replace("'", "\'")
             return "r'%s'" % body
-        else:		
+        else:
             body = body.replace('\\', '\\\\')
             body = body.replace("'", "\\'")
             return "'%s'" % body
-    
+
+
 #
 class VBDateLiteral(VBParExpression):
     """Represents a date literal"""
@@ -1226,22 +1232,21 @@ class VBDateLiteral(VBParExpression):
         "dateliteral",
     ]
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.registerImportRequired('datetime')
         return "datetime.datetime(%s)" % ", ".join([item.renderAsCode() for item in self.parts])
-    
+
+
 #
 class VBProject(VBNamespace):
     """Handles a VB Project"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the module"""
         super(VBProject, self).__init__(scope)
-        self.global_objects = {} # This is where global variables live
-    #
+        self.global_objects = {}  # This is where global variables live
+
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
         """Convert a local name to a fully resolved name
 
@@ -1249,7 +1254,7 @@ class VBProject(VBNamespace):
             and if they do then we can construct the local name from it.
 
             """
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if name in self.global_objects:
             # Found as another module's public var - so mark it up and request an import
             modulename = self.global_objects[name].getParentProperty("modulename")
@@ -1259,7 +1264,8 @@ class VBProject(VBNamespace):
                               name)
         else:
             raise UnresolvableName("Name '%s' is not known in this namespace" % name)
-    
+
+
 #
 class VBModule(VBCodeBlock):
     """Handles a VB Module"""
@@ -1269,25 +1275,25 @@ class VBModule(VBCodeBlock):
 
     convert_functions_to_methods = 0  # If this is 1 then local functions will become methods
     indent_all_blocks = 0
-    allow_new_style_class = 1 # Can be used to dissallow new style classes
+    allow_new_style_class = 1  # Can be used to dissallow new style classes
 
-    public_is_global = 0 # Public objects defined here will not be globals
+    public_is_global = 0  # Public objects defined here will not be globals
 
     # Put methods and attribute names in here which always need to be public
     # like Class_Initialize and Class_Terminate for classes
     always_public_attributes = []
 
     expected_dialect = 'VB6'
-    #
+
     def __init__(self, scope="Private", modulename="unknownmodule", classname="MyClass",
                  superclasses=None):
         """Initialize the module"""
         super(VBModule, self).__init__(scope)
         self.auto_class_handlers.update({
-            "sub_definition" : (VBSubroutine, self.locals),
-            "fn_definition" : (VBFunction, self.locals),
-            "property_definition" : (VBProperty, self.locals),
-            "enumeration_definition" : (VBEnum, self.locals),
+            "sub_definition": (VBSubroutine, self.locals),
+            "fn_definition": (VBFunction, self.locals),
+            "property_definition": (VBProperty, self.locals),
+            "enumeration_definition": (VBEnum, self.locals),
         })
         self.local_names = []
         self.modulename = modulename
@@ -1296,13 +1302,12 @@ class VBModule(VBCodeBlock):
         #
         self.rendering_locals = 0
         self.docstrings = []
-        self.module_imports = [] # The additional modules we need to import
+        self.module_imports = []  # The additional modules we need to import
         #
         # Scoping - cancel all scopes
         self.static = None
         self.shared = None
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.setCustomModulesAsGlobals()
@@ -1313,26 +1318,26 @@ class VBModule(VBCodeBlock):
         # of them ask us to do additional imports
         header = self.renderModuleHeader(indent)
         docstrings = self.renderDocStrings(indent)
-        declarations = self.renderDeclarations(indent+self.indent_all_blocks)
-        blocks = self.renderBlocks(indent+self.indent_all_blocks)
+        declarations = self.renderDeclarations(indent + self.indent_all_blocks)
+        blocks = self.renderBlocks(indent + self.indent_all_blocks)
         #
         return "%s\n\n%s%s\n%s\n%s" % (
-                       self.importStatements(indent),
-                       header,
-                       docstrings,
-                       declarations,
-                       blocks,
-                      )
-    #
+            self.importStatements(indent),
+            header,
+            docstrings,
+            declarations,
+            blocks,
+        )
+
     def importStatements(self, indent=0):
         """Render the standard import statements for this block"""
-        other = [""]+["import %s" % item for item in self.module_imports] # Leading [""] gives a newline
+        other = [""] + ["import %s" % item for item in self.module_imports]  # Leading [""] gives a newline
         if self.checkOptionYesNo("General", "IncludeDebugCode") == "Yes":
             debug = "\nfrom vb2py.vbdebug import *"
         else:
             debug = ""
         return "from vb2py.vbfunctions import *%s%s" % (debug, "\n".join(other))
-    #
+
     def renderDeclarations(self, indent):
         """Render the declarations as code
 
@@ -1343,7 +1348,7 @@ class VBModule(VBCodeBlock):
             """
         #
         ret = []
-        self.rendering_locals = 1 # Used for switching behaviour (eg adding 'self')
+        self.rendering_locals = 1  # Used for switching behaviour (eg adding 'self')
         #
         # Handle non-properties and group properties together
         properties = {}
@@ -1351,7 +1356,7 @@ class VBModule(VBCodeBlock):
             # Check for property
             if isinstance(declaration, VBProperty):
                 log.info("Collected property '%s', decorator '%s'" % (
-                            declaration.identifier, declaration.property_decorator_type))
+                    declaration.identifier, declaration.property_decorator_type))
                 decorators = properties.setdefault(declaration.identifier, {})
                 decorators[declaration.property_decorator_type] = declaration
             else:
@@ -1360,16 +1365,17 @@ class VBModule(VBCodeBlock):
         # Now render all the properties
         for property in properties:
             if properties[property]:
-                    ret.append(list(properties[property].values())[0].renderPropertyGroup(indent, property, **properties[property]))
+                ret.append(list(properties[property].values())[0].renderPropertyGroup(indent, property,
+                                                                                      **properties[property]))
         #		
         self.rendering_locals = 0
         #
         return "".join(ret)
-    #
+
     def renderBlocks(self, indent=0):
         """Render this module's blocks"""
         return "".join([block.renderAsCode(indent) for block in self.blocks])
-    #
+
     def extractDocStrings(self, indent=0):
         """Extract doc strings from this module
 
@@ -1383,30 +1389,30 @@ class VBModule(VBCodeBlock):
                 self.blocks.remove(line)
             elif line.would_end_docstring:
                 break
-    #
+
     def renderDocStrings(self, indent=0):
         """Render this module's docstrings"""
-        local_indent = indent+self.indent_all_blocks
+        local_indent = indent + self.indent_all_blocks
         if not self.docstrings:
             return ""
         elif len(self.docstrings) == 1:
-            return '%s"""%s"""\n'  % (
-                    self.getIndent(local_indent),
-                    self.docstrings[0].asString())
+            return '%s"""%s"""\n' % (
+                self.getIndent(local_indent),
+                self.docstrings[0].asString())
         else:
             joiner = "\n%s" % self.getIndent(local_indent)
             return '%s"""%s\n%s%s\n%s"""\n' % (
-                    self.getIndent(local_indent),
-                    self.docstrings[0].asString(),
-                    self.getIndent(local_indent),
-                    joiner.join([item.asString() for item in self.docstrings[1:]]),
-                    self.getIndent(local_indent),
-                    )
-    #
+                self.getIndent(local_indent),
+                self.docstrings[0].asString(),
+                self.getIndent(local_indent),
+                joiner.join([item.asString() for item in self.docstrings[1:]]),
+                self.getIndent(local_indent),
+            )
+
     def renderModuleHeader(self, indent=0):
         """Render a header for the module"""
         return ""
-    #
+
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
         """Convert a local name to a fully resolved name
 
@@ -1420,16 +1426,16 @@ class VBModule(VBCodeBlock):
             if obj.identifier == name:
                 return self.enforcePrivateName(obj)
         raise UnresolvableName("Name '%s' is not known in this namespace" % name)
-    #
+
     def enforcePrivateName(self, obj):
         """Enforce the privacy for this object name if required"""
         if obj.scope == "Private" and self.checkOptionYesNo("General", "RespectPrivateStatus") == "Yes" \
-           and not obj.identifier in self.always_public_attributes:
+                and not obj.identifier in self.always_public_attributes:
             return "%s%s" % (Config["General", "PrivateDataPrefix"], obj.identifier)
         else:
             return obj.identifier
-    #
-    def setCustomModulesAsGlobals(self): 
+
+    def setCustomModulesAsGlobals(self):
         """Set all the custom import modules as global modules
 
             If the user has specified custom imports (eg Comctllib) then
@@ -1465,7 +1471,8 @@ class VBModule(VBCodeBlock):
                 if not item_name.startswith("_"):
                     log.info("Registered new custom global '%s'" % item_name)
                     global_objects[item_name] = vbmodule
-    
+
+
 #
 class VBClassModule(VBModule):
     """Handles a VB Class"""
@@ -1477,23 +1484,22 @@ class VBClassModule(VBModule):
     # like Class_Initialize and Class_Terminate for classes
     always_public_attributes = ["Class_Initialize", "Class_Terminate"]
 
-    #
     def __init__(self, *args, **kw):
         """Initialize the class module"""
         super(VBClassModule, self).__init__(*args, **kw)
-        self.name_substitution = {"Me" : "self"}
-    #
+        self.name_substitution = {"Me": "self"}
+
     def renderModuleHeader(self, indent=0):
         """Render this element as code"""
         supers = self.superclasses[:]
         if self.checkOptionYesNo("Classes", "UseNewStyleClasses") == "Yes" and \
-                 self.allow_new_style_class:
+                self.allow_new_style_class:
             supers.insert(0, "Object")
         if supers:
             return "class %s(%s):\n" % (self.classname, ", ".join(supers))
-        else:        
+        else:
             return "class %s:\n" % self.classname
-    #
+
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
         """Convert a local name to a fully resolved name
 
@@ -1517,13 +1523,12 @@ class VBClassModule(VBModule):
             if obj.identifier == name:
                 return "%s%s" % (prefix, self.enforcePrivateName(obj))
         raise UnresolvableName("Name '%s' is not known in this namespace" % name)
-    #
+
     def assignParent(self, parent):
         """Set our parent"""
         super(VBClassModule, self).assignParent(parent)
-        self.identifier = self.classname 
+        self.identifier = self.classname
         self.registerAsGlobal()
-    
 
 
 class VBDotNetModule(VBClassModule):
@@ -1531,14 +1536,14 @@ class VBDotNetModule(VBClassModule):
 
     expected_dialect = 'vb.net'
 
-    def __init__(self,  *args, **kw):
+    def __init__(self, *args, **kw):
         """Initialize the class module"""
         super(VBDotNetModule, self).__init__(*args, **kw)
         self.definition = []
         self.auto_class_handlers.update({
-            "class_definition_start_line" : (VBDotNetClass, self.definition),
-            "module_definition_start_line" : (VBDotNetClass, self.definition),
-            "property_definition" : (VBDotNetProperty, self.locals)
+            "class_definition_start_line": (VBDotNetClass, self.definition),
+            "module_definition_start_line": (VBDotNetClass, self.definition),
+            "property_definition": (VBDotNetProperty, self.locals)
         })
 
     def renderModuleHeader(self, indent=0):
@@ -1578,13 +1583,13 @@ class VBDotNetClass(VBNamespace):
         else:
             return ''
 
+
 #
 class VBCodeModule(VBModule):
     """Handles a VB Code module"""
 
-    public_is_global = 1 # Public objects defined here will be globals
+    public_is_global = 1  # Public objects defined here will be globals
 
-    #
     def enforcePrivateName(self, obj):
         """Enforce the privacy for this object name if required
 
@@ -1594,19 +1599,19 @@ class VBCodeModule(VBModule):
 
             """
         return obj.identifier
-    
+
+
 #
 class VBFormModule(VBClassModule):
     """Handles a VB Form module"""
 
     convert_functions_to_methods = 1  # If this is 1 then local functions will become methods
+
+
 #
 class VBCOMExternalModule(VBModule):
     """Handles external COM references"""
 
-
-
-    #
     def __init__(self, *args, **kw):
         """Initialize the COM module
 
@@ -1616,8 +1621,8 @@ class VBCOMExternalModule(VBModule):
         super(VBCOMExternalModule, self).__init__(*args, **kw)
         self.module_imports.append("win32com.client")
         self.docstrings.append(
-                VBRenderDirect("Automatically generated file based on project references"))
-    #
+            VBRenderDirect("Automatically generated file based on project references"))
+
     def renderDeclarations(self, indent):
         """Render all the declarations
 
@@ -1631,21 +1636,21 @@ class VBCOMExternalModule(VBModule):
             member_code = []
             for member in members:
                 member_code.append(
-                        '    def %s(self):\n'
-                        '        """Create the %s.%s object"""\n'
-                        '        return win32com.client.Dispatch("%s.%s")\n'
-                        '\n' % (member, library, member, library, member))
+                    '    def %s(self):\n'
+                    '        """Create the %s.%s object"""\n'
+                    '        return win32com.client.Dispatch("%s.%s")\n'
+                    '\n' % (member, library, member, library, member))
             library_code.append('class _%s:\n'
                                 '    """COM Library"""\n'
                                 '\n%s%s = _%s()\n' % (library, ''.join(member_code), library, library))
 
         return '\n\n'.join(library_code)
-    
+
+
 #
 class VBVariableDefinition(VBVariable):
     """Handles a VB Dim of a Variable"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         #
@@ -1654,9 +1659,9 @@ class VBVariableDefinition(VBVariable):
         # TODO: Can't handle implicit objects yet
         if self.implicit_object:
             warning = self.getWarning(
-                    "UnhandledDefinition", 
-                    "Dim of implicit 'With' object (%s) is not supported" % local_name, 
-                    indent=indent, crlf=1)
+                "UnhandledDefinition",
+                "Dim of implicit 'With' object (%s) is not supported" % local_name,
+                indent=indent, crlf=1)
         else:
             warning = ""
         #
@@ -1664,9 +1669,9 @@ class VBVariableDefinition(VBVariable):
         pre_identifier = ''
         if self.expression_object_parts:
             warning += self.getWarning(
-                    "CheckNeeded",
-                    "Dim of dotted objects (%s) is experimental. Please check" % local_name,
-                    indent=indent, crlf=1)
+                "CheckNeeded",
+                "Dim of dotted objects (%s) is experimental. Please check" % local_name,
+                indent=indent, crlf=1)
             pre_identifier = '.'.join([item.renderAsCode() for item in self.expression_object_parts]) + '.'
         #
         if self.string_size_indicator:
@@ -1678,7 +1683,7 @@ class VBVariableDefinition(VBVariable):
         # Make sure we resolve the type properly
         local_type = self.resolveName(self.type)
         #
-        if self.initial_value: # This is a 'Dim A as String = "hello"'
+        if self.initial_value:  # This is a 'Dim A as String = "hello"'
             initialised_value = self.initial_value.renderAsCode()
             return "%s%s%s%s = %s\n" % (
                 warning,
@@ -1689,64 +1694,64 @@ class VBVariableDefinition(VBVariable):
             )
         elif self.unsized_definition:
             return "%s%s%s%s = vbObjectInitialize(objtype=%s)\n" % (
-                            warning,
-                            self.getIndent(indent),
-                            pre_identifier,
-                            local_name,
-                            local_type
+                warning,
+                self.getIndent(indent),
+                pre_identifier,
+                local_name,
+                local_type
             )
-        elif self.size_definitions: # There is a size 'Dim a(10)'
+        elif self.size_definitions:  # There is a size 'Dim a(10)'
             if self.preserve_keyword:
-                preserve = ", %s%s" % (pre_identifier, local_name, )
+                preserve = ", %s%s" % (pre_identifier, local_name,)
             else:
                 preserve = ""
             if size:
                 size = ", stringsize=" + size
             return "%s%s%s%s = vbObjectInitialize((%s,), %s%s%s)\n" % (
-                            warning,
-                            self.getIndent(indent),
-                            pre_identifier,
-                            local_name,
-                            ", ".join([item.renderAsCode() for item in self.size_definitions]),
-                            local_type,
-                            preserve,
-                            size)
-        elif self.new_keyword: # It is an 'Dim a as new ...'
+                warning,
+                self.getIndent(indent),
+                pre_identifier,
+                local_name,
+                ", ".join([item.renderAsCode() for item in self.size_definitions]),
+                local_type,
+                preserve,
+                size)
+        elif self.new_keyword:  # It is an 'Dim a as new ...'
             return "%s%s%s%s = %s(%s)\n" % (
-                            warning,
-                            self.getIndent(indent),
-                            pre_identifier,
-                            local_name,
-                            local_type,
-                            size)
-        else: # This is just 'Dim a as frob'
+                warning,
+                self.getIndent(indent),
+                pre_identifier,
+                local_name,
+                local_type,
+                size)
+        else:  # This is just 'Dim a as frob'
             return "%s%s%s%s = %s(%s)\n" % (
-                            warning,
-                            self.getIndent(indent),
-                            pre_identifier,
-                            local_name,
-                            local_type,
-                            size)
-    
+                warning,
+                self.getIndent(indent),
+                pre_identifier,
+                local_name,
+                local_type,
+                size)
+
+
 #
 class VBConstant(VBVariableDefinition):
     """Represents a constant in VB"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        #local_name = self.getLocalNameFor(self.identifier)
+        # local_name = self.getLocalNameFor(self.identifier)
         local_name = self.resolveName(self.identifier)
         return "%s%s = %s\n" % (
-                            self.getIndent(indent),
-                            local_name,
-                            self.expression.renderAsCode())
-    
+            self.getIndent(indent),
+            local_name,
+            self.expression.renderAsCode())
+
+
 #
 class VBReDim(VBCodeBlock):
     """Represents a Redim statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Redim"""
         super(VBReDim, self).__init__(scope)
@@ -1755,16 +1760,17 @@ class VBReDim(VBCodeBlock):
         self.preserve = None
         #
         self.auto_class_handlers = {
-            "object_definition" : (VBVariableDefinition, self.variables),
-            "preserve_keyword" : (VBConsumer, "preserve"),
+            "object_definition": (VBVariableDefinition, self.variables),
+            "preserve_keyword": (VBConsumer, "preserve"),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         for var in self.variables:
             var.preserve_keyword = self.preserve
         return "".join([var.renderAsCode(indent) for var in self.variables])
-    
+
+
 #
 
 class VBReturnStatement(VBNamespace):
@@ -1773,13 +1779,12 @@ class VBReturnStatement(VBNamespace):
     auto_handlers = [
     ]
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBReturnStatement, self).__init__(scope)
         self.expression = []
         self.auto_class_handlers.update({
-            "expression" : (VBExpression, self.expression),
+            "expression": (VBExpression, self.expression),
         })
 
     def renderAsCode(self, indent=0):
@@ -1796,7 +1801,6 @@ class VBAssignment(VBNamespace):
     auto_handlers = [
     ]
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBAssignment, self).__init__(scope)
@@ -1808,11 +1812,11 @@ class VBAssignment(VBNamespace):
         })
         self.assignment_operator = '='
         self.auto_handlers = ['assignment_operator']
-    #
+
     def asString(self):
         """Convert to a nice representation"""
         return "%s = %s" % (self.object, self.parts)
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.assignment_operator == '^=':
@@ -1821,12 +1825,12 @@ class VBAssignment(VBNamespace):
             self.assignment_operator = '//='
         #
         self.checkForModuleGlobals()
-        self.object.brackets_are_indexes = 1 # Convert brackets on LHS to []
+        self.object.brackets_are_indexes = 1  # Convert brackets on LHS to []
         return "%s%s %s %s\n" % (self.getIndent(indent),
-                                self.object.renderAsCode(),
-                                self.assignment_operator,
-                                self.parts[0].renderAsCode(indent))
-    #
+                                 self.object.renderAsCode(),
+                                 self.assignment_operator,
+                                 self.parts[0].renderAsCode(indent))
+
     def checkForModuleGlobals(self):
         """Check if this assignment requires a global statement
 
@@ -1845,11 +1849,11 @@ class VBAssignment(VBNamespace):
 
             """
         log.info("Checking whether to use a global statement for '%s'" % self.object.primary.getName())
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         try:
             enclosing_sub = self.findParentOfClass(VBSubroutine)
         except NestingError:
-            return # We are not in a subroutine
+            return  # We are not in a subroutine
 
         log.info("Found sub")
         try:
@@ -1858,52 +1862,57 @@ class VBAssignment(VBNamespace):
             if enclosing_sub.identifier == self.object.primary.getName():
                 return
         else:
-            return # We are a subroutine local
+            return  # We are a subroutine local
 
         log.info("Am not local")
         try:
             enclosing_module = self.findParentOfClass(VBCodeModule)
         except NestingError:
-            return # We are not in a module
+            return  # We are not in a module
 
         log.info("Found code module")
         try:
             name = enclosing_module.resolveLocalName(self.object.primary.getName())
         except UnresolvableName:
-            return # We are not known at the module level
+            return  # We are not known at the module level
 
         # If we get to here then we are a module level local!
         enclosing_sub.globals_required[self.resolveName(self.object.primary.getName())] = 1
 
         log.info("Added a module level global: '%s'" % self.resolveName(self.object.primary.getName()))
-    
+
+
 #
 class VBSpecialAssignment(VBAssignment):
     """A special assignment eg LSet, RSet where the assignment ends up as a function call"""
 
     fn_name = None
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.checkForModuleGlobals()
-        self.object.brackets_are_indexes = 1 # Convert brackets on LHS to []
+        self.object.brackets_are_indexes = 1  # Convert brackets on LHS to []
         return "%s%s = %s(%s, %s)\n" % (self.getIndent(indent),
-                                self.object.renderAsCode(), 
-                                self.fn_name, 
-                                self.object.renderAsCode(), 
-                                self.parts[0].renderAsCode(indent))
-    
+                                        self.object.renderAsCode(),
+                                        self.fn_name,
+                                        self.object.renderAsCode(),
+                                        self.parts[0].renderAsCode(indent))
+
+
 #
 class VBLSet(VBSpecialAssignment):
     """An LSet statement"""
 
     fn_name = "LSet"
+
+
 #
 class VBRSet(VBSpecialAssignment):
     """An RSet statement"""
 
     fn_name = "RSet"
+
+
 #
 class VBSet(VBAssignment):
     """A set statement"""
@@ -1924,16 +1933,17 @@ class VBSet(VBAssignment):
                 self.getIndent(indent),
                 self.object.renderAsCode(),
                 self.parts[0].renderAsCode(indent))
-    
+
+
 #
 class VBEnd(VBAssignment):
     """An end statement"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return "%ssys.exit(0)\n" % self.getIndent(indent)
-    
+
+
 #
 class VBCall(VBCodeBlock):
     """A call statement"""
@@ -1941,19 +1951,17 @@ class VBCall(VBCodeBlock):
     auto_handlers = [
     ]
 
-
-    #
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBCall, self).__init__(scope)
         self.parameters = []
         self.object = None
         self.auto_class_handlers = ({
-            "expression" : (VBParExpression, self.parameters),
-            "missing_positional" : (VBMissingPositional, self.parameters),
-            "object" : (VBObject, "object")
+            "expression": (VBParExpression, self.parameters),
+            "missing_positional": (VBMissingPositional, self.parameters),
+            "object": (VBObject, "object")
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.parameters:
@@ -1963,7 +1971,7 @@ class VBCall(VBCodeBlock):
             # to dig out the default value
             param_list = []
             for idx, element in zip(range(1000), self.parameters):
-                element.parameter_index_position = idx # Needed so that the element can get its default
+                element.parameter_index_position = idx  # Needed so that the element can get its default
                 param_list.append(element.renderAsCode())
             params = ", ".join(param_list)
         else:
@@ -1972,9 +1980,10 @@ class VBCall(VBCodeBlock):
         self.object.am_on_lhs = 1
         #
         return "%s%s(%s)\n" % (self.getIndent(indent),
-                             self.object.renderAsCode(), 
-                             params)
-    
+                               self.object.renderAsCode(),
+                               params)
+
+
 #
 class VBExplicitCall(VBCodeBlock):
     """A call statement on a single line with parenthesis
@@ -1986,19 +1995,17 @@ class VBExplicitCall(VBCodeBlock):
     auto_handlers = [
     ]
 
-
-    #
     def __init__(self, scope="Private"):
         """Initialize the assignment"""
         super(VBExplicitCall, self).__init__(scope)
         self.parameters = []
         self.object = None
         self.auto_class_handlers = ({
-            "expression" : (VBParExpression, self.parameters),
-            "missing_positional" : (VBMissingPositional, self.parameters),
-            "qualified_object" : (VBObject, "object")
+            "expression": (VBParExpression, self.parameters),
+            "missing_positional": (VBMissingPositional, self.parameters),
+            "qualified_object": (VBObject, "object")
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.parameters:
@@ -2010,13 +2017,13 @@ class VBExplicitCall(VBCodeBlock):
         self.object.am_on_lhs = 1
         #
         return "%s%s\n" % (self.getIndent(indent),
-                             self.object.renderAsCode())
-    
+                           self.object.renderAsCode())
+
+
 #
 class VBExitStatement(VBConsumer):
     """Represents an exit statement"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         indenter = self.getIndent(indent)
@@ -2028,10 +2035,11 @@ class VBExitStatement(VBConsumer):
             if self.getParentProperty("property_decorator_type") == "Get":
                 return "%sreturn %s\n" % (indenter, Config["Functions", "ReturnVariableName"])
             else:
-                return "%sreturn\n" % indenter		
+                return "%sreturn\n" % indenter
         else:
             return "%sbreak\n" % indenter
-    
+
+
 #
 class VBComment(VBConsumer):
     """Represents an comment"""
@@ -2040,15 +2048,15 @@ class VBComment(VBConsumer):
     # Used to indicate if this is a valid statement
     not_a_statement = 0
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return self.getIndent(indent) + "#%s\n" % self.element.text
-    #
+
     def asString(self):
         """Render this element as a string"""
         return self.element.text
-    
+
+
 #
 class VBLabel(VBUnrendered):
     """Represents a label"""
@@ -2059,11 +2067,12 @@ class VBLabel(VBUnrendered):
             return ""
         else:
             return super(VBLabel, self).renderAsCode(indent)
+
+
 #
 class VBOpen(VBCodeBlock):
     """Represents an open statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the open"""
         super(VBOpen, self).__init__(scope)
@@ -2074,19 +2083,19 @@ class VBOpen(VBCodeBlock):
         self.access_length = None
         #
         self.auto_class_handlers = ({
-            "filename" : (VBParExpression, "filename"),
-            "open_mode" : (VBConsumer, self.open_modes),
-            "channel" : (VBParExpression, "channel"),
-            "access_length" : (VBParExpression, "access_length"),
+            "filename": (VBParExpression, "filename"),
+            "open_mode": (VBConsumer, self.open_modes),
+            "channel": (VBParExpression, "channel"),
+            "access_length": (VBParExpression, "access_length"),
         })
         #
         self.open_mode_lookup = {
-            "Input" : "r",
-            "Output" : "w",
-            "Append" : "a",
-            "Binary" : "b",
+            "Input": "r",
+            "Output": "w",
+            "Append": "a",
+            "Binary": "b",
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         file_mode = ""
@@ -2100,22 +2109,22 @@ class VBOpen(VBCodeBlock):
         if self.access_length is not None:
             todo.append("Access length is not supported (%s)" % self.access_length.renderAsCode())
         if todo:
-            todo_warning = self.getWarning("UnknownFileMode", ", ".join(todo))	
+            todo_warning = self.getWarning("UnknownFileMode", ", ".join(todo))
         else:
             todo_warning = ""
         #
         return "%sVBFiles.openFile(%s, %s, '%s') %s\n" % (
-                    self.getIndent(indent),
-                    self.channel.renderAsCode(),
-                    self.filename.renderAsCode(),
-                    file_mode,
-                    todo_warning)
-    
+            self.getIndent(indent),
+            self.channel.renderAsCode(),
+            self.filename.renderAsCode(),
+            file_mode,
+            todo_warning)
+
+
 #
 class VBClose(VBCodeBlock):
     """Represents a close statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the open"""
         super(VBClose, self).__init__(scope)
@@ -2123,27 +2132,27 @@ class VBClose(VBCodeBlock):
         self.channels = []
         #
         self.auto_class_handlers = ({
-            "expression" : (VBParExpression, self.channels),
+            "expression": (VBParExpression, self.channels),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if not self.channels:
             return "%sVBFiles.closeFile()\n" % (
-                        self.getIndent(indent))
+                self.getIndent(indent))
         else:
             ret = []
             for channel in self.channels:
                 ret.append("%sVBFiles.closeFile(%s)\n" % (
-                        self.getIndent(indent),
-                        channel.renderAsCode()))
+                    self.getIndent(indent),
+                    channel.renderAsCode()))
             return "".join(ret)
-    
+
+
 #
 class VBSeek(VBCodeBlock):
     """Represents a seek statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the seek"""
         super(VBSeek, self).__init__(scope)
@@ -2151,23 +2160,23 @@ class VBSeek(VBCodeBlock):
         self.expressions = []
         #
         self.auto_class_handlers = ({
-            "expression" : (VBParExpression, self.expressions),
+            "expression": (VBParExpression, self.expressions),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return "%sVBFiles.seekFile(%s, %s)\n" % (
-                    self.getIndent(indent),
-                    self.expressions[0].renderAsCode(),
-                    self.expressions[1].renderAsCode(),)
-    
+            self.getIndent(indent),
+            self.expressions[0].renderAsCode(),
+            self.expressions[1].renderAsCode(),)
+
+
 #
 class VBInput(VBCodeBlock):
     """Represents an input statement"""
 
     input_type = "Input"
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the open"""
         super(VBInput, self).__init__(scope)
@@ -2176,10 +2185,10 @@ class VBInput(VBCodeBlock):
         self.variables = []
         #
         self.auto_class_handlers = ({
-            "channel_id" : (VBParExpression, "channel"),
-            "expression" : (VBExpression, self.variables),
+            "channel_id": (VBParExpression, "channel"),
+            "expression": (VBExpression, self.variables),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         # Make sure variables are converted as if they are on the LHS of an assignment
@@ -2187,22 +2196,24 @@ class VBInput(VBCodeBlock):
             var.brackets_are_indexes = 1
         #
         return "%s%s = VBFiles.get%s(%s, %d)\n" % (
-                    self.getIndent(indent),
-                    ", ".join([var.renderAsCode() for var in self.variables]),
-                    self.input_type,
-                    self.channel.renderAsCode(),
-                    len(self.variables))
-    
+            self.getIndent(indent),
+            ", ".join([var.renderAsCode() for var in self.variables]),
+            self.input_type,
+            self.channel.renderAsCode(),
+            len(self.variables))
+
+
 #
 class VBLineInput(VBInput):
     """Represents an input statement"""
 
     input_type = "LineInput"
+
+
 #
 class VBPrint(VBCodeBlock):
     """Represents a print statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the print"""
         super(VBPrint, self).__init__(scope)
@@ -2212,11 +2223,11 @@ class VBPrint(VBCodeBlock):
         self.hold_cr = None
         #
         self.auto_class_handlers = ({
-            "channel_id" : (VBParExpression, "channel"),
-            "expression" : (VBExpression, self.variables),
-            "print_separator" : (VBPrintSeparator, self.variables),
+            "channel_id": (VBParExpression, "channel"),
+            "expression": (VBExpression, self.variables),
+            "print_separator": (VBPrintSeparator, self.variables),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         print_list = ", ".join([var.renderAsCode() for var in self.variables if var.renderAsCode()])
@@ -2224,15 +2235,15 @@ class VBPrint(VBCodeBlock):
             if self.variables[-1].renderAsCode() not in (None, "\t"):
                 print_list += ", '\\n'"
         return "%sVBFiles.writeText(%s, %s)\n" % (
-                    self.getIndent(indent),
-                    self.channel.renderAsCode(),
-                    print_list)
-    
+            self.getIndent(indent),
+            self.channel.renderAsCode(),
+            print_list)
+
+
 #
 class VBPrintSeparator(VBConsumer):
     """Represents a print statement separator"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.element.text == ";":
@@ -2241,12 +2252,12 @@ class VBPrintSeparator(VBConsumer):
             return '"\\t"'
         else:
             raise UnhandledStructureError("Unknown print separator '%s'" % self.element.text)
-    
+
+
 #
 class VBName(VBCodeBlock):
     """Represents a name statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the print"""
         super(VBName, self).__init__(scope)
@@ -2255,17 +2266,18 @@ class VBName(VBCodeBlock):
         self.files = []
         #
         self.auto_class_handlers = ({
-            "expression" : (VBExpression, self.files),
+            "expression": (VBExpression, self.files),
         })
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.registerImportRequired("os")
         file_list = ", ".join([fle.renderAsCode() for fle in self.files])
         return "%sos.rename(%s)\n" % (
-                    self.getIndent(indent),
-                    file_list)
-    
+            self.getIndent(indent),
+            file_list)
+
+
 #
 class VBUserType(VBCodeBlock):
     """Represents a select block"""
@@ -2275,7 +2287,6 @@ class VBUserType(VBCodeBlock):
 
     select_variable_index = 0
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBUserType, self).__init__(scope)
@@ -2284,34 +2295,35 @@ class VBUserType(VBCodeBlock):
         self.identifier = None
         #
         self.auto_class_handlers = {
-            "identifier" : (VBConsumer, "identifier"),
-            "type_property_definition" : (VBVariable, self.variables),
+            "identifier": (VBConsumer, "identifier"),
+            "type_property_definition": (VBVariable, self.variables),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         vars = []
         if not self.variables:
-            vars.append(VBPass().renderAsCode(indent+2))
+            vars.append(VBPass().renderAsCode(indent + 2))
         else:
             for var in self.variables:
                 vars.append("%sself.%s = %s()" % (
-                                self.getIndent(indent+2),
-                                var.identifier,
-                                var.type))
+                    self.getIndent(indent + 2),
+                    var.identifier,
+                    var.type))
         #
         return ("%sclass %s:\n"
                 "%sdef __init__(self):\n%s\n\n" % (
                     self.getIndent(indent),
                     self.identifier.element.text,
-                    self.getIndent(indent+1),
+                    self.getIndent(indent + 1),
                     "\n".join(vars)))
-    
+
+
 #
 class VBSubroutine(VBCodeBlock):
     """Represents a subroutine"""
 
-    public_is_global = 0 # Public objects defined here will not be globals
+    public_is_global = 0  # Public objects defined here will not be globals
     block_name = 'sub_block'
 
     def __init__(self, scope="Private"):
@@ -2321,7 +2333,7 @@ class VBSubroutine(VBCodeBlock):
         self.scope = scope
         self.block = VBPass()
         self.parameters = []
-        self.globals_required = {} # A list of objects required in a global statement
+        self.globals_required = {}  # A list of objects required in a global statement
         self.type = None
         self.static = None
         self.shared = None
@@ -2329,25 +2341,25 @@ class VBSubroutine(VBCodeBlock):
         self.param_arrays_name = None
         #
         self.auto_class_handlers.update({
-            "formal_param" : (VBVariable, self.parameters),
-            self.block_name : (VBCodeBlock, "block"),
-            "type_definition" : (VBUnrendered, "type"),
+            "formal_param": (VBVariable, self.parameters),
+            self.block_name: (VBCodeBlock, "block"),
+            "type_definition": (VBUnrendered, "type"),
         })
 
         self.auto_handlers = [
-                "identifier",
-                "scope",
-                "static",
-                "shared",
-                "handler_definition",
+            "identifier",
+            "scope",
+            "static",
+            "shared",
+            "handler_definition",
         ]
 
         self.skip_handlers = [
-                "sub_definition",
+            "sub_definition",
         ]
 
         self.rendering_locals = 0
-    #
+
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
         if self.handler_definition:
@@ -2356,8 +2368,8 @@ class VBSubroutine(VBCodeBlock):
         else:
             warning = ''
         #
-        code_block = self.block.renderAsCode(indent+1)
-        locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
+        code_block = self.block.renderAsCode(indent + 1)
+        locals = [declaration.renderAsCode(indent + 1) for declaration in self.block.locals]
         if self.static:
             decorator = '%s@staticmethod\n' % self.getIndent(indent)
         elif self.shared:
@@ -2365,17 +2377,17 @@ class VBSubroutine(VBCodeBlock):
         else:
             decorator = ''
         ret = "\n%s%s%sdef %s(%s):\n%s%s%s%s" % (
-                    warning,
-                    decorator,
-                    self.getIndent(indent),
-                    self.getParentProperty("enforcePrivateName")(self),
-                    self.renderParameters(),
-                    self.renderGlobalStatement(indent+1),
-                    self.renderParamArraysStatement(indent+1),
-                    "\n".join(locals),
-                    code_block)
+            warning,
+            decorator,
+            self.getIndent(indent),
+            self.getParentProperty("enforcePrivateName")(self),
+            self.renderParameters(),
+            self.renderGlobalStatement(indent + 1),
+            self.renderParamArraysStatement(indent + 1),
+            "\n".join(locals),
+            code_block)
         return ret
-    #
+
     def renderParameters(self):
         """Render the parameter list"""
         params = [param.renderAsCode() for param in self.parameters]
@@ -2385,7 +2397,7 @@ class VBSubroutine(VBCodeBlock):
             else:
                 params.insert(0, "self")
         return ", ".join(params)
-    #
+
     def resolveLocalName(self, name, rendering_locals=0, requestedby=None):
         """Convert a local name to a fully resolved name
 
@@ -2398,7 +2410,7 @@ class VBSubroutine(VBCodeBlock):
             return name
         else:
             raise UnresolvableName("Name '%s' is not known in this namespace" % name)
-    #
+
     def renderGlobalStatement(self, indent=0):
         """Render the global statement if we need it"""
         if self.globals_required:
@@ -2406,7 +2418,7 @@ class VBSubroutine(VBCodeBlock):
                                       ", ".join(list(self.globals_required.keys())))
         else:
             return ""
-    #
+
     def assignParent(self, *args, **kw):
         """Assign our parent
 
@@ -2419,7 +2431,7 @@ class VBSubroutine(VBCodeBlock):
         if hasattr(self, "parent"):
             if self.parent.amGlobal(self.scope):
                 self.registerAsGlobal()
-    
+
     def renderParamArraysStatement(self, indent):
         """Render the param arrays line
 
@@ -2439,13 +2451,15 @@ class VBSubroutine(VBCodeBlock):
     def registerParamArraysVariable(self, name):
         """Register a variable needing to handle the parameter arrays"""
         self.param_arrays_name = name
+
+
 #
 class VBFunction(VBSubroutine):
     """Represents a function"""
 
-    is_function = 1 # We need () if we are accessed directly
+    is_function = 1  # We need () if we are accessed directly
     block_name = 'fn_block'
-    #
+
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
         #
@@ -2458,16 +2472,16 @@ class VBFunction(VBSubroutine):
         self.name_substitution[self.identifier] = return_var
         #
         if self.block:
-            block = self.block.renderAsCode(indent+1)
+            block = self.block.renderAsCode(indent + 1)
         else:
-            block = self.getIndent(indent+1) + "pass\n"
+            block = self.getIndent(indent + 1) + "pass\n"
         #
-        locals = [declaration.renderAsCode(indent+1) for declaration in self.block.locals]
+        locals = [declaration.renderAsCode(indent + 1) for declaration in self.block.locals]
         #
         if Config["Functions", "PreInitializeReturnVariable"] == "Yes" and not just_use_return:
-            pre_init = "%s%s = None\n" % (				
-                    self.getIndent(indent+1),
-                    return_var)
+            pre_init = "%s%s = None\n" % (
+                self.getIndent(indent + 1),
+                return_var)
         else:
             pre_init = ""
         #
@@ -2484,19 +2498,20 @@ class VBFunction(VBSubroutine):
             last_return = 'return %s' % return_var
         #
         ret = "\n%s%sdef %s(%s):\n%s%s%s%s%s%s%s\n" % (
-                    decorator,
-                    self.getIndent(indent),
-                    self.getParentProperty("enforcePrivateName")(self), 
-                    self.renderParameters(),
-                    self.renderGlobalStatement(indent+1),
-                    self.renderParamArraysStatement(indent+1),
-                    pre_init,
-                    "\n".join(locals),
-                    block,
-                    self.getIndent(indent+1),
-                    last_return)
+            decorator,
+            self.getIndent(indent),
+            self.getParentProperty("enforcePrivateName")(self),
+            self.renderParameters(),
+            self.renderGlobalStatement(indent + 1),
+            self.renderParamArraysStatement(indent + 1),
+            pre_init,
+            "\n".join(locals),
+            block,
+            self.getIndent(indent + 1),
+            last_return)
         return ret
-    
+
+
 #
 class VBIf(VBCodeBlock):
     """Represents an if block"""
@@ -2505,11 +2520,9 @@ class VBIf(VBCodeBlock):
     ]
 
     skip_handlers = [
-            "if_statement",
+        "if_statement",
     ]
 
-
-    #
     def __init__(self, scope="Private"):
         """Initialize the If"""
         super(VBIf, self).__init__(scope)
@@ -2520,29 +2533,29 @@ class VBIf(VBCodeBlock):
         self.else_block = None
         #
         self.auto_class_handlers = {
-            "condition" : (VBExpression, "condition"),
-            "if_block" : (VBCodeBlock, "if_block"),
-            "else_if_statement" : (VBElseIf, self.elif_blocks),
-            "else_block" : (VBCodeBlock, "else_block"),
+            "condition": (VBExpression, "condition"),
+            "if_block": (VBCodeBlock, "if_block"),
+            "else_if_statement": (VBElseIf, self.elif_blocks),
+            "else_block": (VBCodeBlock, "else_block"),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         ret = self.getIndent(indent) + "if %s:\n" % self.condition.renderAsCode()
-        ret += self.if_block.renderAsCode(indent+1)
+        ret += self.if_block.renderAsCode(indent + 1)
         if self.elif_blocks:
             for elif_block in self.elif_blocks:
                 ret += elif_block.renderAsCode(indent)
         if self.else_block:
             ret += self.getIndent(indent) + "else:\n"
-            ret += self.else_block.renderAsCode(indent+1)
+            ret += self.else_block.renderAsCode(indent + 1)
         return ret
-    
+
+
 #
 class VBElseIf(VBIf):
     """Represents an ElseIf statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the If"""
         super(VBIf, self).__init__(scope)
@@ -2555,13 +2568,14 @@ class VBElseIf(VBIf):
             "else_if_block": (VBCodeBlock, "elif_block"),
             "else_if_inline": (VBCodeBlock, "elif_block"),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         ret = self.getIndent(indent) + "elif %s:\n" % self.condition.renderAsCode()
-        ret += self.elif_block.renderAsCode(indent+1)
+        ret += self.elif_block.renderAsCode(indent + 1)
         return ret
-    
+
+
 #
 class VBInlineIf(VBCodeBlock):
     """Represents an if block"""
@@ -2570,11 +2584,9 @@ class VBInlineIf(VBCodeBlock):
     ]
 
     skip_handlers = [
-            "if_statement",
+        "if_statement",
     ]
 
-
-    #
     def __init__(self, scope="Private"):
         """Initialize the If"""
         super(VBInlineIf, self).__init__(scope)
@@ -2584,29 +2596,30 @@ class VBInlineIf(VBCodeBlock):
         self.else_statements = []
         #
         self.auto_class_handlers = {
-            "condition" : (VBExpression, "condition"),
-            "inline_if_block" : (VBCodeBlock, self.if_statements),
-            "inline_else_block" : (VBCodeBlock, self.else_statements),
-        #    "inline_implicit_call" : (VBCodeBlock, self.if_statements),  # TODO: remove me
+            "condition": (VBExpression, "condition"),
+            "inline_if_block": (VBCodeBlock, self.if_statements),
+            "inline_else_block": (VBCodeBlock, self.else_statements),
+            #    "inline_implicit_call" : (VBCodeBlock, self.if_statements),  # TODO: remove me
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if_parts = "".join([line.renderAsCode(indent + 1) for line in self.if_statements])
         else_parts = "".join([line.renderAsCode(indent + 1) for line in self.else_statements])
 
         ret = "%sif %s:\n%s" % (
-                    self.getIndent(indent),
-                    self.condition.renderAsCode(),
-                    if_parts,)
+            self.getIndent(indent),
+            self.condition.renderAsCode(),
+            if_parts,)
         #
         if else_parts:
             ret += "%selse:\n%s" % (
-                    self.getIndent(indent),
-                    else_parts)
+                self.getIndent(indent),
+                else_parts)
         #
         return ret
-    
+
+
 #
 class VBSelect(VBCodeBlock):
     """Represents a select block"""
@@ -2616,7 +2629,6 @@ class VBSelect(VBCodeBlock):
 
     _select_variable_index = 0
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBSelect, self).__init__(scope)
@@ -2625,17 +2637,17 @@ class VBSelect(VBCodeBlock):
         self.comment_block = VBNothing()
         #
         self.auto_class_handlers = {
-            "expression" : (VBExpression, "expression"),
-            "case_item_block" : (VBCaseItem, self.blocks),
-            "case_else_block" : (VBCaseElse, self.blocks),
-            "case_comment_block" : (VBOptionalCodeBlock, "comment_block"),
+            "expression": (VBExpression, "expression"),
+            "case_item_block": (VBCaseItem, self.blocks),
+            "case_else_block": (VBCaseElse, self.blocks),
+            "case_comment_block": (VBOptionalCodeBlock, "comment_block"),
         }
         #
         # Change the variable index if we are a select
         if self.__class__ == VBSelect:
             self.select_variable_index = VBSelect._select_variable_index
             VBSelect._select_variable_index = VBSelect._select_variable_index + 1
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         #
@@ -2645,20 +2657,20 @@ class VBSelect(VBCodeBlock):
         #
         if Config["Select", "EvaluateVariable"] != "EachTime":
             ret = "%s%s = %s\n" % (self.getIndent(indent),
-                                     self.getSelectVariable(),
-                                     self.expression.renderAsCode())
+                                   self.getSelectVariable(),
+                                   self.expression.renderAsCode())
         else:
             ret = ""
         ret += self.comment_block.renderAsCode()
         ret += "".join([item.renderAsCode(indent) for item in self.blocks])
         return ret
-    #
+
     def getSelectVariable(self):
         """Return the name of the select variable"""
         eval_variable = Config["Select", "EvaluateVariable"]
         if eval_variable == "Once":
             if Config["Select", "UseNumericIndex"] == "Yes":
-                select_var = "%s%d" % (Config["Select", "SelectVariablePrefix"], 
+                select_var = "%s%d" % (Config["Select", "SelectVariablePrefix"],
                                        self.getParentProperty("select_variable_index"))
             else:
                 select_var = Config["Select", "SelectVariablePrefix"]
@@ -2667,14 +2679,14 @@ class VBSelect(VBCodeBlock):
         else:
             raise InvalidOption("Evaluate variable option not understood: '%s'" % eval_variable)
         return select_var
-    
+
+
 #
 class VBCaseBlock(VBSelect):
     """Represents a select block"""
 
-    if_or_elif = "elif" # Our parent will change this if we are the first
+    if_or_elif = "elif"  # Our parent will change this if we are the first
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBCaseBlock, self).__init__(scope)
@@ -2684,26 +2696,26 @@ class VBCaseBlock(VBSelect):
         self.block = VBPass()
         #
         self.auto_class_handlers = {
-            "case_list" : (VBCaseItem, self.lists),
-            "expression" : (VBExpression, self.expressions),
-            "block" : (VBCodeBlock, "block"),
+            "case_list": (VBCaseItem, self.lists),
+            "expression": (VBExpression, self.expressions),
+            "block": (VBCodeBlock, "block"),
         }
-    
+
+
 #
 class VBCaseItem(VBCaseBlock):
     """Represents a select block"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         select_variable_index = self.getParentProperty("select_variable_index")
         if self.lists:
             expr = " or ".join(["(%s)" % item.renderAsCode() for item in self.lists])
             return "%s%s %s:\n%s" % (
-                           self.getIndent(indent),
-                           self.if_or_elif,
-                           expr,
-                           self.block.renderAsCode(indent+1))						   
+                self.getIndent(indent),
+                self.if_or_elif,
+                expr,
+                self.block.renderAsCode(indent + 1))
         elif len(self.expressions) == 1:
             #
             expression_text = self.expressions[0].renderAsCode()
@@ -2711,38 +2723,38 @@ class VBCaseItem(VBCaseBlock):
             if expression_text.startswith("Is "):
                 # This has "Is" - replace it and use the rest of the expression
                 return "%s %s" % (
-                                   self.getSelectVariable(),
-                                   expression_text[3:])
-            else:	
+                    self.getSelectVariable(),
+                    expression_text[3:])
+            else:
                 # Standard case
                 return "%s == %s" % (
-                                   self.getSelectVariable(),
-                                   expression_text)
-            
+                    self.getSelectVariable(),
+                    expression_text)
+
         elif len(self.expressions) == 2:
             return "%s <= %s <= %s" % (
-                                           self.expressions[0].renderAsCode(),
-                                           self.getSelectVariable(),
-                                           self.expressions[1].renderAsCode())
+                self.expressions[0].renderAsCode(),
+                self.getSelectVariable(),
+                self.expressions[1].renderAsCode())
         raise VBParserError("Error rendering case item")
-    
+
+
 #
 class VBCaseElse(VBCaseBlock):
     """Represents a select block"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return "%selse:\n%s" % (self.getIndent(indent),
-                                 self.block.renderAsCode(indent+1))
-    
+                                self.block.renderAsCode(indent + 1))
+
+
 #
 class VBFor(VBCodeBlock):
     """Represents a for statement"""
 
     _for_variable_index = 0
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBFor, self).__init__(scope)
@@ -2751,27 +2763,27 @@ class VBFor(VBCodeBlock):
         self.expressions = []
         #
         self.auto_class_handlers = {
-            "expression" : (VBExpression, self.expressions),
-            "block" : (VBCodeBlock, "block"), # Used for full 'for'
-            "body" : (VBCodeBlock, "block"),  # Used for inline 'for'
+            "expression": (VBExpression, self.expressions),
+            "block": (VBCodeBlock, "block"),  # Used for full 'for'
+            "body": (VBCodeBlock, "block"),  # Used for inline 'for'
         }
 
         self.auto_handlers = [
             "object",
         ]
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         range_statement = ", ".join([item.renderAsCode() for item in self.expressions])
         # Watch out for the weird dotted name in the for
         self.handleDottedName(indent)
         return "%sfor %s in vbForRange(%s):\n%s%s" % (
-                                 self.getIndent(indent),
-                                 self.loopname,
-                                 range_statement,
-                                 self.copiedname,
-                                 self.block.renderAsCode(indent+1))
-    #
+            self.getIndent(indent),
+            self.loopname,
+            range_statement,
+            self.copiedname,
+            self.block.renderAsCode(indent + 1))
+
     def handleDottedName(self, indent):
         """Handle a dotted name as the identifier
 
@@ -2789,56 +2801,56 @@ class VBFor(VBCodeBlock):
             self.loopname = "_idx%s" % VBFor._for_variable_index
             VBFor._for_variable_index += 1
             self.copiedname = "%s%s = %s\n" % (
-                self.getIndent(indent+1),
+                self.getIndent(indent + 1),
                 name,
                 self.loopname
             )
-    
+
+
 #
 class VBForEach(VBFor):
     """Represents a for each statement"""
 
-    #
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         # Watch out for the weird dotted name in the for
-        self.handleDottedName(indent)    
+        self.handleDottedName(indent)
         return "%sfor %s in %s:\n%s%s" % (
-                                 self.getIndent(indent),
-                                 self.loopname,
-                                 self.expressions[0].renderAsCode(),
-                                 self.copiedname,
-                                 self.block.renderAsCode(indent+1))
-    
+            self.getIndent(indent),
+            self.loopname,
+            self.expressions[0].renderAsCode(),
+            self.copiedname,
+            self.block.renderAsCode(indent + 1))
+
+
 #
 class VBWhile(VBCodeBlock):
     """Represents a while statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
-        super(VBWhile, self).__init__(scope)	
+        super(VBWhile, self).__init__(scope)
         #
         self.block = VBPass()
         self.expression = None
         #
         self.auto_class_handlers = {
-            "expression" : (VBExpression, "expression"),
-            "while_block" : (VBCodeBlock, "block"),
+            "expression": (VBExpression, "expression"),
+            "while_block": (VBCodeBlock, "block"),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return "%swhile %s:\n%s" % (
-                            self.getIndent(indent),
-                            self.expression.renderAsCode(),
-                            self.block.renderAsCode(indent+1))
-    
+            self.getIndent(indent),
+            self.expression.renderAsCode(),
+            self.block.renderAsCode(indent + 1))
+
+
 #
 class VBDo(VBCodeBlock):
     """Represents a do statement"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBDo, self).__init__(scope)
@@ -2850,13 +2862,13 @@ class VBDo(VBCodeBlock):
         self.post_until = None
         #
         self.auto_class_handlers = {
-            "while_clause" : (VBExpression, "pre_while"),
-            "until_clause" : (VBExpression, "pre_until"),
-            "post_while_clause" : (VBExpression, "post_while"),
-            "post_until_clause" : (VBExpression, "post_until"),
-            "do_block" : (VBCodeBlock, "block"),
+            "while_clause": (VBExpression, "pre_while"),
+            "until_clause": (VBExpression, "pre_until"),
+            "post_while_clause": (VBExpression, "post_while"),
+            "post_until_clause": (VBExpression, "post_until"),
+            "do_block": (VBCodeBlock, "block"),
         }
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code
 
@@ -2870,40 +2882,40 @@ class VBDo(VBCodeBlock):
             """
         if self.pre_while:
             return "%swhile %s:\n%s" % (
-                            self.getIndent(indent),
-                            self.pre_while.renderAsCode(),
-                            self.block.renderAsCode(indent+1))
+                self.getIndent(indent),
+                self.pre_while.renderAsCode(),
+                self.block.renderAsCode(indent + 1))
         elif self.pre_until:
             return "%swhile not (%s):\n%s" % (
-                            self.getIndent(indent),
-                            self.pre_until.renderAsCode(),
-                            self.block.renderAsCode(indent+1))
+                self.getIndent(indent),
+                self.pre_until.renderAsCode(),
+                self.block.renderAsCode(indent + 1))
         elif self.post_while:
             return "%swhile 1:\n%s%sif not (%s):\n%sbreak\n" % (
-                            self.getIndent(indent),
-                            self.block.renderAsCode(indent+1),
-                            self.getIndent(indent+1),
-                            self.post_while.renderAsCode(),
-                            self.getIndent(indent+2))
+                self.getIndent(indent),
+                self.block.renderAsCode(indent + 1),
+                self.getIndent(indent + 1),
+                self.post_while.renderAsCode(),
+                self.getIndent(indent + 2))
         elif self.post_until:
             return "%swhile 1:\n%s%sif %s:\n%sbreak\n" % (
-                            self.getIndent(indent),
-                            self.block.renderAsCode(indent+1),
-                            self.getIndent(indent+1),
-                            self.post_until.renderAsCode(),
-                            self.getIndent(indent+2))						
+                self.getIndent(indent),
+                self.block.renderAsCode(indent + 1),
+                self.getIndent(indent + 1),
+                self.post_until.renderAsCode(),
+                self.getIndent(indent + 2))
         else:
             return "%swhile 1:\n%s" % (
-                            self.getIndent(indent),
-                            self.block.renderAsCode(indent+1))
-    
+                self.getIndent(indent),
+                self.block.renderAsCode(indent + 1))
+
+
 #
 class VBWith(VBCodeBlock):
     """Represents a with statement"""
 
     _with_variable_index = 0
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBWith, self).__init__(scope)
@@ -2912,13 +2924,13 @@ class VBWith(VBCodeBlock):
         self.expression = None
         #
         self.auto_class_handlers = {
-            "expression" : (VBExpression, "expression"),
-            "block" : (VBCodeBlock, "block"),
+            "expression": (VBExpression, "expression"),
+            "block": (VBCodeBlock, "block"),
         }
         #
         self.with_variable_index = VBWith._with_variable_index
         VBWith._with_variable_index = VBWith._with_variable_index + 1
-    #
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         #
@@ -2942,19 +2954,20 @@ class VBWith(VBCodeBlock):
                 self.with_object = varname
 
                 return "%s%s = %s\n%s" % (
-                                self.getIndent(indent),
-                                varname,
-                                self.expression.renderAsCode(),
-                                self.block.renderAsCode(indent))
+                    self.getIndent(indent),
+                    varname,
+                    self.expression.renderAsCode(),
+                    self.block.renderAsCode(indent))
         else:
             return ""
-    
+
+
 #
 class VBProperty(VBSubroutine):
     """Represents a property definition"""
 
     block_name = "property_block"
-    #
+
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBProperty, self).__init__(scope)
@@ -2965,10 +2978,10 @@ class VBProperty(VBSubroutine):
         self.get_block = []
         self.set_block = []
         self.auto_class_handlers.update({
-            "property_get_block" : (VBCodeBlock, self.get_block),
-            "property_set_block" : (VBCodeBlock, self.set_block),
+            "property_get_block": (VBCodeBlock, self.get_block),
+            "property_set_block": (VBCodeBlock, self.set_block),
         })
-    #
+
     def renderPropertyGroup(self, indent, name, Let=None, Set=None, Get=None):
         """Render a group of property statements"""
         if Let and Set:
@@ -2983,27 +2996,27 @@ class VBProperty(VBSubroutine):
 
         #
         # Get the name for this property - respecting the hidden status
-        obj = pset or pget # Need at least one!
+        obj = pset or pget  # Need at least one!
         proper_name = self.getParentProperty("enforcePrivateName")(obj)
 
         if pset:
-            self.getParentProperty("local_names").append(pset.identifier) # Store property name for namespace analysis
-            pset.identifier = "%s%s" % (Config["Properties", "LetSetVariablePrefix"], pset.identifier)		
+            self.getParentProperty("local_names").append(pset.identifier)  # Store property name for namespace analysis
+            pset.identifier = "%s%s" % (Config["Properties", "LetSetVariablePrefix"], pset.identifier)
             ret.append(pset.renderAsCode(indent))
             params.append("fset=%s" % self.getParentProperty("enforcePrivateName")(pset))
         if pget:
-            self.getParentProperty("local_names").append(pget.identifier) # Store property name for namespace analysis
-            pget.__class__ = VBFunction # Needs to be a function
+            self.getParentProperty("local_names").append(pget.identifier)  # Store property name for namespace analysis
+            pget.__class__ = VBFunction  # Needs to be a function
             pget.name_substitution[pget.identifier] = Config["Functions", "ReturnVariableName"]
-            pget.identifier = "%s%s" % (Config["Properties", "GetVariablePrefix"], pget.identifier)		
+            pget.identifier = "%s%s" % (Config["Properties", "GetVariablePrefix"], pget.identifier)
             ret.append(pget.renderAsCode(indent))
             params.append("fget=%s" % self.getParentProperty("enforcePrivateName")(pget))
 
         return "\n%s%s%s = property(%s)\n" % (
-                    "".join(ret),
-                    self.getIndent(indent),
-                    proper_name,
-                    ", ".join(params))
+            "".join(ret),
+            self.getIndent(indent),
+            proper_name,
+            ", ".join(params))
 
 
 class VBDotNetProperty(VBCodeBlock):
@@ -3057,10 +3070,10 @@ class VBDoNetPropertySet(VBSubroutine):
     block_name = 'block'
     expected_dialect = 'vb.net'
 
+
 class VBEnum(VBCodeBlock):
     """Represents an enum definition"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBEnum, self).__init__(scope)
@@ -3068,11 +3081,11 @@ class VBEnum(VBCodeBlock):
         self.identifier = None
         #
         self.auto_class_handlers = {
-                "enumeration_item" : (VBEnumItem, self.enumerations),
-            }
+            "enumeration_item": (VBEnumItem, self.enumerations),
+        }
 
         self.auto_handlers = ["identifier"]
-    #
+
     def renderAsCode(self, indent=0):
         """Render a group of property statements"""
         count = 0
@@ -3088,16 +3101,16 @@ class VBEnum(VBCodeBlock):
                                       cnt))
 
         return "%s# Enumeration '%s'\n%s\n" % (
-                            self.getIndent(indent),
-                            self.identifier,
-                            "\n".join(ret),
-                    )
-    
+            self.getIndent(indent),
+            self.identifier,
+            "\n".join(ret),
+        )
+
+
 #
 class VBEnumItem(VBCodeBlock):
     """Represents an enum item"""
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the Select"""
         super(VBEnumItem, self).__init__(scope)
@@ -3105,21 +3118,21 @@ class VBEnumItem(VBCodeBlock):
         self.expression = None
         #
         self.auto_class_handlers = {
-                "identifier" : (VBConsumer, "identifier"),
-                "expression" : (VBExpression, "expression"),
-            }
-    
+            "identifier": (VBConsumer, "identifier"),
+            "expression": (VBExpression, "expression"),
+        }
+
+
 #
 class VB2PYDirective(VBCodeBlock):
     """Handles a vb2py directive"""
 
     skip_handlers = [
-            "vb2py_directive",
+        "vb2py_directive",
     ]
 
     would_end_docstring = 0
 
-    #
     def __init__(self, scope="Private"):
         """Initialize the module"""
         super(VB2PYDirective, self).__init__(scope)
@@ -3133,7 +3146,7 @@ class VB2PYDirective(VBCodeBlock):
         self.config_name = None
         self.config_section = None
         self.expression = None
-    #
+
     def renderAsCode(self, indent=0):
         """We use the rendering to do our stuff"""
         if self.directive_type == "Set":
@@ -3143,14 +3156,14 @@ class VB2PYDirective(VBCodeBlock):
             Config.removeLocalOveride(self.config_section, self.config_name)
             log.info("Doing an uset: %s" % str((self.config_section, self.config_name)))
         elif self.directive_type in ("GlobalSet", "GlobalAdd"):
-            pass # already handled this
+            pass  # already handled this
         elif self.directive_type == "Add":
             Config.addLocalOveride(self.config_section, self.config_name, self.expression)
             log.info("Adding a setting: %s" % str((self.config_section, self.config_name, self.expression)))
         else:
             raise DirectiveError("Directive not understood: '%s'" % self.directive_type)
         return ""
-    #
+
     def assignParent(self, *args, **kw):
         """Assign our parent
 
@@ -3164,7 +3177,8 @@ class VB2PYDirective(VBCodeBlock):
             Config.setLocalOveride(self.config_section, self.config_name, self.expression)
         elif self.directive_type == "GlobalAdd":
             Config.addLocalOveride(self.config_section, self.config_name, self.expression)
-    
+
+
 #
 class VBPass(VBCodeBlock):
     """Represents an empty statement"""
@@ -3172,6 +3186,8 @@ class VBPass(VBCodeBlock):
     def renderAsCode(self, indent=0):
         """Render it!"""
         return "%spass\n" % (self.getIndent(indent),)
+
+
 #
 class VBRenderDirect(VBCodeBlock):
     """Represents a pre-rendered statement"""
@@ -3196,6 +3212,8 @@ class VBRenderDirect(VBCodeBlock):
     def asString(self):
         """Return string representation"""
         return self.identifier
+
+
 #
 class VBNothing(VBCodeBlock):
     """Represents a block which renders to nothing at all"""
@@ -3203,6 +3221,8 @@ class VBNothing(VBCodeBlock):
     def renderAsCode(self, indent=0):
         """Render it!"""
         return ""
+
+
 #
 class VBParserFailure(VBConsumer):
     """Represents a block which failed to parse"""
@@ -3215,7 +3235,8 @@ class VBParserFailure(VBConsumer):
         if fail_option == "exception":
             warn += "%sraise NotImplemented('VB2PY Code conversion failed at this point')" % self.getIndent(indent)
         elif fail_option == "warning":
-            warn += "%simport warnings;warnings.warn('VB2PY Code conversion failed at this point')" % self.getIndent(indent)
+            warn += "%simport warnings;warnings.warn('VB2PY Code conversion failed at this point')" % self.getIndent(
+                indent)
         #
         return warn
 

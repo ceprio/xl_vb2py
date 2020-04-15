@@ -3,7 +3,9 @@
     <words>
       <w>channelid</w>
       <w>readtlb</w>
+      <w>subelement</w>
       <w>twips</w>
+      <w>unrendered</w>
     </words>
   </dictionary>
 </component>
