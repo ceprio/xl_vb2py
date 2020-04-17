@@ -4,6 +4,7 @@ from . import vbparser
 from . import parserclasses
 from . import converter
 from . import config
+import subprocess
 import logging
 import json
 import re
@@ -43,7 +44,7 @@ Config = config.VB2PYConfig()
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 app.logger.setLevel(gunicorn_logger.level)
-app.logger.info('Starting conversion server')
+app.logger.info('Starting conversion server (%s)' % converter.__version__)
 
 
 class ConversionHandler(object):
@@ -125,6 +126,20 @@ def singleFormModule():
 def submitFile():
     """Submit a file as a test"""
     return storeSubmittedFile()
+
+
+@app.route('/server_stats', methods=['GET'])
+def getServerStats():
+    """Return stats from the server"""
+    #
+    # Get git commit version
+    p = subprocess.Popen('git log -1 --date=format:"%Y/%m/%d" --format="%ad"', shell=True, stdout=subprocess.PIPE)
+    date = p.stdout.read().decode()
+    return json.dumps({
+        'status': 'OK',
+        'version': converter.__version__,
+        'date': date.strip(),
+    })
 
 
 def singleModule(module_type, dot_net_module_type):

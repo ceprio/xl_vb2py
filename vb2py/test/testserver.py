@@ -2,6 +2,7 @@
 
 """Test the conversion server"""
 
+import datetime
 from vb2py.test.testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
@@ -764,6 +765,16 @@ B =
         data = json.loads(result.data)
         self.assertIn('Integer(20)', data['result'])
         self.assertIn('return _ret', data['result'])
+
+    def testCanGetServerVersionAndDate(self):
+        """testCanGetServerVersionAndDate: should be able to get server version and date"""
+        client = vb2py.conversionserver.app.test_client()
+        result = client.get('/server_stats')
+        data = json.loads(result.data)
+        #
+        self.assertEqual(vb2py.converter.__version__, data['version'])
+        d = datetime.datetime.strptime(data['date'], '%Y/%M/%d')
+        self.assertIsInstance(d, datetime.datetime)
 
 
 if __name__ == '__main__':
