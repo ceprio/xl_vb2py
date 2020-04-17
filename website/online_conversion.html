@@ -687,7 +687,7 @@
                 if (!DEVELOPMENT) {
                     let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
                     gtag('event', 'Convert', {
-                        'event_category': category,
+                        'event_category': category  + '(' + data.language + ')',
                         'event_label': label,
                         'parameter1': data.language,
                         'value': number_of_lines
