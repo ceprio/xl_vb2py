@@ -203,7 +203,7 @@ def singleModule(module_type, dot_net_module_type):
                     extra = ' Quick fail mode'
                 elif failure_mode == 'fail-safe':
                     parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(text, result)
-                    extra = ' Fail safe mode'
+                    extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
 
     #
     app.logger.info('[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s' % (
