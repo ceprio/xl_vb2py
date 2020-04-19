@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vb2py Online Converter</title>
+
+    <!-- Local Styles -->
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- East UI -->
+    <script src="jquery-easyui-1.9.4/jquery.easyui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="jquery-easyui-1.9.4/themes/gray/easyui.css">
+    <link rel="stylesheet" type="text/css" href="jquery-easyui-1.9.4/themes/icon.css">
+
+    <!-- ACE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
+
+</head>
+<body>
+
+<h2>Nested Panel</h2>
+<p>The panel can be placed inside containers and can contain other components.</p>
+<div style="margin:20px 0 10px 0;"></div>
+<div class="easyui-panel" title="Nested Panel" style="width:100%;height:800px;padding:10px;">
+    <div class="easyui-panel" style="padding:5px;">
+            <input type="button" class="btn-sm btn-primary" name="Do" value="Convert all code to Python"
+                   onclick="convert_code();">
+            &nbsp;&nbsp;
+            <input type="button" class="btn-sm btn-secondary" name="Do" value="Just convert line / selection"
+                   onclick="convert_selection();">
+            &nbsp;&nbsp;
+            <input type="button" class="btn-sm btn-secondary" name="Do" value="Show/Hide options ..."
+                   data-toggle="collapse" data-target="#options-panel" aria-expanded="false"
+                   aria-controls="collapseExample">
+    </div>
+
+    <div class="easyui-panel" style="width:100%;height:100%;padding:10px;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'west',split:true" style="width:20%;padding:10px">
+                Code Structure
+            </div>
+            <div data-options="region:'east', split:true" style="width:40%">
+                <div id="vbcode" class="vbcode">
+                </div>
+            </div>
+            <div data-options="region:'center'" style="width:40%">
+                <div id="pycode" class="pycode">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let pyeditor = null;
+    let vbeditor = null;
+
+    $(document).ready(function () {
+        vbeditor = ace.edit("vbcode");
+        vbeditor.setTheme("ace/theme/dawn");
+        vbeditor.session.setMode("ace/mode/vbscript");
+        pyeditor = ace.edit("pycode");
+        pyeditor.setTheme("ace/theme/dawn");
+        pyeditor.session.setMode("ace/mode/python");
+    });
+
+
+</script>
+
+</body>
+</html>
