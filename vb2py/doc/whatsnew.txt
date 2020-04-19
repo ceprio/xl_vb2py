@@ -1,7 +1,8 @@
 **0.4.0.2**
 
-- Added server status display for online conversion
+- Added server **status display** for online conversion
+- Added ability to download both the **code and the runtime** files as a zip
 
 **0.4**
 
-- Converter now runs on Python 3 and creates Python 3 compatible code
+- Converter now runs on **Python 3** and creates Python 3 compatible code

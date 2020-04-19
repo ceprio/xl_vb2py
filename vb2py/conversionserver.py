@@ -5,6 +5,9 @@ from . import parserclasses
 from . import converter
 from . import config
 from docutils.core import publish_string
+import base64
+import io
+import zipfile
 import subprocess
 import logging
 import json
@@ -146,6 +149,35 @@ def getServerStats():
         'version': converter.__version__,
         'date': date.strip(),
         'whats-new': publish_string(whats_new_text, writer_name='html').decode(),
+    })
+
+
+@app.route('/get_runtime_zip', methods=['POST'])
+def getRunTimeZip():
+    """Return a zip of the code and the runtime files"""
+    try:
+        python = request.values['code']
+    except KeyError:
+        status = 'FAILED'
+        result = 'No code present'
+        zipdata = ''
+    else:
+        f = io.BytesIO()
+        z = zipfile.ZipFile(f, mode='w')
+        z.writestr('converted_code.py', python)
+        z.writestr(os.path.join('vb2py', 'vbfunctions.py'), open(utils.relativePath('vbfunctions.py'), 'r').read())
+        z.writestr(os.path.join('vb2py', 'vbdebug.py'), open(utils.relativePath('vbdebug.py'), 'r').read())
+        z.close()
+        #
+        f.seek(0)
+        zipdata = base64.b64encode(f.read())
+        status = 'OK'
+        result = 'Zipfile created'
+    #
+    return json.dumps({
+        'status': status,
+        'result': result,
+        'zipdata': zipdata.decode(),
     })
 
 

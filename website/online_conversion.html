@@ -221,10 +221,8 @@
                     <!-- Code boxes -->
                     <div class="vertically_divided code-box">
                         <div>
-                            <div class="code-header">
-
-                                Type VB Code or
-
+                            <div class="code-header">Type VB Code or
+                                <!-- VB Code Panel buttons -->
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                     <div class="btn-group" role="group">
                                         <button id="LoadGroup" type="button"
@@ -283,24 +281,26 @@
                                     </div>
 
                                 </div>
-
-
                             </div>
-
+                            <!-- VB Editor -->
                             <div id="vbcode" class="vbcode">
                             </div>
                         </div>
                         <div>
                             <div class="code-header">Python Equivalent
-
+                                <!-- Python Code Panel buttons -->
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                     <div class="btn-group" role="group">
-                                        <button id="btnGroupDrop3" type="button" class="btn-small btn-secondary"
-                                                aria-haspopup="true" aria-expanded="false" onclick="downloadPython()">
+                                        <button id="PyButtonsGroup" type="button"
+                                                class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
                                             Download
                                         </button>
+                                        <div class="dropdown-menu" aria-labelledby="PyButtonsGroup">
+                                            <a class="dropdown-item" href="#" onclick="downloadPython()">Code (.py)</a>
+                                            <a class="dropdown-item" href="#" onclick="downloadAll()">Code + Runtime (.zip)</a>
+                                        </div>
                                     </div>
-
                                     &nbsp;&nbsp;
                                     <div class="error-header">
                                         &nbsp;or&nbsp;
@@ -315,20 +315,20 @@
                                     </div>
 
                                 </div>
-
                             </div>
-
-
+                            <!-- Python editor -->
                             <div id="pycode" class="pycode"></div>
                         </div>
                     </div>
                 </div>
+            </div>
         </td>
     </tr>
 </table>
 
 <!-- Pop-up options dialog -->
-<div class="modal fade" id="conversion-options" tabindex="-1" role="dialog" aria-labelledby="advanced-options-button"
+<div class="modal fade" id="conversion-options" tabindex="-1" role="dialog"
+     aria-labelledby="advanced-options-button"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -467,7 +467,8 @@
 </div>
 
 <!-- Pop-up what's new dialog -->
-<div class="modal fade" id="whats-new-dialog" tabindex="-1" role="dialog" aria-labelledby="advanced-options-button"
+<div class="modal fade" id="whats-new-dialog" tabindex="-1" role="dialog"
+     aria-labelledby="advanced-options-button"
      aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -1217,6 +1218,7 @@ End Using
         return hval >>> 0;
     }
 
+    //region Download artifacts
     function downloadPython() {
         let element = document.createElement('a');
         let text = pyeditor.session.getValue();
@@ -1236,6 +1238,34 @@ End Using
             });
         }
     }
+
+    function downloadAll() {
+        let element = document.createElement('a');
+        $.post(HOST + '/get_runtime_zip', {'code': pyeditor.session.getValue()}, function (data) {
+            if (data.status === 'OK') {
+                element.setAttribute('href', 'data:application/zip;base64,' + data.zipdata);
+                element.setAttribute('download', 'converted_code.zip');
+
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+
+                if (!DEVELOPMENT) {
+                    gtag('event', 'Download Python', {
+                        'event_category': 'Converted Python + Runtime',
+                    });
+                }
+            } else {
+                alert('Failed to create ZIP');
+            }
+        }, 'json')
+        .fail(function() {
+            alert('Could not reach server');
+        })
+    }
+
+    //endregion
 
     function getExample(name) {
         //

@@ -2,19 +2,19 @@
 
 """Test the conversion server"""
 
+import base64
 import datetime
+import zipfile
+import io
+import os
 from vb2py.test.testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
 import vb2py.config
 import vb2py.converter
-import os
 import urllib.request, urllib.parse, urllib.error
-import threading
 import json
 import vb2py.utils
-from flask import request
-import pytest
 from vb2py.vbfunctions import Integer
 
 
@@ -776,6 +776,25 @@ B =
         d = datetime.datetime.strptime(data['date'], '%Y/%M/%d')
         self.assertIsInstance(d, datetime.datetime)
         self.assertNotEqual(0, data['whats-new'].splitlines())
+
+    def testCanGetZipFileRunTime(self):
+        """testCanGetZipFileRunTime: should be able to get a conversion and zip file"""
+        client = vb2py.conversionserver.app.test_client()
+        code_sample = 'line 1\nline 2\nend line\n'
+        result = client.post('/get_runtime_zip', data={
+            'code': code_sample,
+        })
+        data = json.loads(result.data)
+        #
+        self.assertEqual('OK', data['status'])
+        zip_raw_data = data['zipdata']
+        zip_data = base64.b64decode(zip_raw_data)
+        z = zipfile.ZipFile(io.BytesIO(zip_data), mode='r')
+        code = z.getinfo('converted_code.py')
+        self.assertEqual(z.read('converted_code.py').decode(), code_sample)
+        #
+        func = z.getinfo(os.path.join('vb2py', 'vbfunctions.py'))
+        dbg = z.getinfo(os.path.join('vb2py', 'vbdebug.py'))
 
 
 if __name__ == '__main__':
