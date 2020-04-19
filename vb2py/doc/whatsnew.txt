@@ -1,0 +1,7 @@
+**0.4.0.2**
+
+- Added server status display for online conversion
+
+**0.4**
+
+- Converter now runs on Python 3 and creates Python 3 compatible code

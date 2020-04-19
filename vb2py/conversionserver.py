@@ -4,6 +4,7 @@ from . import vbparser
 from . import parserclasses
 from . import converter
 from . import config
+from docutils.core import publish_string
 import subprocess
 import logging
 import json
@@ -135,10 +136,16 @@ def getServerStats():
     # Get git commit version
     p = subprocess.Popen('git log -1 --date=format:"%Y/%m/%d" --format="%ad"', shell=True, stdout=subprocess.PIPE)
     date = p.stdout.read().decode()
+    #
+    # Get what's new text
+    with open(utils.relativePath('doc', 'whatsnew.txt'), 'r') as f:
+        whats_new_text = f.read()
+    #
     return json.dumps({
         'status': 'OK',
         'version': converter.__version__,
         'date': date.strip(),
+        'whats-new': publish_string(whats_new_text, writer_name='html').decode(),
     })
 
 

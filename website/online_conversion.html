@@ -159,7 +159,8 @@
                                    aria-controls="collapseExample">
                             &nbsp;&nbsp;
                             <input type="button" class="btn btn-outline-dark" id="server-status" name="Server"
-                                   value="Server Status" onClick="showRecentChanges()">
+                                   value="Server Status" data-toggle="modal" data-target="#whats-new-dialog"
+                                   value="Open">
                         </p>
 
                         <!-- Small options panel -->
@@ -460,6 +461,26 @@
                     <button type="button" class="btn btn-primary" onclick="applyConfigChanges(true)">Save and Convert
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pop-up what's new dialog -->
+<div class="modal fade" id="whats-new-dialog" tabindex="-1" role="dialog" aria-labelledby="advanced-options-button"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="whatsNewModalLabel">What's New</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body card-text" id="whats-new-content">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -766,6 +787,7 @@ End Using
     var py_marker = null;
     var unchanged_hash = hashFnv32a(vbeditor.getValue());
     let start_time = null;
+    let whats_new_text = 'Unknown';
 
 
     var DEVELOPMENT = !location.host.startsWith('vb2py');
@@ -917,6 +939,7 @@ End Using
         $.post(HOST + '/server_stats', function (data) {
             if (data.status === 'OK') {
                 status_element.value = 'V' + data.version + ': Updated ' + data.date;
+                $('#whats-new-content')[0].innerHTML = data['whats-new'];
             } else {
                 status_element.value = 'Unable to reach'
             }
