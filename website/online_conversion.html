@@ -144,6 +144,8 @@
 
                     <!-- Convert Buttons and Options -->
                     <div style="margin-top: 20px">
+
+                        <!-- Conversion and other main buttons -->
                         <p align="center">
                             <input type="button" class="btn btn-primary" name="Do" value="Convert all code to Python"
                                    onclick="convert_code();">
@@ -155,8 +157,12 @@
                             <input type="button" class="btn btn-secondary" name="Do" value="Show/Hide options ..."
                                    data-toggle="collapse" data-target="#options-panel" aria-expanded="false"
                                    aria-controls="collapseExample">
+                            &nbsp;&nbsp;
+                            <input type="button" class="btn btn-outline-dark" id="server-status" name="Server"
+                                   value="Server Status" onClick="showRecentChanges()">
                         </p>
 
+                        <!-- Small options panel -->
                         <div id="options-panel" class="collapse" style="padding-right: 20px">
                             <div class="form-group row" align="center"> <!-- Context -->
                                 <label class="col-sm-2 col-form-label">
@@ -748,6 +754,8 @@
 
 <!-- Main Scripts -->
 <script>
+
+    //region Globals Definitions
     var vbeditor = ace.edit("vbcode");
     vbeditor.setTheme("ace/theme/monokai");
     vbeditor.session.setMode("ace/mode/vbscript");
@@ -773,6 +781,9 @@
 
     let default_config = [];
     let status_checker = null;
+    //endregion
+
+    //region Document loaded functions
     $(document).ready(function () {
         // Remember initial config
         $('.form-control').each(function (idx, item) {
@@ -780,11 +791,15 @@
                 default_config.push([item.id, item.value]);
             }
         });
-
         loadConfigFromCookie();
-        getExample('initial');
-    });
 
+        // Set the initial example
+        getExample('initial');
+
+        // Update the display of the server
+        updateServerStatus();
+    });
+    //endregion
 
     function recordOptionsOpen() {
         if (!DEVELOPMENT) {
@@ -794,6 +809,7 @@
         }
     }
 
+    //region Storing and reloading configuration
     function applyConfigChanges(also_convert_code) {
         $('.form-control').each(function (idx, item) {
             if (item.id.startsWith('Cfg-')) {
@@ -843,7 +859,9 @@
         })
         return '[' + result + ']';
     }
+    //endregion
 
+    //region Cookie Handling
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -865,6 +883,7 @@
         }
         return "";
     }
+    //endregion
 
     function get_error_menu_item(name, line_vb, line_py) {
         let short_name = name;
@@ -875,11 +894,48 @@
         return text;
     }
 
+    //region Status checking with the server
+    function start_status_checker() {
+        stop_status_checker();
+        status_checker = setInterval(function () {
+            let url = "/test";
+            $.get(HOST + url, function (data) {
+                pyeditor.session.setValue(pyeditor.session.getValue() + '.');
+            });
+        }, 1000);
+    }
+
+    function stop_status_checker() {
+        if (status_checker != null) {
+            clearInterval(status_checker);
+            status_checker = null;
+        }
+    }
+
+    function updateServerStatus() {
+        let status_element = $('#server-status')[0];
+        $.post(HOST + '/server_stats', function (data) {
+            if (data.status === 'OK') {
+                status_element.value = 'V' + data.version + ': Updated ' + data.date;
+            } else {
+                status_element.value = 'Unable to reach'
+            }
+        }, 'json')
+        .fail(function() {
+            status_element.value = 'Server unavailable'
+            status_element.classList.add('btn-danger');
+            status_element.classList.remove('btn-danger');
+        })
+        ;
+    }
+    //endregion
+
     function move_to(vb_line, py_line) {
         vbeditor.scrollToLine(vb_line);
         pyeditor.scrollToLine(py_line);
     }
 
+    //region Conversion of code
     function convert_selection() {
         let range = vbeditor.selection.getRange();
         let selected_text = vbeditor.getSession().doc.getTextRange(range);
@@ -896,23 +952,6 @@
     function convert_code() {
         let vbtext = vbeditor.getValue();
         convert_text(vbtext, 0);
-    }
-
-    function start_status_checker() {
-        stop_status_checker();
-        status_checker = setInterval(function () {
-            let url = "/test";
-            $.get(HOST + url, function (data) {
-                pyeditor.session.setValue(pyeditor.session.getValue() + '.');
-            });
-        }, 1000);
-    }
-
-    function stop_status_checker() {
-        if (status_checker != null) {
-            clearInterval(status_checker);
-            status_checker = null;
-        }
     }
 
     function convert_text(vbtext, selection_offset) {
@@ -1084,6 +1123,7 @@
                 ;
             });
     }
+    //endregion
 
     function submit_file() {
         var vbtext = vbeditor.getValue();
@@ -1138,7 +1178,6 @@
         }
     };
 
-
     function hashFnv32a(str, asString, seed) {
         /*jshint bitwise:false */
         var i, l,
@@ -1154,7 +1193,6 @@
         }
         return hval >>> 0;
     }
-
 
     function downloadPython() {
         let element = document.createElement('a');

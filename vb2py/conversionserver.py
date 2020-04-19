@@ -128,7 +128,7 @@ def submitFile():
     return storeSubmittedFile()
 
 
-@app.route('/server_stats', methods=['GET'])
+@app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
     #
