@@ -135,6 +135,7 @@ def submitFile():
 @app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
+    app.logger.info('Server stats check')
     #
     # Get git commit version
     p = subprocess.Popen('git log -1 --date=format:"%Y/%m/%d" --format="%ad"', shell=True, stdout=subprocess.PIPE)
@@ -155,6 +156,7 @@ def getServerStats():
 @app.route('/get_runtime_zip', methods=['POST'])
 def getRunTimeZip():
     """Return a zip of the code and the runtime files"""
+    app.logger.info('Creating Zip file for download')
     try:
         python = request.values['code']
     except KeyError:
