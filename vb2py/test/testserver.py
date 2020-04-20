@@ -795,6 +795,7 @@ B =
         #
         func = z.getinfo(os.path.join('vb2py', 'vbfunctions.py'))
         dbg = z.getinfo(os.path.join('vb2py', 'vbdebug.py'))
+        dbg = z.getinfo(os.path.join('vb2py', '__init__.py'))
 
 
 if __name__ == '__main__':

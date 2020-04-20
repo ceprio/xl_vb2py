@@ -169,6 +169,7 @@ def getRunTimeZip():
         z.writestr('converted_code.py', python)
         z.writestr(os.path.join('vb2py', 'vbfunctions.py'), open(utils.relativePath('vbfunctions.py'), 'r').read())
         z.writestr(os.path.join('vb2py', 'vbdebug.py'), open(utils.relativePath('vbdebug.py'), 'r').read())
+        z.writestr(os.path.join('vb2py', '__init__.py'), '# vb2py run time package\n')
         z.close()
         #
         f.seek(0)
