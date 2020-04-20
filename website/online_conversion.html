@@ -947,8 +947,8 @@ End Using
         }, 'json')
         .fail(function() {
             status_element.value = 'Server unavailable'
+            status_element.classList.remove('btn-outline-dark');
             status_element.classList.add('btn-danger');
-            status_element.classList.remove('btn-danger');
         })
         ;
     }

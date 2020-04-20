@@ -1,3 +1,7 @@
+**0.4.0.3**
+
+- Fixed issue which could crash the server when checking the latest update time
+
 **0.4.0.2**
 
 - Added server **status display** for online conversion

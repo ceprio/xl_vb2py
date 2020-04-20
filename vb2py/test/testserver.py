@@ -773,7 +773,7 @@ B =
         data = json.loads(result.data)
         #
         self.assertEqual(vb2py.converter.__version__, data['version'])
-        d = datetime.datetime.strptime(data['date'], '%Y/%M/%d')
+        d = datetime.datetime.strptime(data['date'], '%Y-%M-%d')
         self.assertIsInstance(d, datetime.datetime)
         self.assertNotEqual(0, data['whats-new'].splitlines())
 

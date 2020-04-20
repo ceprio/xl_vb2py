@@ -13,6 +13,7 @@ import logging
 import json
 import re
 import os
+import datetime
 import tempfile
 from . import utils
 from flask import Flask, request
@@ -135,11 +136,11 @@ def submitFile():
 @app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
-    app.logger.info('Server stats check')
+    app.logger.info('[%s] Server stats check' % request.remote_addr)
     #
-    # Get git commit version
-    p = subprocess.Popen('git log -1 --date=format:"%Y/%m/%d" --format="%ad"', shell=True, stdout=subprocess.PIPE)
-    date = p.stdout.read().decode()
+    # Get last modification
+    info = os.stat(utils.relativePath('doc', 'whatsnew.txt'))
+    date = datetime.datetime.fromtimestamp(info.st_atime)
     #
     # Get what's new text
     with open(utils.relativePath('doc', 'whatsnew.txt'), 'r') as f:
@@ -148,7 +149,7 @@ def getServerStats():
     return json.dumps({
         'status': 'OK',
         'version': converter.__version__,
-        'date': date.strip(),
+        'date': date.strftime('%Y-%m-%d'),
         'whats-new': publish_string(whats_new_text, writer_name='html').decode(),
     })
 
@@ -195,6 +196,7 @@ def singleModule(module_type, dot_net_module_type):
     #
     conversion_style = 'unknown'
     extra = ''
+    lines = []
     line_count = -1
     language = 'UNKNOWN'
     version = converter.__version__
@@ -269,6 +271,9 @@ def singleModule(module_type, dot_net_module_type):
         language,
         status, time.time() - start_time, extra
     ))
+    if parsing_stopped_vb:
+        for line_num in parsing_stopped_vb:
+            app.logger.debug('Failed: ||%s||' % lines[line_num])
     #
     result = json.dumps({
         'status': status,
