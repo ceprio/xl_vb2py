@@ -289,7 +289,13 @@
                         <div>
                             <div class="code-header">Python Equivalent
                                 <!-- Python Code Panel buttons -->
-                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <div class="btn-group" role="group">
+                                    <button id="PyCopyButton" type="button" onclick="copyPython()"
+                                            class="btn-small btn-secondary">
+                                        Copy
+                                    </button>
+
+                                    &nbsp;&nbsp;
                                     <div class="btn-group" role="group">
                                         <button id="PyButtonsGroup" type="button"
                                                 class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
@@ -821,6 +827,11 @@ End Using
 
         // Update the display of the server
         updateServerStatus();
+
+        // Allow popover
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        });
     });
     //endregion
 
@@ -1149,6 +1160,21 @@ End Using
     }
     //endregion
 
+    function copyPython() {
+        let sel = pyeditor.selection.toJSON();
+        if (pyeditor.selection.isEmpty()) {
+            pyeditor.selectAll();
+        }
+        pyeditor.focus();
+        document.execCommand('copy');
+        pyeditor.selection.fromJSON(sel);
+        if (!DEVELOPMENT) {
+            gtag('event', 'Copy Python', {
+                'event_category': 'UI',
+            });
+        }
+    }
+
     function submit_file() {
         var vbtext = vbeditor.getValue();
         $.post(HOST + '/submit_file', {'text': vbtext}, function (data) {
@@ -1156,7 +1182,7 @@ End Using
         alert('Thanks for submitting the file! This helps to make vb2py better.');
         if (!DEVELOPMENT) {
             gtag('event', 'Submit', {
-                'event_category': 'File',
+                'event_category': 'UI',
             });
         }
         ;
