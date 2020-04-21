@@ -196,6 +196,7 @@ def singleModule(module_type, dot_net_module_type):
     #
     conversion_style = 'unknown'
     extra = ''
+    failure_mode = ''
     lines = []
     line_count = -1
     language = 'UNKNOWN'
@@ -271,7 +272,7 @@ def singleModule(module_type, dot_net_module_type):
         language,
         status, time.time() - start_time, extra
     ))
-    if parsing_stopped_vb:
+    if failure_mode == 'fail-safe' and parsing_stopped_vb:
         for line_num in parsing_stopped_vb:
             app.logger.debug('Failed: ||%s||' % lines[line_num])
     #
