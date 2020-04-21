@@ -2603,9 +2603,22 @@ Using client as New WebClient
 End Using
 """)
 
+tests.append("If IsMissing (oDoc) Then oDoc = ThisComponent")
+tests.append('If NOT oDoc.SupportsService ("com.sun.star.sheet.SpreadsheetDocument") Then Exit Function')
+tests.append('If (iSheet>= oSheets.getCount ()) Then Exit Function')
+tests.append('oSheet = oSheets.getByIndex (iSheet)')
+tests.append('arrayOfString () = Split (tmpString, ";")')
+tests.append('If UBound (arrayOfString) <( 3 + iSheet) Then Exit Function')
+tests.append('''
+If InStr (tmpString, "+")> 0 Then
+       arrayOfString () = Split (tmpString, "+")||
+Else
+ arrayOfString () = Split (tmpString, "/")||
+End If
+
+''')
 
 failures = [
-        "If a = 10 Then d = 1 Else If k = 12 Then b = 12",
         "If a = 10 Then d = 1 Else If k = 12 Then b = 12 Else g=123",
 ]
 # -- end -- << Parsing tests >>

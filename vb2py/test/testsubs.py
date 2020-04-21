@@ -90,6 +90,21 @@ a = _lst(5)
 b = _lst(6)
 """, {"a" : "hello", "b" : 10}))
 
+# Optional arguments - failing parsing case, where the space before the bracket used to cause a problem
+tests.append(("""
+Dim _lst(10) As Single
+Sub _SetValue(Index As Integer, Optional Value)
+    If IsMissing (Value) Then Value = 10
+    _lst(Index) = Value
+End Sub
+
+_SetValue 5, "hello"
+_SetValue 6
+a = _lst(5)
+b = _lst(6)
+""", {"a" : "hello", "b" : 10}))
+
+
 # Optional arguments with hex numbers
 tests.append(("""
 Dim _lst(10) As Single

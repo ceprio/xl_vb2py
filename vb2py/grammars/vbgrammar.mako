@@ -715,7 +715,7 @@ param_array ::=
             c"ParamArray", wsp+
 
 parameter_list ::=
-             list
+             wsp*, list
 
 fn_definition ::=
              fn_start_definition, fn_block?, fn_end_definition

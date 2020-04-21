@@ -22,7 +22,7 @@ from . import vbparser
 
 
 __app_name__ = "VB2Py"
-__version__ = "0.4.0.3"
+__version__ = "0.4.0.4"
 
 
 Config = VB2PYConfig()

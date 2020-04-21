@@ -15,11 +15,20 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.append("""
-If Len(l0022) = 0 Then Beep: Exit Sub
-""")
+tests.append("If IsMissing (oDoc) Then oDoc = ThisComponent")
+tests.append('If NOT oDoc.SupportsService ("com.sun.star.sheet.SpreadsheetDocument") Then Exit Function')
+tests.append('If (iSheet>= oSheets.getCount ()) Then Exit Function')
+tests.append('oSheet = oSheets.getByIndex (iSheet)')
+tests.append('arrayOfString () = Split (tmpString, ";")')
+tests.append('If UBound (arrayOfString) <( 3 + iSheet) Then Exit Function')
+tests.append('''
+If InStr (tmpString, "+")> 0 Then
+       arrayOfString () = Split (tmpString, "+")||
+Else
+ arrayOfString () = Split (tmpString, "/")||
+End If
 
-tests.append("While A: Wend")
+''')
 
 
 
