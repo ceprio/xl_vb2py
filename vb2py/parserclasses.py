@@ -844,9 +844,20 @@ class VBObject(VBNamespace):
         else:
             valid_modifiers = self.filterListByClass(self.modifiers, modifier)
         #
-        return "%s%s%s" % (implicit_name,
-                           resolved_name,
-                           "".join([item.renderAsCode() for item in valid_modifiers]))
+        # Add modifiers - note that we look out for empty brakets on the
+        # left hand side of an assignment, a() = SomeExpressionReturningAnArray()
+        # which is valid VB
+        if self.am_on_lhs:
+            modifier_text = "".join([item.renderAsCode() for item in valid_modifiers
+                                    if item.renderAsCode() != '[]'])
+        else:
+            modifier_text = "".join([item.renderAsCode() for item in valid_modifiers])
+        #
+        return "%s%s%s" % (
+            implicit_name,
+            resolved_name,
+            modifier_text,
+        )
 
 
 #

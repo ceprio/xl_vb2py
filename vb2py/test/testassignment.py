@@ -246,6 +246,9 @@ Public Shared d() as Integer = {}
 
 """, {'a': ['one', 'two'], 'b': ['one', 'two'], 'c': [1, 2, 4, 5], 'd': []}))
 
+tests.append(('a() = Split("one,two", ",")', {
+    'a': ['one', 'two']
+}))
 # -- end -- << Assignment tests >>
 
 import vb2py.vbparser

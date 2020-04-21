@@ -23,9 +23,9 @@ tests.append('arrayOfString () = Split (tmpString, ";")')
 tests.append('If UBound (arrayOfString) <( 3 + iSheet) Then Exit Function')
 tests.append('''
 If InStr (tmpString, "+")> 0 Then
-       arrayOfString () = Split (tmpString, "+")||
+       arrayOfString () = Split (tmpString, "+")
 Else
- arrayOfString () = Split (tmpString, "/")||
+ arrayOfString () = Split (tmpString, "/")
 End If
 
 ''')
