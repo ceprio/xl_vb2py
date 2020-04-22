@@ -844,12 +844,15 @@ class VBObject(VBNamespace):
         else:
             valid_modifiers = self.filterListByClass(self.modifiers, modifier)
         #
-        # Add modifiers - note that we look out for empty brakets on the
+        # Add modifiers - note that we look out for empty brackets on the
         # left hand side of an assignment, a() = SomeExpressionReturningAnArray()
         # which is valid VB
         if self.am_on_lhs:
-            modifier_text = "".join([item.renderAsCode() for item in valid_modifiers
-                                    if item.renderAsCode() != '[]'])
+            modifier_text = ""
+            for item in valid_modifiers:
+                piece = item.renderAsCode()
+                if piece != '[]':
+                    modifier_text += piece
         else:
             modifier_text = "".join([item.renderAsCode() for item in valid_modifiers])
         #
