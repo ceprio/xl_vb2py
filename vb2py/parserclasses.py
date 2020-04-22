@@ -1973,7 +1973,8 @@ class VBCall(VBCodeBlock):
         self.auto_class_handlers = ({
             "expression": (VBParExpression, self.parameters),
             "missing_positional": (VBMissingPositional, self.parameters),
-            "object": (VBObject, "object")
+            "callable_object": (VBObject, "object"),
+            "object": (VBObject, "object"),
         })
 
     def renderAsCode(self, indent=0):

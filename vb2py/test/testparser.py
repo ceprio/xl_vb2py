@@ -2619,7 +2619,6 @@ End If
 ''')
 
 failures = [
-        "If a = 10 Then d = 1 Else If k = 12 Then b = 12 Else g=123",
 ]
 # -- end -- << Parsing tests >>
 

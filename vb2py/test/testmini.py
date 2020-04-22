@@ -15,6 +15,9 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
+tests.extend([
+        "Move (Screen.Width - Width) / 2, (Screen.Height - Height) / 2",
+])
 tests.append("If IsMissing (oDoc) Then oDoc = ThisComponent")
 tests.append('If NOT oDoc.SupportsService ("com.sun.star.sheet.SpreadsheetDocument") Then Exit Function')
 tests.append('If (iSheet>= oSheets.getCount ()) Then Exit Function')
@@ -29,7 +32,6 @@ Else
 End If
 
 ''')
-
 
 
 class ParsingTest(unittest.TestCase):

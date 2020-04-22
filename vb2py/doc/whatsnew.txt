@@ -1,6 +1,7 @@
 **0.4.0.4**
 
-- Fixed parsing bug with space before brackets on a call *A = Something ()*
+- Fixed parsing bug with space before brackets on a call: *A = Something ()*
+- Fixed parsing bug with empty brackets on LHS of assignment: *A () = SomeFnReturningArray()*
 
 **0.4.0.3**
 

@@ -248,8 +248,11 @@ set_statement ::=
 new_keyword ::=
               wsp?, c"New", wsp+
 
+callable_object ::=
+            ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / parameter_list)*)
+
 object ::=
-             ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / parameter_list)*)
+             ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / (wsp*, parameter_list))*)
 
 bare_object ::=
 			 ?-keyword, implicit_object?, primary, (".", attribute)*
@@ -474,10 +477,13 @@ channel_number ::=
 call_statement ::=
             label_definition?, (c"Call", wsp+, object, list?) 
 
+% if dialect == 'vb.net':
 implicit_call_statement ::=
             label_definition?, ?-keyword, (simple_expr, bare_list, (line_end / colon))
-% if dialect == 'vb.net':
-    / (par_expression, (line_end / colon))
+            / (par_expression, (line_end / colon))
+% else:
+implicit_call_statement ::=
+            label_definition?, ?-keyword, (callable_object, bare_list?, (line_end / colon))
 % endif
 
 explicit_call_statement ::=
@@ -715,7 +721,7 @@ param_array ::=
             c"ParamArray", wsp+
 
 parameter_list ::=
-             wsp*, list
+             list
 
 fn_definition ::=
              fn_start_definition, fn_block?, fn_end_definition

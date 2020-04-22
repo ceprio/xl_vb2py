@@ -38,7 +38,6 @@ def pp(ast, text, indent=0):
             print(' ' * indent + nice_text(text, production, start, end))
             cleaned_ast.append((indent, nice_text(text, production, start, end), pp(contents, text, indent + 1)))
         else:
-            import pdb; pdb.set_trace()
             for item in entry:
                 cleaned_ast.append(pp(item, text, indent + 1))
     return cleaned_ast
