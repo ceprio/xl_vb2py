@@ -2,6 +2,7 @@
 
 - Fixed parsing bug with space before brackets on a call: *A = Something ()*
 - Fixed parsing bug with empty brackets on LHS of assignment: *A () = SomeFnReturningArray()*
+- Fixed issue with **"submit file"** button not being displayed when parsing failed
 
 **0.4.0.3**
 

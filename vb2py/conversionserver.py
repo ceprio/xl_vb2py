@@ -136,7 +136,11 @@ def submitFile():
 @app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
-    app.logger.info('[%s] Server stats check' % request.remote_addr)
+    app.logger.info('%s[%s] Server stats check%s' % (
+        utils.TextColours.OKBLUE,
+        request.remote_addr,
+        utils.TextColours.ENDC
+    ))
     #
     # Get last modification
     info = os.stat(utils.relativePath('doc', 'whatsnew.txt'))
@@ -157,7 +161,10 @@ def getServerStats():
 @app.route('/get_runtime_zip', methods=['POST'])
 def getRunTimeZip():
     """Return a zip of the code and the runtime files"""
-    app.logger.info('Creating Zip file for download')
+    app.logger.info('%sCreating Zip file for download%s'% (
+        utils.TextColours.OKBLUE,
+        utils.TextColours.ENDC,
+    ))
     try:
         python = request.values['code']
     except KeyError:
@@ -201,6 +208,7 @@ def singleModule(module_type, dot_net_module_type):
     line_count = -1
     language = 'UNKNOWN'
     version = converter.__version__
+    logging_colour = utils.TextColours.OKGREEN
     #
     try:
         conversion_style = request.values['style']
@@ -244,10 +252,11 @@ def singleModule(module_type, dot_net_module_type):
             #
             # Check for errors and store them
             if failure_mode == 'fail-safe':
-                match = re.match(r".*UNTRANSLATED VB LINE.*", result, re.DOTALL)
+                match = re.match(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*', result, re.DOTALL)
             else:
                 match = re.match(r".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
             if match:
+                logging_colour = utils.TextColours.FAIL
                 parsing_failed = True
                 if failure_mode == 'line-by-line':
                     parsing_stopped_vb = getLineMatch(match.groups()[0], text)
@@ -266,15 +275,22 @@ def singleModule(module_type, dot_net_module_type):
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
 
     #
-    app.logger.info('[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s' % (
+    app.logger.info('%s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
+        logging_colour,
         request.remote_addr,
         line_count, module_type.__class__.__name__, conversion_style,
         language,
-        status, time.time() - start_time, extra
+        status, time.time() - start_time,
+        extra,
+        utils.TextColours.ENDC,
     ))
     if failure_mode == 'fail-safe' and parsing_stopped_vb:
         for line_num in parsing_stopped_vb:
-            app.logger.debug('Failed: ||%s||' % lines[line_num])
+            app.logger.debug('Failed: ||%s%s%s||' % (
+                utils.TextColours.FAIL,
+                lines[line_num],
+                utils.TextColours.ENDC,
+            ))
     #
     result = json.dumps({
         'status': status,
@@ -285,12 +301,7 @@ def singleModule(module_type, dot_net_module_type):
         'language': language,
         'version': version,
     })
-    #
-    # app.logger.info('[%s] Ended     %d lines %s %s' % (
-    #     request.remote_addr,
-    #     line_count, module_type.__class__.__name__, conversion_style,
-    # ))
-    #
+
     return result
 
 
@@ -321,7 +332,11 @@ def storeSubmittedFile():
     vb = request.values['text']
     filename = time.strftime('%Y-%m-%d %H:%M:%S code.vb')
     full_path = os.path.join(utils.rootPath(), 'submitted_files', filename)
-    app.logger.info('Storing file for testing as %s' % filename)
+    app.logger.info('%sStoring file for testing as %s%s' % (
+        utils.TextColours.OKBLUE,
+        filename,
+        utils.TextColours.ENDC
+    ))
     with open(full_path, 'w') as f:
         f.write(vb)
     return json.dumps({
