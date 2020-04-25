@@ -7,6 +7,7 @@ import argparse
 import sys
 import subprocess
 import re
+import chardet
 
 
 sys.path.append('../..')
@@ -33,8 +34,12 @@ class FileTester(unittest.TestCase):
     def _testFile(self, filename):
         """Try to parse a file"""
         #
+        # Get encoding
+        with open(filename, 'rb') as bf:
+            details = chardet.detect(bf.read())
+        #
         # Get the text
-        with open(filename, 'r') as f:
+        with open(filename, 'r', encoding=details.get('encoding', 'utf-8')) as f:
             vb_code = f.read()
         #
         # Some strange preamble seen in some code
