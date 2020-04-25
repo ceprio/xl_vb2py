@@ -146,7 +146,7 @@ if __name__ == '__main__':
         # Now create the test file
         file_start_text = '''
 import unittest
-from . import file_tester
+from vb2py.test_at_scale import file_tester
 
 
 class Test_%s(file_tester.FileTester):

@@ -1,6 +1,6 @@
 
 import unittest
-from . import file_tester
+from vb2py.test_at_scale import file_tester
 
 
 class Test_lunasoft(file_tester.FileTester):
