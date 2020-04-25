@@ -31,16 +31,28 @@ FAILURES_FOLDER = '/Users/paul/Workspace/sandbox/vb2py-git-files/AAA-Failing-Fil
 class FileTester(unittest.TestCase):
     """Base class for file testing"""
 
-    def _testFile(self, filename):
-        """Try to parse a file"""
-        #
-        # Get encoding
-        with open(filename, 'rb') as bf:
-            details = chardet.detect(bf.read())
+    def _getFileText(self, filename):
+        """Return the file text"""
         #
         # Get the text
-        with open(filename, 'r', encoding=details.get('encoding', 'utf-8')) as f:
-            vb_code = f.read()
+        with open(filename, 'r') as f:
+            try:
+                vb_code = f.read()
+            except:
+                #
+                # Get encoding
+                with open(filename, 'rb') as bf:
+                    details = chardet.detect(bf.read())
+                #
+                # Get the text
+                with open(filename, 'r', encoding=details.get('encoding', 'utf-8')) as f:
+                    vb_code = f.read()
+        #
+        return vb_code
+
+    def _testFile(self, filename, store_failure=True):
+        """Try to parse a file"""
+        vb_code = self._getFileText(filename)
         #
         # Some strange preamble seen in some code
         preamble = '\xef\xbb\xbf'
@@ -67,9 +79,10 @@ class FileTester(unittest.TestCase):
 
         def store_failed_file():
             """Copy file failure"""
-            failed_name = os.path.split(filename)[1]
-            with open(os.path.join(FAILURES_FOLDER, failed_name), 'w') as f:
-                f.write(vb_code)
+            if store_failure:
+                failed_name = os.path.split(filename)[1]
+                with open(os.path.join(FAILURES_FOLDER, failed_name), 'w') as f:
+                    f.write(vb_code)
         #
         data = json.loads(result.data)
         if data['parsing_failed']:
