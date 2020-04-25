@@ -138,6 +138,55 @@ tests.append((
          "A.a = 'hello'\n"
          "assert A.a == 'hello_ending', 'A.a was (%s)' % (A.a,)\n",)
 ))
+
+#
+# Property get both a let and a set - set should show precedence
+tests.append((
+        VBClassModule(),
+        """
+        Public my_a As String
+        Public Property Set a(newval As Variant)
+            my_a = newval & "_from_set"
+        End Property
+
+        Public Property Let a(newval as Variant) 
+            my_a = newval & "_from_let"
+        End Property
+        
+        Public Property Get a() As Variant
+            a = my_a
+            Exit Property
+        End Property        
+        """,
+        ("A = MyClass()\n"
+         "A.a = 'hello'\n"
+         "assert A.a == 'hello_from_set', 'A.a was (%s)' % (A.a,)\n",)
+))
+
+#
+# Property get both a let and a set - can override default
+tests.append((
+        VBClassModule(),
+        """
+        'VB2PY-Set: Properties.ChooseLetOverSet = Yes
+        Public my_a As String
+        Public Property Set a(newval As Variant)
+            my_a = newval & "_from_set"
+        End Property
+
+        Public Property Let a(newval as Variant) 
+            my_a = newval & "_from_let"
+        End Property
+        
+        Public Property Get a() As Variant
+            a = my_a
+            Exit Property
+        End Property        
+        """,
+        ("A = MyClass()\n"
+         "A.a = 'hello'\n"
+         "assert A.a == 'hello_from_let', 'A.a was (%s)' % (A.a,)\n",)
+))
 # -- end -- << Property tests >>
 
 import vb2py.vbparser

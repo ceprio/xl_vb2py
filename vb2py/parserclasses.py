@@ -408,6 +408,16 @@ class VBNamespace(object):
         """Handle the end of a line"""
         self.local_default_scope = self.default_scope
 
+    def commentedOut(self, code, indent):
+        """Return a block of code that has been commented out"""
+        ret = []
+        for line in code.splitlines():
+            ret.append('%s## %s' % (
+                self.getIndent(indent),
+                line[indent * self._indent_amount:]
+            ))
+        return '\n'.join(ret)
+
 
 class VBConsumer(VBNamespace):
     """Consume and store elements"""
@@ -1324,6 +1334,12 @@ class VBModule(VBCodeBlock):
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
+        #
+        # Check for module level directives and apply them if we have them
+        for item in self.blocks:
+            if isinstance(item, VB2PYDirective):
+                item.renderAsCode()
+        #
         self.setCustomModulesAsGlobals()
         if self.checkOptionYesNo("General", "TryToExtractDocStrings") == "Yes":
             self.extractDocStrings()
@@ -3000,13 +3016,22 @@ class VBProperty(VBSubroutine):
     def renderPropertyGroup(self, indent, name, Let=None, Set=None, Get=None):
         """Render a group of property statements"""
         if Let and Set:
-            raise UnhandledStructureError("Cannot handle both Let and Set properties for an object")
+            if self.checkOptionYesNo('Properties', 'ChooseLetOverSet') == 'Yes':
+                pset = Let
+                warning = self.getWarning('InvalidStructure', 'Ignoring set as duplicate of let\n', indent)
+                warning += self.commentedOut(Set.renderAsCode(indent), indent)
+            else:
+                pset = Set
+                warning = self.getWarning('InvalidStructure', 'Ignoring let as duplicate of set\n', indent)
+                warning += self.commentedOut(Let.renderAsCode(indent), indent)
+        else:
+            pset = Let or Set
+            warning = ''
 
         log.info("Rendering property group '%s'" % name)
 
         ret = []
         params = []
-        pset = Let or Set
         pget = Get
 
         #
@@ -3027,7 +3052,8 @@ class VBProperty(VBSubroutine):
             ret.append(pget.renderAsCode(indent))
             params.append("fget=%s" % self.getParentProperty("enforcePrivateName")(pget))
 
-        return "\n%s%s%s = property(%s)\n" % (
+        return "%s\n%s%s%s = property(%s)\n" % (
+            warning,
             "".join(ret),
             self.getIndent(indent),
             proper_name,
