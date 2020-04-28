@@ -2618,6 +2618,19 @@ End If
 
 ''')
 
+
+tests.append('''
+For i = 1 To 10
+Label:
+Next
+''')
+
+tests.append('''
+Sub X()
+a = 123 ' & _
+End Sub
+''')
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

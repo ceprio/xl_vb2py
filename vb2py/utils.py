@@ -32,7 +32,8 @@ def relativePath(*paths):
 
 def loadGrammarFrom(filename, data=None):
     """Return the text of a grammar file loaded from the disk"""
-    text = open(filename, 'r').read()
+    with open(filename, 'r') as f:
+        text = f.read()
     lookup = mako.lookup.TemplateLookup(directories=[relativePath('grammars')])
     template = mako.template.Template(text, lookup=lookup)
     #

@@ -32,7 +32,7 @@ def pp(ast, text, indent=0):
             print((' ' * indent), entry)
         elif len(entry) == 1:
             print((' ' * indent), end=' ')
-            cleaned_ast.append((indent, pp(entry, text, indent + 1)))
+            cleaned_ast.append((indent, pp(entry[0], text, indent + 1)))
         elif len(entry) == 4:
             production, start, end, contents = entry
             print(' ' * indent + nice_text(text, production, start, end))

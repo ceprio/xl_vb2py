@@ -194,6 +194,54 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParses(text)
 
+    def testForWithLabel(self):
+        """testForWithLabel: empty for loop with a label"""
+        text = '''
+            For i = 1 To 10
+            Label:
+            Next
+        '''
+        self._setUnsafe()
+        self.assertParses(text)
+        self._setSafe()
+        self.assertParses(text)
+
+    def testBadlyFormedWith(self):
+        """testBadlyFormedWith: badly formed with should work"""
+        text = '''
+            With ThisThing
+            End With
+            .Value = 1
+        '''
+        self._setSafe()
+        self.assertParsesAndContains(text, 'With variable outside of block')
+
+    def testIfBlockWithLabels(self):
+        """testIfBlockWithLabels: if block with labels should work"""
+        text = '''
+            102     If vTask Is Nothing And vItem Is Nothing Then
+            104         Set vItem = LstTasks.SelectedItem
+            106         Set vTask = ListItemToTask(vItem)
+            108     ElseIf vTask Is Nothing Then
+            110         Set vTask = ListItemToTask(vItem)
+            112     ElseIf vItem Is Nothing Then
+            114         Set vItem = TaskToTaskListItem(vTask)
+                    End If        
+        '''
+        self._setSafe()
+        self.assertParses(text)
+
+    def testSelectBlockWithLabels(self):
+        """testSelectBlockWithLabels: select block with labels should work"""
+        text = '''
+            100 Select Case X
+            110 Case 10
+            120 Case 20
+            130 End Select
+        '''
+        self._setSafe()
+        self.assertParses(text)
+
 
 class TestDotNet(TestGrammarModes):
     """Test of the .net conversion dialect"""

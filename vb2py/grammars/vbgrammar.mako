@@ -13,6 +13,9 @@ identifier ::=
 type_marker ::=
         "$" / "%" / "#" / "&" / "!"
 
+channelid ::=
+			"#", atom
+
 atom ::= 
              object / literal
 

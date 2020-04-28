@@ -91,5 +91,4 @@ floatnumber ::=
 <exponent> ::=
              ("e" / "E"), ("+" / "-")?, digit+
 
-channelid ::=
-			"#", atom
+

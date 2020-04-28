@@ -15,22 +15,16 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.extend([
-        "Move (Screen.Width - Width) / 2, (Screen.Height - Height) / 2",
-])
-tests.append("If IsMissing (oDoc) Then oDoc = ThisComponent")
-tests.append('If NOT oDoc.SupportsService ("com.sun.star.sheet.SpreadsheetDocument") Then Exit Function')
-tests.append('If (iSheet>= oSheets.getCount ()) Then Exit Function')
-tests.append('oSheet = oSheets.getByIndex (iSheet)')
-tests.append('arrayOfString () = Split (tmpString, ";")')
-tests.append('If UBound (arrayOfString) <( 3 + iSheet) Then Exit Function')
 tests.append('''
-If InStr (tmpString, "+")> 0 Then
-       arrayOfString () = Split (tmpString, "+")
-Else
- arrayOfString () = Split (tmpString, "/")
-End If
+For i = 1 To 10
+Label:
+Next
+''')
 
+tests.append('''
+Sub X()
+a = 123 ' & _
+End Sub
 ''')
 
 

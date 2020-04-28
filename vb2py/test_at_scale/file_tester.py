@@ -42,11 +42,11 @@ class FileTester(unittest.TestCase):
                 #
                 # Get encoding
                 with open(filename, 'rb') as bf:
-                    details = chardet.detect(bf.read())
+                    binary_text = bf.read()
+                    details = chardet.detect(binary_text)
                 #
                 # Get the text
-                with open(filename, 'r', encoding=details.get('encoding', 'utf-8')) as f:
-                    vb_code = f.read()
+                vb_code = binary_text.decode(details.get('encoding', 'utf-8'), 'replace')
         #
         return vb_code
 

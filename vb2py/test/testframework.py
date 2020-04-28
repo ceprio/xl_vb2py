@@ -37,13 +37,17 @@ def BasicTest():
     return _BasicTest
 
 # << Test functions >> (1 of 2)
-def getTestMethod(vb, result, test_code=None):
+def getTestMethod(vb, result, test_code=None, config=None):
     """Create a test method"""
     def testMethod(self):
         local_dict = {"convertVBtoPython" : convertVBtoPython,
                       "vbfunctions" : vbfunctions}
+        #
+        if config:
+            for section, name, value in config:
+                Config.setLocalOveride(section, name, value)
         # << Parse VB >>
-        try:					  
+        try:
             python = convertVBtoPython(
                 vb.replace("\r\n", "\n"),
                 dialect=self.dialect,
