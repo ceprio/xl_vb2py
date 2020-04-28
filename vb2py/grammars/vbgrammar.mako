@@ -51,7 +51,7 @@ end_terminator ::=
 # to prevent this and simplify what is going on here!
 
 line ::= 
-             (?-label_definition, line_body) / (label_definition, line_body?)
+             (?-label_definition, line_body) / (label_statement, ((wsp+, line_body?) / line_end))
 
 line_body ::=
 % if dialect == 'vb.net':

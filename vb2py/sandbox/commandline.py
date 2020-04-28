@@ -30,16 +30,15 @@ def pp(ast, text, indent=0):
     for entry in ast:
         if isinstance(entry, vb2py.vbparser.VBFailedElement):
             print((' ' * indent), entry)
-        elif len(entry) == 1:
-            print((' ' * indent), end=' ')
-            cleaned_ast.append((indent, pp(entry[0], text, indent + 1)))
-        elif len(entry) == 4:
+        elif len(entry) == 4 and isinstance(entry[0], str):
             production, start, end, contents = entry
             print(' ' * indent + nice_text(text, production, start, end))
             cleaned_ast.append((indent, nice_text(text, production, start, end), pp(contents, text, indent + 1)))
+        elif isinstance(entry, str):
+            print(' ' * indent + entry)
+            cleaned_ast.append((indent, entry))
         else:
-            for item in entry:
-                cleaned_ast.append(pp(item, text, indent + 1))
+            cleaned_ast.append(pp(entry, text, indent + 1))
     return cleaned_ast
 
 
