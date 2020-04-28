@@ -214,7 +214,7 @@ class TestSafeMode(TestGrammarModes):
             .Value = 1
         '''
         self._setSafe()
-        self.assertParsesAndContains(text, 'With variable outside of block')
+        self.assertParsesAndContains(text, 'With variable outside of block', 0)
 
     def testIfBlockWithLabels(self):
         """testIfBlockWithLabels: if block with labels should work"""

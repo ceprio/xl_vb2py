@@ -831,7 +831,12 @@ class VBObject(VBNamespace):
         #
         # Check for implicit object and if we are one then find the nearest "With"
         if self.implicit_object:
-            implicit_name = "%s." % self.getParentProperty("with_object")
+            try:
+                implicit_name = "%s." % self.getParentProperty("with_object")
+            except NestingError:
+                # We were not in a with block - this is a syntax error
+                # but we can at least try to render something
+                implicit_name = "VB2PY_ERROR('With variable outside of block')."
         else:
             implicit_name = ""
         #

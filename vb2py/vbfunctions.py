@@ -830,6 +830,11 @@ def vbObjectInitialize(size=None, objtype=None, preserve=None):
     return ret
 
 
+def VB2PY_ERROR(text):
+    """Used to flag a conversion error of some kind that should fail when executed"""
+    raise Exception('VB2PY conversion error: %s' % text)
+
+
 Abs = abs
 Asc = AscB = AscW = ord
 Chr = ChrB = ChrW = chr
