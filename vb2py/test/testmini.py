@@ -15,17 +15,6 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-tests.append('''
-For i = 1 To 10
-Label:
-Next
-''')
-
-tests.append('''
-Sub X()
-a = 123 ' & _
-End Sub
-''')
 
 
 class ParsingTest(unittest.TestCase):

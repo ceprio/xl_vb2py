@@ -2625,11 +2625,7 @@ Label:
 Next
 ''')
 
-tests.append('''
-Sub X()
-a = 123 ' & _
-End Sub
-''')
+
 
 failures = [
 ]

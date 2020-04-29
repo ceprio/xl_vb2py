@@ -16,14 +16,14 @@ type_marker ::=
 channelid ::=
 			"#", atom
 
-atom ::= 
+atom ::=
              object / literal
 
-literal ::= 
+literal ::=
              dateliteral / stringliteral / floatnumber / integer / longinteger /
              binaryinteger / hexinteger / octinteger
 
-name ::= 
+name ::=
              identifier
 
 colon ::=
@@ -32,15 +32,15 @@ colon ::=
 hash ::=
 			 "#"
 
-block ::= 
+block ::=
              block_content+
 
 block_content ::=
-             ?-block_terminator, line
+             ?-((label_statement, wsp+)?, block_terminator), line
 
 
 block_terminator ::=
-             (label_statement, wsp+)?, (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
+              (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
 
 end_terminator ::=
 			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
@@ -50,7 +50,7 @@ end_terminator ::=
 # implicit_call_statement in the inline_if consumes the line_end - presumably there is a way
 # to prevent this and simplify what is going on here!
 
-line ::= 
+line ::=
              (?-label_definition, line_body) / (label_statement, ((wsp+, line_body?) / line_end))
 
 line_body ::=
@@ -68,7 +68,7 @@ line_end ::=
 compound_line ::=
              block
 
-file ::= 
+file ::=
              block+
 
 
@@ -81,7 +81,7 @@ single_statement ::=  valid_statement / label_statement
 % endif
 
 valid_statement ::=
-             ( 
+             (
                comment_statement /
                external_declaration /
                open_statement /
@@ -116,7 +116,7 @@ valid_statement ::=
 % endif
 )
 
-compound_statement ::= 
+compound_statement ::=
              property_definition /
              for_statement /
              for_each_statement /
@@ -182,7 +182,7 @@ line_collection ::=
 multi_statement_line ::=
              ((single_statement, colon) / label_statement), (wsp+, (compound_statement / statement))?
 
-keyword ::= 
+keyword ::=
             normal_keyword / block_terminator
 
 
@@ -193,7 +193,7 @@ normal_keyword ::=
                 c"Function" / c"Sub" / c"Do" / c"While" / c"Wend" / c"Loop" / c"For" / c"Next" / c"Exit" /
                 c"If"  / c"Select" / c"Type" / c"Set" / c"ReDim" / c"Dim" / c"Print" / "Open" / c"With" /
                 c"Enum" / c"Property" / c"Input" / c"Close" / c"Then" / c"Else" / c"Resume" / c"To" /
-                c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" / 
+                c"Public" / c"Private" / c"Static" / c"Attribute" / c"Const" / c"Option" / c"End" /
 				"Event" / c"Seek" / "BEGIN" / c"Rem" / c"Let" / c"Reset" / c"LSet" / c"RSet" / "Using"
 % if dialect == 'vb.net':
     / c"Return" / c"Class" / c"Module"
@@ -229,7 +229,7 @@ decorator ::=
 
 
 
-point ::=       
+point ::=
         (l_bracket, expression, wsp*, ",", wsp*, expression, r_bracket)
 
 
@@ -264,7 +264,7 @@ qualified_object ::=
              bare_object, parameter_list
 
 implicit_object ::=
-             "."         
+             "."
 
 range_definition ::=
     "[", (atom, ":", atom) / stringliteral / object, "]"
@@ -302,7 +302,7 @@ untranslated_text ::=
              (stringitem / '"')+
 
 external_declaration ::=
-        (scope, wsp+)?, c"Declare", wsp+, (c"Sub" / c"Function"), wsp+, identifier, wsp+, c"Lib", wsp+, 
+        (scope, wsp+)?, c"Declare", wsp+, (c"Sub" / c"Function"), wsp+, identifier, wsp+, c"Lib", wsp+,
         stringliteral, wsp+, (c"Alias", wsp+, stringliteral, wsp+)?, formal_param_list, type_definition?
 
 
@@ -358,7 +358,7 @@ const_statement ::=
              (scope, wsp+)?, "#"?, c"Const", wsp+, const_definition, (",", wsp*, const_definition)*
 
 const_definition ::=
-             identifier, type_definition?, wsp*, "=", wsp*, expression             
+             identifier, type_definition?, wsp*, "=", wsp*, expression
 
 
 type_definition ::=
@@ -374,7 +374,7 @@ size ::=
              expression
 
 size_range ::=
-             size, wsp*, c"To", wsp*, size            
+             size, wsp*, c"To", wsp*, size
 
 type ::=
              primary, (".", attribute)*
@@ -382,7 +382,7 @@ type ::=
 scope ::=
              c"Global" / c"Private" / c"Public" / c"Static" / c"Friend" / c"Partial"
 
-value ::= 
+value ::=
              literal
 
 redim_statement ::=
@@ -395,7 +395,7 @@ array_indicator ::=
               wsp*, "()"
 
 string_size_definition ::=
-			  wsp*, "*", wsp*, string_size_indicator	
+			  wsp*, "*", wsp*, string_size_indicator
 
 string_size_indicator ::=
 			  atom
@@ -410,21 +410,21 @@ on_error_goto ::=
         on_error, c"GoTo", wsp+, label
 
 on_error_resume ::=
-        on_error, c"Resume", wsp+, c"Next"        
+        on_error, c"Resume", wsp+, c"Next"
 
 on_goto ::=
-        on_variable, c"GoTo", wsp+, bare_list        
+        on_variable, c"GoTo", wsp+, bare_list
 
-on_error ::= 
+on_error ::=
         label_definition?, c"On", wsp+, local?, c"Error", wsp+
 
-on_variable ::= 
+on_variable ::=
         label_definition?, c"On", wsp+, expression
 
 local ::=
-		c"Local", wsp+		
+		c"Local", wsp+
 
-print_statement ::= 
+print_statement ::=
         label_statement?, c"Print", (wsp+, channel_id, wsp*, ",", wsp*)?, print_list?
 
 channel_id ::=
@@ -478,7 +478,7 @@ channel_number ::=
 
 
 call_statement ::=
-            label_definition?, (c"Call", wsp+, object, list?) 
+            label_definition?, (c"Call", wsp+, object, list?)
 
 % if dialect == 'vb.net':
 implicit_call_statement ::=
@@ -495,7 +495,7 @@ explicit_call_statement ::=
 inline_implicit_call ::=
             ?-keyword, (simple_expr, bare_list)
 
-list ::= 
+list ::=
              "(", bare_list, ")"
 
 bare_list ::=
@@ -508,7 +508,7 @@ positional_item ::=
              (bare_list_item / missing_positional), list_separator, wsp*
 
 missing_positional ::=
-             wsp*             
+             wsp*
 
 bare_list_item ::=
 			 addressof?, expression
@@ -517,7 +517,7 @@ addressof ::=
 			 c"AddressOf", wsp+
 
 list_separator ::=
-        "," / ";"			 
+        "," / ";"
 
 resume_statement ::=
         label_definition?, c"Resume", (wsp+, resume_location)?
@@ -571,7 +571,7 @@ until_clause ::=
                 (wsp+, c"Until", wsp+, expression)
 
 post_until_clause ::=
-                until_clause                
+                until_clause
 
 post_while_clause ::=
                 while_clause
@@ -610,17 +610,17 @@ case_list ::=
 case_expression ::=
                   expression, (to_keyword, expression)?
 
-to_keyword ::= 
+to_keyword ::=
                   c"To"
 
 case_comment_block ::=
 				  block
 
-inline_if_statement ::= 
+inline_if_statement ::=
              label_definition?, hash?, c"If", wsp+, condition, hash?, c"Then", wsp+, inline_if_block,
              (wsp*, hash?, colon?, c"Else", wsp+, inline_else_block)?
 
-if_statement ::= 
+if_statement ::=
              if_start_statement,
              if_block?,
              else_if_statement*,
@@ -642,7 +642,7 @@ else_statement ::=
 
 if_block ::= (?-((label_statement, wsp+)?, (c"End If" / c"Else")), line)+
 else_block ::= block
-else_if_block ::= (?-block_terminator, line)*
+else_if_block ::= (?-((label_statement, wsp+)?, block_terminator), line)*
 else_if_inline ::= wsp+, inline_block, line_end
 condition ::= expression
 
