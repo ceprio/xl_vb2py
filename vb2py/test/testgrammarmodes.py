@@ -224,7 +224,7 @@ class TestSafeMode(TestGrammarModes):
             106         Set vTask = ListItemToTask(vItem)
             108     ElseIf vTask Is Nothing Then
             110         Set vTask = ListItemToTask(vItem)
-            112     ElseIf vItem Is Nothing Then
+            112     Else 
             114         Set vItem = TaskToTaskListItem(vTask)
                     End If        
         '''

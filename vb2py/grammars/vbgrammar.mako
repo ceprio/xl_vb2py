@@ -40,7 +40,7 @@ block_content ::=
 
 
 block_terminator ::=
-             (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
+             (label_statement, wsp+)?, (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
 
 end_terminator ::=
 			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
@@ -640,7 +640,7 @@ else_if_statement ::=
 else_statement ::=
              (label_definition?, hash?, c"Else", wsp*, line_end, else_block?)
 
-if_block ::= (?-(c"End If" / c"Else"), line)+
+if_block ::= (?-((label_statement, wsp+)?, (c"End If" / c"Else")), line)+
 else_block ::= block
 else_if_block ::= (?-block_terminator, line)*
 else_if_inline ::= wsp+, inline_block, line_end
