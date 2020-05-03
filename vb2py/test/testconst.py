@@ -32,7 +32,14 @@ tests.append(("""
 Const _a = "one", _b = "two", _c = "three"
 d = _a & _b & _c
 """, {"d" : "onetwothree"}))
-# -- end -- << Const tests >>
+
+# Decimal types
+tests.append(("""
+Const _a = 0.1@
+Const _b = 10@
+a = isinstance(_a, Decimal)
+b = isinstance(_b, Decimal)
+""", {"a": True, "b": True}))
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff

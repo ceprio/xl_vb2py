@@ -458,6 +458,7 @@ tests.extend([
     "Const a = 1%",
     "Const a = 1&",
     "Const a = 1@",
+    "Const a = 0.01@ + 0.02@",
     "#Const a = 123",
     "Public Const a = 10",
     'Public Const a = "Hello"',

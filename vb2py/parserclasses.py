@@ -1154,6 +1154,8 @@ class VBPoint(VBExpression):
 class VBExpressionPart(VBConsumer):
     """Part of an expression"""
 
+    number_type_identifier = ''
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         if self.element.name == "object":
@@ -1186,6 +1188,8 @@ class VBExpressionPart(VBConsumer):
                     total |= 1
             #
             return str(total)
+        elif self.number_type_identifier == '@':
+            return 'Decimal("%s")' % self.element.text
         #
         return self.element.text
 
@@ -1198,6 +1202,7 @@ class VBExpressionPart(VBConsumer):
         ending = self.element.text[-1:] or " "
         if ending in TYPE_IDENTIFIERS:
             log.info("Removed type identifier from '%s'" % self.element.text)
+            self.number_type_identifier = self.element.text[-1]
             self.element.text = self.element.text[:-1]
 
 

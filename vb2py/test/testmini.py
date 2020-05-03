@@ -17,10 +17,7 @@ tests = []
 
 # Label begining with loop
 tests.append('''
-Do
-LoopAgain:
-a = 1
-Loop
+a = 0.01@ + 0.02@
 ''')
 
 class ParsingTest(unittest.TestCase):

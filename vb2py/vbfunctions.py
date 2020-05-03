@@ -15,6 +15,7 @@ import shutil  # For FileCopy
 import random  # For Rnd, Randomize
 import time  # For timing
 import inspect
+from decimal import Decimal
 from types import MethodType as instancemethod
 from vb2py.PythonCard.graphic import Bitmap
 
