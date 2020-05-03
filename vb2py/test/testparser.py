@@ -1658,6 +1658,14 @@ End Sub
 tests.append("' This is a comment a _\n= 1 /")
 tests.append("B = 10 ' This is a comment a _\n= 1 /")
 
+# Continuation within a with
+tests.append('''
+With A
+  If LenB(contntMD5) <> 0 Then _
+   .setRequestHeader "Content-MD5", contntMD5
+End With
+''')
+
 # simple fn
 tests.append("""
 Function MyFn()
@@ -2484,12 +2492,7 @@ With MyObject
 End With
 """)
 
-# Continuation with
-tests.append("""
-With MyObject _
-    .Other
-End With
-""")
+
 tests.append("""
 With MyObject. _
     Other
