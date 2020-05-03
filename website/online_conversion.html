@@ -226,11 +226,12 @@
                                 <!-- VB Code Panel buttons -->
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                     <!-- Paste button -->
+                                    <!--
                                     <button id="Paste" type="button"
                                             class="btn-small btn-secondary" onclick="pasteCode()">
                                         Paste
                                     </button>
-                                      &nbsp;or&nbsp;
+                                      &nbsp;or&nbsp;-->
                                     <!-- Load button -->
                                     <div class="btn-group" role="group">
                                         <button id="LoadGroup" type="button"
@@ -1209,6 +1210,8 @@ End Using
                     .catch(err => {
                         console.error('Failed to read clipboard contents: ', err);
                     });
+            } else {
+                alert('Unable to paste from clipboard (probably browser security settings)');
             }
         });
     }
