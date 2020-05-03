@@ -1,6 +1,21 @@
 from vb2py.test.testframework import *
 
-# << Enum tests >>
+
+# Simple test with missing
+tests.append(("""
+Enum thing
+    _one 
+    _two = 2
+    _three 
+    _four
+End Enum
+
+a = _one
+b = _two
+c = _three
+d = _four
+""", {"a":0, "b":2, "c":1, "d":3}))
+
 # Simple test
 tests.append(("""
 Enum thing
@@ -31,6 +46,18 @@ b = _two
 c = _three
 d = _four
 """, {"a":1, "b":2, "c":3, "d":4}))
+
+tests.append(('''
+Enum A
+  _B = 1
+  ' A comment
+End Enum
+a = _B
+
+''', {"a": 1}))
+
+
+
 # -- end -- << Enum tests >>
 
 import vb2py.vbparser

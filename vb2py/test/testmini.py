@@ -16,9 +16,6 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 # Enum with mulitple on a line
 tests.append('''
-Enum A
-    Thing = 1:    That = 2
-End Enum
 '''
 )
 

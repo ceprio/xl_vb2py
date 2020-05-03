@@ -3141,15 +3141,23 @@ class VBEnum(VBCodeBlock):
         """Render a group of property statements"""
         count = 0
         ret = []
+        used_values = set()
         for enumeration in self.enumerations:
             if enumeration.expression:
                 cnt = enumeration.expression.renderAsCode()
             else:
                 cnt = count
-                count += 1
-            result = "%s%s = %s" % (self.getIndent(indent),
-                                      enumeration.identifier.element.text,
-                                      cnt)
+                if enumeration.identifier:
+                    while str(cnt) in used_values:
+                        count += 1
+                        cnt = count
+            if enumeration.identifier:
+                result = "%s%s = %s" % (self.getIndent(indent),
+                                          enumeration.identifier.element.text,
+                                          cnt)
+                used_values.add(str(cnt))
+            else:
+                result = '%spass' % self.getIndent(indent)
             #
             # Add comment, if there was one
             if enumeration.comments:
