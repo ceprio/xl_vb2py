@@ -1,3 +1,4 @@
 /gunicorn.access.log
 /gunicorn.error.log
 /gunicorn.main.log
+/vb2py/settings.ini
