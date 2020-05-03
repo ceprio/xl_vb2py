@@ -373,6 +373,7 @@ tests.extend([
 # Multiple dims on one line
 tests.extend([
         "Dim A, B, C, D, E, F",
+        "Dim A ,B As Collection",
         "Dim B As String, B As Long, B As Integer, B As String, B As String",
         "Dim variable As Object.OtherObj, B, C, D, E",
         "Dim Var As Variant",

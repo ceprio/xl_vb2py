@@ -337,7 +337,7 @@ scoped_dim ::=
   scope, wsp+, (c"Shared", wsp+)?, (c"Dim", wsp+)?, basic_dim
 
 basic_dim ::=
-  object_definition, (",", wsp*, object_definition)*
+  object_definition, (wsp?, ",", wsp*, object_definition)*
 
 object_definition ::=
   with_events?, dim_expression_object, (unsized_definition / size_definition)?, type_definition?, object_initial_value?
