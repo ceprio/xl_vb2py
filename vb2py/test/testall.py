@@ -41,14 +41,18 @@ if __name__ == "__main__":
     #
     files = glob.glob(r"test/test*.py")
     files.sort()
-    preferentialSort(files, ['test/testdotnet.py', 'test/testdotnet_execution.py', 'test/testfailures.py'])
+    preferentialSort(files, [
+        'test/testdotnet.py', 'test/testdotnet_execution.py', 'test/testfailures.py',
+        'test/testdirectives.py',
+    ])
     #
     total_run = 0
     total_failed = 0
     start = time.time()
     try:
         for file in files:
-            if file not in (r"test/testall.py", r"test/testframework.py", "test/testparser.py"):
+            if file not in (r"test/testall.py", r"test/testframework.py",
+                            r"test/testparser.py",):
                 fname = os.path.join((r"python %s" % vb2py.utils.rootPath()), file)
                 print(((bcolors.ENDC + "Running '%s' " % file) + bcolors.OKGREEN).ljust(55, '.'), end=' ')
                 #
