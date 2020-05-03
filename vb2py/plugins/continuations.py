@@ -23,7 +23,7 @@ class LineContinuations(extensions.SystemPlugin):
         """Convert continuation markers by joining adjacent lines"""
 
         txt_lines = txt.split("\n")
-        stripped_lines = [lne.strip() for lne in txt_lines if lne.strip()]
+        stripped_lines = [lne.strip() for lne in txt_lines]
         # #
         # # Commented this out because it isn't clear how this is supposed
         # # to work. I have seen some code where the continuation marker
@@ -38,9 +38,13 @@ class LineContinuations(extensions.SystemPlugin):
         #         stripped_lines[idx] = line[:-1]
         #
         txtout = "\n".join(stripped_lines)
+        txtout = txtout.replace(" _\n\n", " \n")
         txtout = txtout.replace(" _\n.", " .")
         txtout = txtout.replace(". _\n", ".")
         txtout = txtout.replace(" _\n", " ")
         txtout += "\n\n"
         self.log.info("Line continuation:\nConverted '%s'\nTo '%s'" % (txt, txtout))
-        return txtout
+        #
+        # Remove blanks
+        final = '\n'.join([lne.strip() for lne in txtout.splitlines() if lne]) + '\n\n'
+        return final

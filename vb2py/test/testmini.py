@@ -14,11 +14,10 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 tests = []
-# Enum with mulitple on a line
-tests.append('''
-'''
-)
 
+
+# Continuation with a blank line
+tests.append("a = 1 _\n\nb = 2")
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

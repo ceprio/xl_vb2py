@@ -8,6 +8,7 @@
 - Fixed parsing of **Enum's with multiple items** per line
 - Preserve **comments in Enums**
 - Fixed **Enum auto-numbering** for Enums with some set and some unset values
+- Fixed parsing issue with **continuation when the next line is blank**
 
 **0.4.0.4**
 

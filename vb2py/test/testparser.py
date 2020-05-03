@@ -1658,6 +1658,9 @@ End Sub
 tests.append("' This is a comment a _\n= 1 /")
 tests.append("B = 10 ' This is a comment a _\n= 1 /")
 
+# Continuation with a blank line
+tests.append("a = 1 _\n\nb = 2")
+
 # Continuation within a with
 tests.append('''
 With A
