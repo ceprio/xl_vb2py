@@ -17,7 +17,11 @@ tests = []
 
 
 # Continuation with a blank line
-tests.append("a = 1 _\n\nb = 2")
+tests.append('''
+Public Function CreateFile(pathOfFile$ , Optional fileContnts$ ) As String
+
+End Function
+''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

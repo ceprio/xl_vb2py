@@ -706,7 +706,7 @@ sub_end_definition ::=
              label_definition?, c"End Sub"
 
 formal_param_list ::=
-             "(", wsp*, formal_param?, (wsp*, ",", wsp*, formal_param)*, ")"
+             "(", wsp*, formal_param?, (wsp*, ",", wsp*, formal_param)*, wsp*, ")"
 
 formal_param ::=
              optional?, passing_semantics?, param_array?, (object / identifier), array_indicator?, type_definition?, default_value?

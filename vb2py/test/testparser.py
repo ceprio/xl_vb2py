@@ -1816,6 +1816,12 @@ c="hello"
 End Function
 """)
 
+# Function with some spaces
+tests.append('''
+Public Function CreateFile(pathOfFile$ , Optional fileContnts$ ) As String
+
+End Function
+''')
 
 # simple sub with exit
 tests.append("""
