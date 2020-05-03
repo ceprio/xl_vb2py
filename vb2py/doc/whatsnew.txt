@@ -1,13 +1,17 @@
+**0.4.0.5**
+
+- Added **Paste** button to quickly insert VB into the window
+
 **0.4.0.4**
 
 - If **both property Let and Set** are present then choose the Set (new option to alter this to Let)
 - Fixed parsing bug with space before brackets on a call: *A = Something ()*
 - Fixed parsing bug with empty brackets on LHS of assignment: *A () = SomeFnReturningArray()*
 - Fixed issue with **"submit file"** button not being displayed when parsing failed
-- Fixed issue with label just before the Next from a For loop
-- Fixed issue with labels on Else, ElseIf, and Case statements
-- Fixed issue with .variable outside of a With block (this is a syntax error but would crash the converter)
-- Implemented solution for VB6 directives (#If #Else etc), by default assumes the If is true.
+- Fixed issue with **label just before the Next** from a For loop
+- Fixed issue with **labels on Else, ElseIf, and Case** statements
+- Fixed issue with **.variable** outside of a With block (this is a syntax error but would crash the converter)
+- Implemented solution for VB6 directives (**#If #Else etc**), by default assumes the If is true.
 
 **0.4.0.3**
 

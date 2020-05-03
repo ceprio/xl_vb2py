@@ -42,6 +42,7 @@
 
 <body>
 
+<!-- Buttons and Menus-->
 <table border="0" cellspacing="0" width="100%">
     <!-- Main Header -->
     <tr>
@@ -123,7 +124,7 @@
         </td>
     </tr>
 
-    <!-- Main content -->
+    <!-- Main content and conversion buttons -->
     <tr>
         <td colspan="5">
             <div class="" id="conversion-box">
@@ -224,6 +225,13 @@
                             <div class="code-header">Type VB Code or
                                 <!-- VB Code Panel buttons -->
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <!-- Paste button -->
+                                    <button id="Paste" type="button"
+                                            class="btn-small btn-secondary" onclick="pasteCode()">
+                                        Paste
+                                    </button>
+                                      &nbsp;or&nbsp;
+                                    <!-- Load button -->
                                     <div class="btn-group" role="group">
                                         <button id="LoadGroup" type="button"
                                                 class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
@@ -238,6 +246,7 @@
                                         </div>
                                     </div>
                                     &nbsp;&nbsp;or&nbsp;&nbsp;
+                                    <!-- Examples -->
                                     <div class="btn-group" role="group">
                                         <button id="ExampleGroup" type="button"
                                                 class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
@@ -1160,6 +1169,7 @@ End Using
     }
     //endregion
 
+    // region Copy and Paste
     function copyPython() {
         let sel = pyeditor.selection.toJSON();
         if (pyeditor.selection.isEmpty()) {
@@ -1174,6 +1184,35 @@ End Using
             });
         }
     }
+
+    function pasteCode() {
+        navigator.permissions.query({name: 'clipboard-read'}).then(result => {
+            // If permission to read the clipboard is granted or if the user will
+            // be prompted to allow it, we proceed.
+
+            if (result.state === 'granted' || result.state === 'prompt') {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        let sel = vbeditor.selection.toJSON();
+                        if (vbeditor.selection.isEmpty()) {
+                            vbeditor.selectAll();
+                        }
+                        vbeditor.insert(text);
+                        vbeditor.selection.fromJSON(sel);
+
+                        if (!DEVELOPMENT) {
+                            gtag('event', 'Paste VB', {
+                                'event_category': 'UI',
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+            }
+        });
+    }
+    // endregion
 
     function submit_file() {
         var vbtext = vbeditor.getValue();
