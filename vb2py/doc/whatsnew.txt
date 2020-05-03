@@ -5,6 +5,8 @@
 - Added detection for **Decimal** floats
 - Fixed parsing error when Dim statement had spaces before "," (eg **Dim A , B**)
 - Fixed parsing issue with **line continuation with a With** and the With variable was the first item on a line
+- Fixed parsing of **Enum's with multiple items** per line
+- Preserve **comments in Enums**
 
 **0.4.0.4**
 

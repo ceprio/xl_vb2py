@@ -3132,7 +3132,7 @@ class VBEnum(VBCodeBlock):
         self.identifier = None
         #
         self.auto_class_handlers = {
-            "enumeration_item": (VBEnumItem, self.enumerations),
+            "enumeration_line": (VBEnumItem, self.enumerations),
         }
 
         self.auto_handlers = ["identifier"]
@@ -3147,9 +3147,15 @@ class VBEnum(VBCodeBlock):
             else:
                 cnt = count
                 count += 1
-            ret.append("%s%s = %s" % (self.getIndent(indent),
+            result = "%s%s = %s" % (self.getIndent(indent),
                                       enumeration.identifier.element.text,
-                                      cnt))
+                                      cnt)
+            #
+            # Add comment, if there was one
+            if enumeration.comments:
+                result = '%s %s' % (result, enumeration.comments[0].renderAsCode().strip())
+
+            ret.append(result)
 
         return "%s# Enumeration '%s'\n%s\n" % (
             self.getIndent(indent),
@@ -3167,12 +3173,13 @@ class VBEnumItem(VBCodeBlock):
         super(VBEnumItem, self).__init__(scope)
         self.identifier = None
         self.expression = None
+        self.comments = []
         #
         self.auto_class_handlers = {
             "identifier": (VBConsumer, "identifier"),
             "expression": (VBExpression, "expression"),
+            "comment_body": (VBComment, self.comments),
         }
-
 
 #
 class VB2PYDirective(VBCodeBlock):

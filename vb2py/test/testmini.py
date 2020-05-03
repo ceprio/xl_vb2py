@@ -14,19 +14,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 tests = []
-# Continuation within a with
+# Enum with mulitple on a line
 tests.append('''
-With A
-  If LenB(contntMD5) <> 0 Then _
-   .setRequestHeader "Content-MD5", contntMD5
-End With
-''')
-# Continuation with
-tests.append("""
-With MyObject _
-    .Other
-End With
-""")
+Enum A
+    Thing = 1:    That = 2
+End Enum
+'''
+)
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

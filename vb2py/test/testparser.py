@@ -2549,6 +2549,14 @@ Private Enum MyEnum
 End Enum
 """)
 
+# Enum with mulitple on a line
+tests.append('''
+Enum A
+    Thing = 1:    That = 2
+End Enum
+'''
+)
+
 # Simple enumeration with comments
 tests.append("""
 Enum MyEnum ' yeah
