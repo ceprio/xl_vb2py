@@ -15,7 +15,13 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-
+# Label begining with loop
+tests.append('''
+Do
+LoopAgain:
+a = 1
+Loop
+''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

@@ -1,6 +1,7 @@
 **0.4.0.5**
 
 - Added **Paste** button to quickly insert VB into the window
+- Fixed parsing error if a **label named "Loop<someting>"** was present in a Do .. Loop
 
 **0.4.0.4**
 

@@ -584,6 +584,15 @@ tests.extend([
     "103: doit now, for, ever",
 ])
 
+# Label begining with loop
+tests.append('''
+Do
+LoopAgain:
+a = 1
+Loop
+''')
+
+
 # Goto's
 tests.extend([
     "GoTo Label",
