@@ -17,6 +17,15 @@ C = utils.TextColours
 WIDTH = 100
 
 
+#
+# Allow use of datetimes
+def adapt_datetime(ts):
+    return time.mktime(ts.timetuple())
+
+
+sqlite3.register_adapter(datetime.datetime, adapt_datetime)
+
+
 def get_connection(filename):
     """Get a connection to the database"""
     return sqlite3.connect(filename)
@@ -82,15 +91,43 @@ def create_tests(filename):
     print('\nCompleted {} tests\n'.format(total_count))
 
 
-def matching_tests(conn, test_folder, test_filename, include_inactive=False):
+def matching_tests(conn, args):
     """Return a list of matching tests"""
-    active_clause = 'AND active' if not include_inactive else ''
-    cursor = conn.execute('''
-    SELECT id, path, filename FROM tests 
-    WHERE path LIKE ?
-    AND filename LIKE ? 
-    ''' + active_clause, [test_folder, test_filename])
-    return cursor.fetchall()
+    #
+    # Get files based on tests
+    if args.last_test or args.last_failed or args.last_passed:
+        cur = conn.execute('SELECT id, date, name FROM runs ORDER BY date desc')
+        #
+        # A clause to filter the tests down
+        if args.last_failed:
+            success_clause = 'AND results.result = 0'
+        elif args.last_passed:
+            success_clause = 'AND results.result = 1'
+        else:
+            success_clause = ''
+        #
+        run_id, timestamp, name = cur.fetchone()
+        print('Selecting test {} run at {}'.format(name, datetime.datetime.fromtimestamp(int(float(timestamp)))))
+        cur = conn.execute('''SELECT tests.id, tests.path, tests.filename FROM tests 
+            INNER JOIN results ON tests.id = results.test_id
+            WHERE results.run_id = ?
+            AND path LIKE ?
+            AND filename LIKE ?
+            {}
+        '''.format(success_clause), [run_id, args.folder, args.filename])
+        files = cur.fetchall()
+    else:
+        #
+        # Get files based on folders and files
+        active_clause = 'AND active' if not args.enable else ''
+        cursor = conn.execute('''
+        SELECT id, path, filename FROM tests 
+        WHERE path LIKE ?
+        AND filename LIKE ? 
+        ''' + active_clause, [args.folder, args.filename])
+        files = cursor.fetchall()
+    #
+    return files
 
 
 def run_file(conn, list_of_tests, name):
@@ -100,7 +137,7 @@ def run_file(conn, list_of_tests, name):
     beginning_time = time.time()
     #
     # Create a new test run
-    cur = conn.execute("INSERT INTO runs ('date', 'name') VALUES(current_date, ?)", [name])
+    cur = conn.execute("INSERT INTO runs ('date', 'name') VALUES(?, ?)", [datetime.datetime.now(), name])
     run_id = cur.lastrowid
     #
     for item in list_of_tests:
@@ -111,15 +148,22 @@ def run_file(conn, list_of_tests, name):
             try:
                 tester._testFile(os.path.join(folder, filename))
             except Exception as err:
-                result = ' {}FAILED [{:.1f}s] {}'.format(C.FAIL, time.time() - start_time, C.ENDC)
+                report = ' {}FAILED [{:.1f}s] {}'.format(C.FAIL, time.time() - start_time, C.ENDC)
                 failure += 1
+                result = 0
             else:
-                result = ' {}DONE [{:.1f}s] {}'.format(C.OKGREEN, time.time() - start_time, C.ENDC)
+                report = ' {}DONE [{:.1f}s] {}'.format(C.OKGREEN, time.time() - start_time, C.ENDC)
                 success += 1
+                result = 1
+            conn.execute('''
+                INSERT INTO results 
+                (test_id, run_id, result, duration)
+                VALUES (?, ?, ?, ?)
+                ''', [test_id, run_id, result, time.time() - start_time])
         #
-        print(result)
+        print(report)
     #
-    conn.execute('UPDATE runs SET total=?, failed=?, duration=? WHERE id=?', (
+    cur = conn.execute('UPDATE runs SET total=?, failed=?, duration=? WHERE id=?', (
         success + failure, failure, time.time() - beginning_time, run_id))
     #
     if not failure:
@@ -197,6 +241,15 @@ if __name__ == '__main__':
     parser.add_argument('--folder', required=False, type=str,
                         dest='folder', action='store', default='%',
                         help='a folder to act on')
+    parser.add_argument('--last-test', required=False, default=False, action='store_true',
+                        dest='last_test',
+                        help='the last tests run')
+    parser.add_argument('--last-failed', required=False, default=False, action='store_true',
+                        dest='last_failed',
+                        help='the last tests run that failed')
+    parser.add_argument('--last-passed', required=False, default=False, action='store_true',
+                        dest='last_passed',
+                        help='the last tests run that passed')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
@@ -234,7 +287,7 @@ if __name__ == '__main__':
     #
     # Manipulation
     with get_connection(db_filename) as connection:
-        tests = matching_tests(connection, args.folder, args.filename, include_inactive=args.enable)
+        tests = matching_tests(connection, args)
         if args.run_file:
             run_file(connection, tests, args.run_name)
         if args.disable:
