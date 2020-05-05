@@ -53,7 +53,21 @@ def create_database(filename):
     #
     conn.execute('''
         CREATE TABLE runs
-        (id integer primary key, date text, name text, total integer, failed integer, duration float)
+        (id integer primary key, date text, name text unique, total integer, failed integer, duration float)
+    ''')
+    #
+    conn.execute('''
+        CREATE TABLE groups
+        (id integer primary key, name text unique)
+    ''')
+    #
+    conn.execute('''
+        CREATE TABLE group_entries
+        (group_id integer not null, test_id integer not null,
+            FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE,
+            FOREIGN KEY (test_id) REFERENCES tests (id) ON DELETE CASCADE,
+            UNIQUE (group_id, test_id)
+        )
     ''')
     #
     conn.execute('''
@@ -141,8 +155,9 @@ def matching_tests(conn, args):
             select id, path, filename from tests
             WHERE path like ?
             AND filename like ?
-            except
-            select tests.id, path, filename from tests inner join results r on tests.id = r.test_id      
+            AND active
+            EXCEPT 
+            SELECT tests.id, path, filename FROM tests INNER JOIN results r ON tests.id = r.test_id      
         ''', [args.folder, args.filename])
         files = cursor.fetchall()
     else:
@@ -156,7 +171,24 @@ def matching_tests(conn, args):
         ''' + active_clause, [args.folder, args.filename])
         files = cursor.fetchall()
     #
+    if args.failed_last_time:
+        files = [item for item in files if get_last_result(conn, item[0]) == 0]
+    #
     return files
+
+
+def get_last_result(conn, test_id):
+    """Return the last test result"""
+    cur = conn.execute('''select result from results
+        inner join runs r on results.run_id = r.id
+        where test_id = ?
+        order by date desc 
+    ''', [test_id])
+    result = cur.fetchone()
+    if not result:
+        return None
+    else:
+        return result[0]
 
 
 def run_file(conn, list_of_tests, name):
@@ -239,6 +271,63 @@ def show_matching(conn, list_of_tests):
     print('\nTotal {} tests\n'.format(len(list_of_tests)))
 
 
+def create_group(conn, list_of_tests, new_group_name):
+    """Create a new group"""
+    try:
+        cur = conn.execute('INSERT INTO groups (name) VALUES(?)', [new_group_name])
+    except sqlite3.IntegrityError:
+        print('\n{}Group "{}" already exists{}\n'.format(C.FAIL, new_group_name, C.ENDC))
+        return
+    #
+    group_id = cur.lastrowid
+    print('\nCreated group {}"{}"{}'.format(C.OKBLUE, new_group_name, C.ENDC))
+    #
+    for item in list_of_tests:
+        test_id, folder, filename = item
+        conn.execute('INSERT INTO group_entries (group_id, test_id) VALUES(?, ?)', [group_id, test_id])
+        print('Added {} to group'.format(np(os.path.join(folder, filename))))
+    #
+    print('\nAdded {} tests'.format(len(list_of_tests)))
+
+
+def add_to_group(conn, list_of_tests, group_name):
+    """Add to an existing group"""
+    cur = conn.execute('SELECT id FROM groups WHERE name = ?', [group_name])
+    result = cur.fetchone()
+    if not result:
+        print('\n{}Group "{}" does not exist{}\n'.format(C.FAIL, group_name, C.ENDC))
+        return
+    #
+    group_id = result[0]
+    print('\nAdding to group {}"{}"{}'.format(C.OKBLUE, group_name, C.ENDC))
+    #
+    count = 0
+    for item in list_of_tests:
+        test_id, folder, filename = item
+        try:
+            conn.execute('INSERT INTO group_entries (group_id, test_id) VALUES(?, ?)', [group_id, test_id])
+        except sqlite3.IntegrityError:
+            print('{}{} already in group{}'.format(C.FAIL, np(os.path.join(folder, filename)), C.ENDC))
+        else:
+            print('Added {} to group'.format(np(os.path.join(folder, filename))))
+            count += 1
+    #
+    print('\nAdded {} tests'.format(count))
+
+
+def delete_group(conn, list_of_tests, group_name):
+    """Delete an existing group"""
+    cur = conn.execute('SELECT id FROM groups WHERE name = ?', [group_name])
+    result = cur.fetchone()
+    if not result:
+        print('\n{}Group "{}" does not exist{}\n'.format(C.FAIL, group_name, C.ENDC))
+        return
+    group_id = result[0]
+    conn.execute('DELETE FROM groups WHERE name = ?', [group_name])
+    conn.execute('DELETE FROM group_entries WHERE group_id = ?', [group_id])
+    print('\nGroup {}"{}"{} deleted'.format(C.OKBLUE, group_name, C.ENDC))
+
+
 class Suppress:
     def __init__(self, *, suppress_stdout=True, suppress_stderr=True):
         self.suppress_stdout = suppress_stdout
@@ -303,6 +392,9 @@ if __name__ == '__main__':
     parser.add_argument('--never-run', required=False, default=False, action='store_true',
                         dest='never_run',
                         help='a test that has never been run')
+    parser.add_argument('--failed-last-time', required=False, default=False, action='store_true',
+                        dest='failed_last_time',
+                        help='a test that failed last time it was run')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
@@ -324,6 +416,15 @@ if __name__ == '__main__':
                         help='enable the given tests')
     parser.add_argument('--show', required=False, default=False, action='store_true',
                         help='just show the matching tests')
+    parser.add_argument('--create-group', required=False, type=str,
+                        dest='create_group', action='store', default='',
+                        help='a group to create')
+    parser.add_argument('--add-to-group', required=False, type=str,
+                        dest='add_to_group', action='store', default='',
+                        help='a group to add files to')
+    parser.add_argument('--delete-group', required=False, type=str,
+                        dest='delete_group', action='store', default='',
+                        help='a group to delete')
 
     args = parser.parse_args()
     print('\n{}{}Database testing application\n{}'.format(
@@ -349,3 +450,9 @@ if __name__ == '__main__':
             set_active(connection, tests, True)
         if args.show:
             show_matching(connection, tests)
+        if args.create_group:
+            create_group(connection, tests, args.create_group)
+        if args.add_to_group:
+            add_to_group(connection, tests, args.add_to_group)
+        if args.delete_group:
+            delete_group(connection, tests, args.delete_group)
