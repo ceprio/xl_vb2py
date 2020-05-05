@@ -14,7 +14,7 @@ from vb2py import utils
 from vb2py.test_at_scale import file_tester
 
 C = utils.TextColours
-WIDTH = 100
+WIDTH = 90
 
 
 #
@@ -29,6 +29,11 @@ sqlite3.register_adapter(datetime.datetime, adapt_datetime)
 def get_connection(filename):
     """Get a connection to the database"""
     return sqlite3.connect(filename)
+
+
+def np(filename):
+    """Return a shortened version of a filename"""
+    return filename[len(file_tester.BASE_FOLDER):]
 
 
 def create_database(filename):
@@ -75,7 +80,7 @@ def create_tests(filename):
         total_count = 0
         for file in files:
             count = 0
-            print('Adding {} '.format(file).ljust(WIDTH, '.'), end='')
+            print('Adding {} '.format(np(file)).ljust(WIDTH, '.'), end='')
             with open(file, 'r') as f:
                 file_text = f.read()
                 for test_file in re.findall("_testFile\('(.*?)'", file_text):
@@ -157,7 +162,8 @@ def run_file(conn, list_of_tests, name):
     #
     for item in list_of_tests:
         test_id, folder, filename = item
-        print('Test {}/{} '.format(folder, filename).ljust(WIDTH, '.'), end='')
+        print('Test {} '.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.') +
+              get_last_tests(conn, test_id), end='')
         start_time = time.time()
         with Suppress():
             try:
@@ -191,29 +197,35 @@ def set_active(conn, list_of_tests, active):
     """Set whether tests are active or not"""
     for item in list_of_tests:
         test_id, folder, filename = item
-        print('Setting {}/{} to {}{}{}'.format(
-            folder, filename, C.OKBLUE, active, C.ENDC))
+        print('Setting {} to {}{}{}'.format(
+            np(os.path.join(folder, filename)), C.OKBLUE, active, C.ENDC))
         conn.execute('UPDATE tests SET active = ? WHERE id = ?', (active, test_id))
     #
     print('\nComplete')
+
+
+def get_last_tests(conn, test_id):
+    """Return the last tests run on this"""
+    cur = conn.execute('''
+        SELECT result FROM results INNER JOIN runs ON results.run_id = runs.id
+        WHERE test_id = ?
+        ORDER BY runs.date desc LIMIT 10
+        ''', [test_id])
+    results = [' '] * 10
+    for item in reversed(cur.fetchall()):
+        if item[0]:
+            results.append('{}*{}'.format(C.OKGREEN, C.ENDC))
+        else:
+            results.append('{}!{}'.format(C.FAIL, C.ENDC))
+    return ''.join(results[-10:])
 
 
 def show_matching(conn, list_of_tests):
     """Show which files match"""
     for item in list_of_tests:
         test_id, folder, filename = item
-        cur = conn.execute('''
-            SELECT result FROM results INNER JOIN runs ON results.run_id = runs.id
-            WHERE test_id = ?
-            ORDER BY runs.date desc LIMIT 10
-            ''', [test_id])
-        results = [' '] * 10
-        for item in reversed(cur.fetchall()):
-            if item[0]:
-                results.append('{}*{}'.format(C.OKGREEN, C.ENDC))
-            else:
-                results.append('{}!{}'.format(C.FAIL, C.ENDC))
-        print('{}/{} '.format(folder, filename).ljust(WIDTH, '.') + ''.join(results[-10:]))
+        last_tests = get_last_tests(conn, test_id)
+        print('{} '.format(np(os.path.join(folder, filename))).ljust(WIDTH, '.') + last_tests)
     #
     print('\nTotal {} tests\n'.format(len(list_of_tests)))
 
