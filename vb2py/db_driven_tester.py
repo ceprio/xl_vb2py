@@ -95,8 +95,17 @@ def matching_tests(conn, args):
     """Return a list of matching tests"""
     #
     # Get files based on tests
-    if args.last_test or args.last_failed or args.last_passed:
-        cur = conn.execute('SELECT id, date, name FROM runs ORDER BY date desc')
+    if args.last_test or args.last_failed or args.last_passed or args.previous_run:
+        if args.previous_run:
+            cur = conn.execute('SELECT id, date, name FROM runs WHERE name like ?', [args.previous_run])
+        else:
+            cur = conn.execute('SELECT id, date, name FROM runs ORDER BY date desc')
+        matches = cur.fetchone()
+        if not matches:
+            print('{}No matching tests{}\n'.format(C.FAIL, C.ENDC))
+            return []
+        #
+        run_id, timestamp, name = matches
         #
         # A clause to filter the tests down
         if args.last_failed:
@@ -106,8 +115,14 @@ def matching_tests(conn, args):
         else:
             success_clause = ''
         #
-        run_id, timestamp, name = cur.fetchone()
-        print('Selecting test {} run at {}'.format(name, datetime.datetime.fromtimestamp(int(float(timestamp)))))
+        print('Selecting test {}"{}"{} run at {}{}{}'.format(
+            C.OKBLUE,
+            name,
+            C.ENDC,
+            C.OKBLUE,
+            datetime.datetime.fromtimestamp(int(float(timestamp))),
+            C.ENDC
+        ))
         cur = conn.execute('''SELECT tests.id, tests.path, tests.filename FROM tests 
             INNER JOIN results ON tests.id = results.test_id
             WHERE results.run_id = ?
@@ -187,7 +202,18 @@ def show_matching(conn, list_of_tests):
     """Show which files match"""
     for item in list_of_tests:
         test_id, folder, filename = item
-        print('{}/{}'.format(folder, filename))
+        cur = conn.execute('''
+            SELECT result FROM results INNER JOIN runs ON results.run_id = runs.id
+            WHERE test_id = ?
+            ORDER BY runs.date desc LIMIT 10
+            ''', [test_id])
+        results = [' '] * 10
+        for item in reversed(cur.fetchall()):
+            if item[0]:
+                results.append('{}*{}'.format(C.OKGREEN, C.ENDC))
+            else:
+                results.append('{}!{}'.format(C.FAIL, C.ENDC))
+        print('{}/{} '.format(folder, filename).ljust(WIDTH, '.') + ''.join(results[-10:]))
     #
     print('\nTotal {} tests\n'.format(len(list_of_tests)))
 
@@ -250,6 +276,9 @@ if __name__ == '__main__':
     parser.add_argument('--last-passed', required=False, default=False, action='store_true',
                         dest='last_passed',
                         help='the last tests run that passed')
+    parser.add_argument('--previous-run', required=False, type=str,
+                        dest='previous_run', action='store', default='',
+                        help='a previous run to act on')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
