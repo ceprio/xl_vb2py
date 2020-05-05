@@ -81,31 +81,30 @@ def create_database(filename):
     print('{} DONE{}\n'.format(C.OKGREEN, C.ENDC))
 
 
-def create_tests(filename):
+def create_tests(conn):
     """Create the initial tests"""
     print('Creating tests')
-    with get_connection(filename) as conn:
-        #
-        # Remove old
-        conn.execute('DELETE FROM tests')
-        #
-        # Go through all files
-        files = glob.glob(utils.relativePath('test_at_scale', 'test*.py'))
-        total_count = 0
-        for file in files:
-            count = 0
-            print('Adding {} '.format(np(file)).ljust(WIDTH, '.'), end='')
-            with open(file, 'r') as f:
-                file_text = f.read()
-                for test_file in re.findall("_testFile\('(.*?)'", file_text):
-                    folder, filename = os.path.split(test_file)
-                    count += 1
-                    conn.execute('''
-                    INSERT INTO tests ('path', 'filename', 'active') 
-                    VALUES (?, ?, 1)
-                    ''', (folder, filename))
-            total_count += count
-            print('{} DONE [{} tests]{}'.format(C.OKGREEN, count, C.ENDC))
+    #
+    # Remove old
+    conn.execute('DELETE FROM tests')
+    #
+    # Go through all files
+    files = glob.glob(utils.relativePath('test_at_scale', 'test*.py'))
+    total_count = 0
+    for file in files:
+        count = 0
+        print('Adding {} '.format(np(file)).ljust(WIDTH, '.'), end='')
+        with open(file, 'r') as f:
+            file_text = f.read()
+            for test_file in re.findall("_testFile\('(.*?)'", file_text):
+                folder, filename = os.path.split(test_file)
+                count += 1
+                conn.execute('''
+                INSERT INTO tests ('path', 'filename', 'active') 
+                VALUES (?, ?, 1)
+                ''', (folder, filename))
+        total_count += count
+        print('{} DONE [{} tests]{}'.format(C.OKGREEN, count, C.ENDC))
     #
     print('\nCompleted {} tests\n'.format(total_count))
 
@@ -351,6 +350,27 @@ def show_groups(conn):
     print('\nNumber of groups = {}\n'.format(len(total_groups)))
 
 
+def create_test_groups(conn):
+    """Create groups for all the folders"""
+    print('\nCreating all test groups\n')
+    cur = conn.execute('select distinct(path) from tests')
+    folders = set()
+    count = 0
+    for item in cur.fetchall():
+        root_path = item[0][len(file_tester.BASE_FOLDER) + 1:].split('/')[0]
+        if root_path not in folders:
+            folders.add(root_path)
+            try:
+                conn.execute('INSERT INTO groups (name) VALUES(?)', [root_path])
+            except sqlite3.IntegrityError:
+                print('{}Group "{}" already exists {}'.format(C.FAIL, root_path, C.ENDC))
+            else:
+                print('Created group {}"{}"{}'.format(C.OKBLUE, root_path, C.ENDC))
+                count += 1
+    #
+    print('\nCreated {} groups\n'.format(count))
+
+
 class Suppress:
     def __init__(self, *, suppress_stdout=True, suppress_stderr=True):
         self.suppress_stdout = suppress_stdout
@@ -434,6 +454,9 @@ if __name__ == '__main__':
     parser.add_argument('--create-tests', required=False, default=False, action='store_true',
                         dest='create_tests',
                         help='create the test cases')
+    parser.add_argument('--create-test-groups', required=False, default=False, action='store_true',
+                        dest='create_test_groups',
+                        help='create the groups for the test cases')
     parser.add_argument('--run-file', required=False, default=False, action='store_true',
                         help='run a test on a file or file pattern')
     parser.add_argument('--disable', required=False, default=False, action='store_true',
@@ -466,11 +489,14 @@ if __name__ == '__main__':
     # Database population
     if args.create:
         create_database(db_filename)
-    if args.create_tests:
-        create_tests(db_filename)
     #
     # Manipulation
     with get_connection(db_filename) as connection:
+        if args.create_tests:
+            create_tests(connection)
+        if args.create_test_groups:
+            create_test_groups(connection)
+        #
         tests = matching_tests(connection, args)
         if args.run_file:
             run_file(connection, tests, args.run_name)
