@@ -8,6 +8,7 @@ import glob
 import re
 import time
 import datetime
+import io
 
 sys.path.append('..')
 from vb2py import utils
@@ -198,7 +199,7 @@ def get_last_result(conn, test_id):
         return result[0]
 
 
-def run_file(conn, list_of_tests, name):
+def run_file(conn, list_of_tests, name, show_output):
     """Perform a single test on a file"""
     tester = file_tester.FileTester()
     success = failure = 0
@@ -213,7 +214,7 @@ def run_file(conn, list_of_tests, name):
         print('Test {} '.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.') +
               get_last_tests(conn, test_id), end='')
         start_time = time.time()
-        with Suppress():
+        with Suppress() as capture:
             try:
                 tester._testFile(os.path.join(folder, filename))
             except Exception as err:
@@ -229,6 +230,10 @@ def run_file(conn, list_of_tests, name):
                 (test_id, run_id, result, duration)
                 VALUES (?, ?, ?, ?)
                 ''', [test_id, run_id, result, time.time() - start_time])
+            #
+            if show_output and not success:
+                capture.output.seek(0)
+                report = '{}\n\n{}'.format(report, capture.output.read())
         #
         print(report)
     #
@@ -335,11 +340,24 @@ def delete_group(conn, list_of_tests, group_name):
     print('\nGroup {}"{}"{} deleted'.format(C.OKBLUE, group_name, C.ENDC))
 
 
+def delete_all_groups(conn):
+    """Delete an existing group"""
+    cur = conn.execute('SELECT id, name FROM groups')
+    all_groups = cur.fetchall()
+    for result in all_groups:
+        group_id, group_name = result
+        conn.execute('DELETE FROM groups WHERE name = ?', [group_name])
+        conn.execute('DELETE FROM group_entries WHERE group_id = ?', [group_id])
+        print('Group {}"{}"{} deleted'.format(C.OKBLUE, group_name, C.ENDC))
+    #
+    print('\nDeleted {} groups'.format(len(all_groups)))
+
+
 def show_groups(conn):
     """Show all the groups"""
     cur = conn.execute('''
         select name, count(group_id) from groups
-        inner join group_entries ge on groups.id = ge.group_id
+        left join group_entries ge on groups.id = ge.group_id
         group by name, group_id
     ''')
     print('\nList of groups\n')
@@ -353,20 +371,27 @@ def show_groups(conn):
 def create_test_groups(conn):
     """Create groups for all the folders"""
     print('\nCreating all test groups\n')
-    cur = conn.execute('select distinct(path) from tests')
-    folders = set()
+    cur = conn.execute('select id, path from tests')
+    folders = {}
     count = 0
     for item in cur.fetchall():
-        root_path = item[0][len(file_tester.BASE_FOLDER) + 1:].split('/')[0]
+        test_id, path = item
+        root_path = path[len(file_tester.BASE_FOLDER) + 1:].split('/')[0]
         if root_path not in folders:
-            folders.add(root_path)
             try:
-                conn.execute('INSERT INTO groups (name) VALUES(?)', [root_path])
+                cur = conn.execute('INSERT INTO groups (name) VALUES(?)', [root_path])
             except sqlite3.IntegrityError:
                 print('{}Group "{}" already exists {}'.format(C.FAIL, root_path, C.ENDC))
+                folders[root_path] = None
             else:
                 print('Created group {}"{}"{}'.format(C.OKBLUE, root_path, C.ENDC))
+                folders[root_path] = cur.lastrowid
                 count += 1
+        #
+        group_id = folders[root_path]
+        if group_id is not None:
+            conn.execute('INSERT INTO group_entries (group_id, test_id) VALUES (?, ?)',
+                         [group_id, test_id])
     #
     print('\nCreated {} groups\n'.format(count))
 
@@ -377,10 +402,11 @@ class Suppress:
         self.suppress_stderr = suppress_stderr
         self.original_stdout = None
         self.original_stderr = None
+        self.output = None
 
     def __enter__(self):
         import sys, os
-        devnull = open(os.devnull, "w")
+        self.output = devnull = io.StringIO()
         sys.stdout.flush()
 
         # Suppress streams
@@ -391,6 +417,8 @@ class Suppress:
         if self.suppress_stderr:
             self.original_stderr = sys.stderr
             sys.stderr = devnull
+
+        return self
 
     def __exit__(self, *args, **kwargs):
         import sys
@@ -445,8 +473,11 @@ if __name__ == '__main__':
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
                         dest='run_name', action='store', default='Test {}'.format(
-                            datetime.datetime.now().strftime('%H:%M %d-%m-%Y')),
+                            datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')),
                         help='a folder to act on')
+    parser.add_argument('--show-output', required=False,
+                        dest='show_output', action='store_true',
+                        help='whether to show the output')
     #
     # The commands
     parser.add_argument('--create', required=False, default=False, action='store_true',
@@ -473,6 +504,8 @@ if __name__ == '__main__':
     parser.add_argument('--delete-group', required=False, type=str,
                         dest='delete_group', action='store', default='',
                         help='a group to delete')
+    parser.add_argument('--delete-all-groups', required=False, default=False, action='store_true',
+                        help='delete all the groups')
 
     parser.add_argument('--show', required=False, default=False, action='store_true',
                         help='just show the matching tests')
@@ -499,7 +532,7 @@ if __name__ == '__main__':
         #
         tests = matching_tests(connection, args)
         if args.run_file:
-            run_file(connection, tests, args.run_name)
+            run_file(connection, tests, args.run_name, args.show_output)
         if args.disable:
             set_active(connection, tests, False)
         if args.enable:
@@ -512,5 +545,7 @@ if __name__ == '__main__':
             add_to_group(connection, tests, args.add_to_group)
         if args.delete_group:
             delete_group(connection, tests, args.delete_group)
+        if args.delete_all_groups:
+            delete_all_groups(connection)
         if args.show_groups:
             show_groups(connection)
