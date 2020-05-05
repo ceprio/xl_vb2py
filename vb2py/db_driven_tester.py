@@ -136,6 +136,15 @@ def matching_tests(conn, args):
             {}
         '''.format(success_clause), [run_id, args.folder, args.filename])
         files = cur.fetchall()
+    elif args.never_run:
+        cursor = conn.execute('''
+            select id, path, filename from tests
+            WHERE path like ?
+            AND filename like ?
+            except
+            select tests.id, path, filename from tests inner join results r on tests.id = r.test_id      
+        ''', [args.folder, args.filename])
+        files = cursor.fetchall()
     else:
         #
         # Get files based on folders and files
@@ -291,6 +300,9 @@ if __name__ == '__main__':
     parser.add_argument('--previous-run', required=False, type=str,
                         dest='previous_run', action='store', default='',
                         help='a previous run to act on')
+    parser.add_argument('--never-run', required=False, default=False, action='store_true',
+                        dest='never_run',
+                        help='a test that has never been run')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
