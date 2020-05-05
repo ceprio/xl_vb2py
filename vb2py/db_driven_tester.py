@@ -150,6 +150,14 @@ def matching_tests(conn, args):
             {}
         '''.format(success_clause), [run_id, args.folder, args.filename])
         files = cur.fetchall()
+    elif args.group:
+        cur = conn.execute('''
+            SELECT t.id, t.path, t.filename FROM group_entries 
+            INNER JOIN groups g on group_entries.group_id = g.id
+            INNER JOIN tests t on group_entries.test_id = t.id
+            WHERE g.name = ?
+        ''', [args.group])
+        files = cur.fetchall()
     elif args.never_run:
         cursor = conn.execute('''
             select id, path, filename from tests
@@ -395,6 +403,9 @@ if __name__ == '__main__':
     parser.add_argument('--failed-last-time', required=False, default=False, action='store_true',
                         dest='failed_last_time',
                         help='a test that failed last time it was run')
+    parser.add_argument('--group', required=False, type=str,
+                        dest='group', action='store', default='',
+                        help='a named group to act on')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
