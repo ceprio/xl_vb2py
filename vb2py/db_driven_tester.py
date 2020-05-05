@@ -364,8 +364,36 @@ def show_groups(conn):
     total_groups = cur.fetchall()
     for item in total_groups:
         name, count = item
-        print(' - {} {}{} tests {}'.format(name, C.OKBLUE, count, C.ENDC))
+        results = get_group_summary(conn, name)
+        passed = sum(1 for i in results if i[2])
+        failed = sum(1 for i in results if not i[2])
+        duration = sum(i[3] for i in results)
+        print(' - {}{:20}{} {}{:4} tests{} [{:4.0f}s].{}{:4}{} pass, {}{:4}{} failed'.format(
+            C.OKGREEN if not failed else C.FAIL,
+            name, C.ENDC,
+            C.OKBLUE,
+            count, C.ENDC,
+            duration,
+            C.OKGREEN, passed, C.ENDC,
+            C.FAIL, failed, C.ENDC,
+        ))
     print('\nNumber of groups = {}\n'.format(len(total_groups)))
+
+
+def get_group_summary(conn, group_name):
+    """Return the summary of the group results"""
+    cur = conn.execute('''
+        select x.path, x.filename, x.result, x.duration from (
+                          select *
+                          from results
+                                   inner join tests t on results.test_id = t.id
+                          order by run_id desc
+                      ) as x inner join group_entries g on g.test_id = x.test_id
+        inner join groups g2 on g.group_id = g2.id
+        where g2.name = ?
+        group by x.filename    
+    ''', [group_name])
+    return cur.fetchall()
 
 
 def create_test_groups(conn):
