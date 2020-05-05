@@ -336,6 +336,21 @@ def delete_group(conn, list_of_tests, group_name):
     print('\nGroup {}"{}"{} deleted'.format(C.OKBLUE, group_name, C.ENDC))
 
 
+def show_groups(conn):
+    """Show all the groups"""
+    cur = conn.execute('''
+        select name, count(group_id) from groups
+        inner join group_entries ge on groups.id = ge.group_id
+        group by name, group_id
+    ''')
+    print('\nList of groups\n')
+    total_groups = cur.fetchall()
+    for item in total_groups:
+        name, count = item
+        print(' - {} {}{} tests {}'.format(name, C.OKBLUE, count, C.ENDC))
+    print('\nNumber of groups = {}\n'.format(len(total_groups)))
+
+
 class Suppress:
     def __init__(self, *, suppress_stdout=True, suppress_stderr=True):
         self.suppress_stdout = suppress_stdout
@@ -425,8 +440,7 @@ if __name__ == '__main__':
                         help='disable the given tests')
     parser.add_argument('--enable', required=False, default=False, action='store_true',
                         help='enable the given tests')
-    parser.add_argument('--show', required=False, default=False, action='store_true',
-                        help='just show the matching tests')
+
     parser.add_argument('--create-group', required=False, type=str,
                         dest='create_group', action='store', default='',
                         help='a group to create')
@@ -436,6 +450,11 @@ if __name__ == '__main__':
     parser.add_argument('--delete-group', required=False, type=str,
                         dest='delete_group', action='store', default='',
                         help='a group to delete')
+
+    parser.add_argument('--show', required=False, default=False, action='store_true',
+                        help='just show the matching tests')
+    parser.add_argument('--show-groups', required=False, default=False, action='store_true',
+                        help='show the groups')
 
     args = parser.parse_args()
     print('\n{}{}Database testing application\n{}'.format(
@@ -467,3 +486,5 @@ if __name__ == '__main__':
             add_to_group(connection, tests, args.add_to_group)
         if args.delete_group:
             delete_group(connection, tests, args.delete_group)
+        if args.show_groups:
+            show_groups(connection)
