@@ -9,7 +9,9 @@ import re
 import time
 import datetime
 import io
+import signal
 
+signal.signal(signal.SIGINT, signal.default_int_handler)
 sys.path.append('..')
 from vb2py import utils
 from vb2py.test_at_scale import file_tester
@@ -116,7 +118,10 @@ def matching_tests(conn, args):
     """Return a list of matching tests"""
     #
     # Get files based on tests
-    if args.last_test or args.last_failed or args.last_passed or args.previous_run:
+    if args.continuation:
+        with open('.continuation.txt', 'r') as f:
+            files = eval(f.read())
+    elif args.last_test or args.last_failed or args.last_passed or args.previous_run:
         if args.previous_run:
             cur = conn.execute('SELECT id, date, name FROM runs WHERE name like ?', [args.previous_run])
         else:
@@ -153,12 +158,20 @@ def matching_tests(conn, args):
         '''.format(success_clause), [run_id, args.folder, args.filename])
         files = cur.fetchall()
     elif args.group:
+        if args.never_run:
+            except_clause = '''
+            EXCEPT SELECT tests.id, path, filename FROM tests INNER JOIN results r ON tests.id = r.test_id
+            '''
+        else:
+            except_clause = ''
+        #
         cur = conn.execute('''
             SELECT t.id, t.path, t.filename FROM group_entries 
             INNER JOIN groups g on group_entries.group_id = g.id
             INNER JOIN tests t on group_entries.test_id = t.id
             WHERE g.name = ?
-        ''', [args.group])
+            {}
+        '''.format(except_clause), [args.group])
         files = cur.fetchall()
     elif args.never_run:
         cursor = conn.execute('''
@@ -210,35 +223,42 @@ def run_file(conn, list_of_tests, name, show_output):
     # Create a new test run
     cur = conn.execute("INSERT INTO runs ('date', 'name') VALUES(?, ?)", [datetime.datetime.now(), name])
     run_id = cur.lastrowid
+    idx = 0
     #
-    for item in list_of_tests:
-        test_id, folder, filename = item
-        print('Test {} '.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.') +
-              get_last_tests(conn, test_id), end='')
-        start_time = time.time()
-        with Suppress() as capture:
-            try:
-                tester._testFile(os.path.join(folder, filename))
-            except Exception as err:
-                report = ' {}FAILED [{:.1f}s] {}'.format(C.FAIL, time.time() - start_time, C.ENDC)
-                failure += 1
-                result = 0
-            else:
-                report = ' {}DONE [{:.1f}s] {}'.format(C.OKGREEN, time.time() - start_time, C.ENDC)
-                success += 1
-                result = 1
+    try:
+        for idx, item in enumerate(list_of_tests):
+            test_id, folder, filename = item
+            print('{:3.0f}% {} '.format(
+                float(idx + 1) / len(list_of_tests) * 100.0,
+                np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.') +
+                get_last_tests(conn, test_id), end='')
+            start_time = time.time()
+            with Suppress() as capture:
+                try:
+                    tester._testFile(os.path.join(folder, filename))
+                except Exception as err:
+                    report = ' {}FAILED [{:.1f}s] {}'.format(C.FAIL, time.time() - start_time, C.ENDC)
+                    failure += 1
+                    result = 0
+                else:
+                    report = ' {}DONE [{:.1f}s] {}'.format(C.OKGREEN, time.time() - start_time, C.ENDC)
+                    success += 1
+                    result = 1
+                #
+                output_text = capture.get_output()
+                #
+                if show_output and not success:
+                    report = '{}\n\n{}'.format(report, output_text)
+                conn.execute('''
+                    INSERT INTO results 
+                    (test_id, run_id, result, duration, output)
+                    VALUES (?, ?, ?, ?, ?)
+                    ''', [test_id, run_id, result, time.time() - start_time, output_text])
             #
-            output_text = capture.get_output()
-            #
-            if show_output and not success:
-                report = '{}\n\n{}'.format(report, output_text)
-            conn.execute('''
-                INSERT INTO results 
-                (test_id, run_id, result, duration, output)
-                VALUES (?, ?, ?, ?, ?)
-                ''', [test_id, run_id, result, time.time() - start_time, output_text])
-        #
-        print(report)
+            print(report)
+    except KeyboardInterrupt:
+        print('\n\nCTR-C Pressed - exiting now\n')
+        store_continue_files(conn, list_of_tests[idx:])
     #
     cur = conn.execute('UPDATE runs SET total=?, failed=?, duration=? WHERE id=?', (
         success + failure, failure, time.time() - beginning_time, run_id))
@@ -247,6 +267,12 @@ def run_file(conn, list_of_tests, name, show_output):
         print('\n{}Completed {} test{}'.format(C.OKGREEN, success, C.ENDC))
     else:
         print('\n{}Completed {} test with {} failures{}'.format(C.FAIL, success + failure, failure, C.ENDC))
+
+
+def store_continue_files(conn, list_of_files):
+    """Store a list of tests to run in case we continue"""
+    with open('.continuation.txt', 'w') as f:
+        f.write(repr(list_of_files))
 
 
 def set_active(conn, list_of_tests, active):
@@ -382,7 +408,7 @@ def show_groups(conn):
         failed = sum(1 for i in results if not i[2])
         duration = sum(i[3] for i in results)
         print(' - {}{:20}{} {}{:4} tests{} [{:4.0f}s].{}{:4}{} pass, {}{:4}{} failed'.format(
-            C.OKGREEN if not failed else C.FAIL,
+            C.WARNING if not (passed + failed) else C.OKGREEN if not failed else C.FAIL,
             name, C.ENDC,
             C.OKBLUE,
             count, C.ENDC,
@@ -515,6 +541,9 @@ if __name__ == '__main__':
     parser.add_argument('--group', required=False, type=str,
                         dest='group', action='store', default='',
                         help='a named group to act on')
+    parser.add_argument('--continue', required=False, default=False, action='store_true',
+                        dest='continuation',
+                        help='continue with the last set of files we were doing')
     #
     # Parameters
     parser.add_argument('--run-name', required=False, type=str,
