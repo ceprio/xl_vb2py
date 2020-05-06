@@ -75,7 +75,7 @@ def create_database(filename):
     #
     conn.execute('''
         CREATE TABLE results
-        (test_id integer not null, run_id integer not null, result bool, duration float, 
+        (test_id integer not null, run_id integer not null, result bool, duration float, output text,
             FOREIGN KEY (test_id) REFERENCES tests (id),
             FOREIGN KEY (run_id) REFERENCES runs (id)
         )
@@ -227,15 +227,16 @@ def run_file(conn, list_of_tests, name, show_output):
                 report = ' {}DONE [{:.1f}s] {}'.format(C.OKGREEN, time.time() - start_time, C.ENDC)
                 success += 1
                 result = 1
-            conn.execute('''
-                INSERT INTO results 
-                (test_id, run_id, result, duration)
-                VALUES (?, ?, ?, ?)
-                ''', [test_id, run_id, result, time.time() - start_time])
+            #
+            output_text = capture.get_output()
             #
             if show_output and not success:
-                capture.output.seek(0)
-                report = '{}\n\n{}'.format(report, capture.output.read())
+                report = '{}\n\n{}'.format(report, output_text)
+            conn.execute('''
+                INSERT INTO results 
+                (test_id, run_id, result, duration, output)
+                VALUES (?, ?, ?, ?, ?)
+                ''', [test_id, run_id, result, time.time() - start_time, output_text])
         #
         print(report)
     #
@@ -275,12 +276,22 @@ def get_last_tests(conn, test_id):
     return ''.join(results[-10:])
 
 
-def show_matching(conn, list_of_tests):
+def show_matching(conn, list_of_tests, show_output, history=1):
     """Show which files match"""
     for item in list_of_tests:
         test_id, folder, filename = item
         last_tests = get_last_tests(conn, test_id)
         print('{} '.format(np(os.path.join(folder, filename))).ljust(WIDTH, '.') + last_tests)
+        if show_output:
+            c = conn.execute('''
+                select output from results
+                inner join tests t on results.test_id = t.id
+                where t.id = ?
+                order by run_id desc
+                limit  ?           
+            ''', [test_id, history])
+            for report in c.fetchall():
+                print('\n{}\n'.format(report[0]))
     #
     print('\nTotal {} tests\n'.format(len(list_of_tests)))
 
@@ -458,6 +469,12 @@ class Suppress:
         if self.suppress_stderr:
             sys.stderr = self.original_stderr
 
+    def get_output(self):
+        """Return the output"""
+        self.output.flush()
+        self.output.seek(0)
+        return self.output.read()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Database driven tester')
@@ -507,6 +524,9 @@ if __name__ == '__main__':
     parser.add_argument('--show-output', required=False,
                         dest='show_output', action='store_true',
                         help='whether to show the output')
+    parser.add_argument('--history', required=False, type=int,
+                        dest='history', action='store', default=1,
+                        help='the number of reports to show for a test')
     #
     # The commands
     parser.add_argument('--create', required=False, default=False, action='store_true',
@@ -569,7 +589,7 @@ if __name__ == '__main__':
         if args.enable:
             set_active(connection, tests, True)
         if args.show:
-            show_matching(connection, tests)
+            show_matching(connection, tests, args.show_output, args.history)
         if args.create_group:
             create_group(connection, tests, args.create_group)
         if args.add_to_group:
