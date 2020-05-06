@@ -29,7 +29,9 @@ sqlite3.register_adapter(datetime.datetime, adapt_datetime)
 
 def get_connection(filename):
     """Get a connection to the database"""
-    return sqlite3.connect(filename)
+    c = sqlite3.connect(filename)
+    c.create_function("REVERSE", 1, lambda s: s[::-1])
+    return c
 
 
 def np(filename):
@@ -383,15 +385,14 @@ def show_groups(conn):
 def get_group_summary(conn, group_name):
     """Return the summary of the group results"""
     cur = conn.execute('''
-        select x.path, x.filename, x.result, x.duration from (
-                          select *
-                          from results
-                                   inner join tests t on results.test_id = t.id
-                          order by run_id desc
-                      ) as x inner join group_entries g on g.test_id = x.test_id
-        inner join groups g2 on g.group_id = g2.id
-        where g2.name = ?
-        group by x.filename    
+        select t.path, t.filename, 
+            cast(substr(reverse(group_concat(cast(result as char))), 1, 1) as integer), duration from results
+        inner join tests t on results.test_id = t.id
+        inner join group_entries ge on t.id = ge.test_id
+        inner join groups g on ge.group_id = g.id
+        where g.name = ?
+        group by t.id
+        order by run_id
     ''', [group_name])
     return cur.fetchall()
 
@@ -541,8 +542,10 @@ if __name__ == '__main__':
                         help='show the groups')
 
     args = parser.parse_args()
-    print('\n{}{}Database testing application\n{}'.format(
-        C.HEADER, C.OKBLUE, C.ENDC
+    print('\n{}{}Database testing application - {}\n{}'.format(
+        C.HEADER, C.OKBLUE,
+        datetime.datetime.now().strftime('%H:%M %d-%m-%Y'),
+        C.ENDC
     ))
     #
     db_filename = utils.relativePath(args.db_path, args.db_file)
