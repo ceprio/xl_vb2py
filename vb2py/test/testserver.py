@@ -231,6 +231,45 @@ class TestServer(unittest.TestCase):
         self.assertEqual(7, data['parsing_stopped_vb'])
         self.assertEqual(10, data['parsing_stopped_py'])
 
+    def testDetectsParserFailureContinuations(self):
+        """testDetectsParserFailure: should detect parser failure and get lines right after continuation"""
+        code = '''
+            a = 1
+            b = 2
+            c = 3 _
+            / 
+            d = 4      
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb', 'failure-mode': 'fail-safe'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual([3], data['parsing_stopped_vb'])
+        self.assertEqual([7], data['parsing_stopped_py'])
+
+    def testDetectsParserFailureSafeIdenticalText(self):
+        """testDetectsParserFailure: should detect parser failure in safe mode with identical text"""
+        code = '''
+        Sub doIt(X)
+            Select Case A
+                Case 1
+                    B = 10
+            End Select
+        End Sub
+        Sub doIt2(X)
+            Select Case A
+                Case 1
+                    B = 10
+
+        End Sub        
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb',  'failure-mode': 'fail-safe'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual([7], data['parsing_stopped_vb'])
+        self.assertEqual([10], data['parsing_stopped_py'])
+
     def testParserInSubFailure(self):
         """testParserInSubFailure: can get to failing line in subroutine"""
         code = '''

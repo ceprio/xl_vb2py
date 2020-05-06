@@ -15,6 +15,8 @@ class VBElement(object):
         self.name = details[0]
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
         self.elements = convertToElements(details[3], text)
+        self.start = details[1]
+        self.end = details[2]
 
     def printTree(self, offset=0):
         """Print out this tree"""
