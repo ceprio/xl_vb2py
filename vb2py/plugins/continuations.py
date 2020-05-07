@@ -18,6 +18,7 @@ class LineContinuations(extensions.SystemPlugin):
     """
 
     order = 10 # We would like to happen quite early
+    __is_plugin__ = 1
 
     def preProcessVBText(self, txt):
         """Convert continuation markers by joining adjacent lines"""
@@ -38,13 +39,13 @@ class LineContinuations(extensions.SystemPlugin):
         #         stripped_lines[idx] = line[:-1]
         #
         txtout = "\n".join(stripped_lines)
-        txtout = txtout.replace(" _\n\n", " \n")
-        txtout = txtout.replace(" _\n.", " .")
-        txtout = txtout.replace(". _\n", ".")
-        txtout = txtout.replace(" _\n", " ")
+        # txtout = txtout.replace(" _\n\n", " \n")
+        # txtout = txtout.replace(" _\n.", " .")
+        # txtout = txtout.replace(". _\n", ".")
+        # txtout = txtout.replace(" _\n", " ")
         txtout += "\n\n"
         self.log.info("Line continuation:\nConverted '%s'\nTo '%s'" % (txt, txtout))
         #
         # Remove blanks
-        final = '\n'.join([lne.strip() for lne in txtout.splitlines() if lne]) + '\n\n'
-        return final
+        # final = '\n'.join([lne.strip() for lne in txtout.splitlines() if lne]) + '\n\n'
+        return txtout

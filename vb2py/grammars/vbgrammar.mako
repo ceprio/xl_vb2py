@@ -51,7 +51,7 @@ end_terminator ::=
 # to prevent this and simplify what is going on here!
 
 line ::=
-             (?-label_definition, line_body) / (label_statement, ((wsp+, line_body?) / line_end))
+             (?-label_definition, wsp*, line_body) / (label_statement, ((wsp+, line_body?) / line_end)) / (wsp*, line_end)
 
 line_body ::=
 % if dialect == 'vb.net':
@@ -670,7 +670,7 @@ for_each_start_line ::=
 
 
 for_end_line ::=
-                label_definition?, c"Next", (wsp+, object)?
+                label_definition?, wsp*, c"Next", (wsp+, object)?
 
 for_stepping ::=
                 c"Step", expression
@@ -682,7 +682,7 @@ for_each_body ::=
                 block?
 
 for_each_end_line ::=
-                label_definition?, c"Next", (wsp+, object)?
+                label_definition?, wsp*, c"Next", (wsp+, object)?
 
 inline_for_statement ::=				
                 c"For", wsp+, object, wsp*, "=", wsp*,

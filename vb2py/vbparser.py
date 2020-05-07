@@ -62,7 +62,7 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
         grammar = utils.loadGrammarFrom(GRAMMAR_FILE, data={'dialect': dialect})
     parser = Parser(grammar, starttoken)
 
-    txt = applyPlugins("preProcessVBText", vbtext)
+    txt = applyPlugins("preProcessVBText", vbtext)  + '\n\n'
 
     txt = makeSafeFromUnicode(txt)
 

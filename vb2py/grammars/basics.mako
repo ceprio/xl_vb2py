@@ -4,7 +4,7 @@ NEWLINE ::=
         "\n"
 
 <wsp> ::=
-            (" "/"\t")
+            (continuation / " " / "\t")
 
 # Also includes the hack for a unicode marker
 <safe_letter> ::=
@@ -28,7 +28,9 @@ stringliteral ::=
 <stringitem> ::=
              stringchar / escapeseq / '""'
 
-stringchar ::= -('"' / NEWLINE)+
+stringchar ::= (continuation / -('"' / NEWLINE))+
+
+continuation ::= ("_", NEWLINE)
 
 dateliteral ::=
 			"#", integer, "/", integer, ("/", integer)?, (wsp+, timeliteral)?, (wsp+, ampm)?, "#"
