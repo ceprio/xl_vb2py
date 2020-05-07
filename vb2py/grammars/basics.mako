@@ -3,6 +3,8 @@
 NEWLINE ::=
         "\n"
 
+blank_line ::= wsp*, NEWLINE
+
 <wsp> ::=
             (continuation / " " / "\t")
 

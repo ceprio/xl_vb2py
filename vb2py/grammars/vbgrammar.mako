@@ -823,7 +823,7 @@ enumeration_start_statement ::=
         (scope, wsp+)?, c"Enum", wsp, identifier, line_end
 
 enumeration_body ::=
-        enumeration_line*
+        (blank_line / enumeration_line)*
 
 enumeration_end_statement ::=
         c"End Enum"
