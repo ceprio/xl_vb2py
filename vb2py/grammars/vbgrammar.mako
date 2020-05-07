@@ -252,13 +252,13 @@ new_keyword ::=
               wsp?, c"New", wsp+
 
 callable_object ::=
-            ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / parameter_list)*)
+            ?-keyword, implicit_object?, (primary, ((".", wsp*, attribute / range_definition) / parameter_list)*)
 
 object ::=
-             ?-keyword, implicit_object?, (primary, ((".", attribute / range_definition) / (wsp*, parameter_list))*)
+             ?-keyword, implicit_object?, (primary, ((".", wsp*, attribute / range_definition) / (wsp*, parameter_list))*)
 
 bare_object ::=
-			 ?-keyword, implicit_object?, primary, (".", attribute)*
+			 ?-keyword, implicit_object?, primary, (".", wsp*, attribute)*
 
 qualified_object ::=
              bare_object, parameter_list
@@ -377,7 +377,7 @@ size_range ::=
              size, wsp*, c"To", wsp*, size
 
 type ::=
-             primary, (".", attribute)*
+             primary, (".", wsp*, attribute)*
 
 scope ::=
              c"Global" / c"Private" / c"Public" / c"Static" / c"Friend" / c"Partial"
