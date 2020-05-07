@@ -798,13 +798,13 @@ user_type_start_statement ::=
              (scope, wsp+)?, c"Type", wsp+, identifier, line_end
 
 user_type_body ::=
-             ((type_property_definition / comment_statement), line_end)*
+             ((type_property_definition / comment_statement)?, line_end)*
 
 user_type_end_statement ::=
              label_definition?, c"End Type"
 
 type_property_definition ::=
-  with_events?, identifier, (unsized_definition / size_definition)?, type_definition?
+  wsp*, with_events?, identifier, (unsized_definition / size_definition)?, type_definition?
 
 with_statement ::=
     with_start_statement, block?, with_end_statement
@@ -829,7 +829,7 @@ enumeration_end_statement ::=
         c"End Enum"
 
 enumeration_line ::=
-        (enumeration_item / comment_statement), ((comment_statement?, NEWLINE) / (wsp*, ":", wsp*))
+        wsp*, (enumeration_item / comment_statement), ((comment_statement?, NEWLINE) / (wsp*, ":", wsp*))
 
 enumeration_item ::=
         ?-c"End ", "["?, identifier, "]"?, (wsp*, "=", wsp*, expression)?
