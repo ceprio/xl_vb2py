@@ -16,51 +16,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-# Two line continuations
-tests.append("""
-a = _
-10 + 20 + 30
-b = 10/ _
-25
-c = (one + _
-     two + three)
-""")
-
-# Milti-line continuations
-tests.append("""
-a = _
-      10 + 20 + 30 _
-    * 10/ _
-      25
-c = (one + _
-     two + three) * _
-     four.five()
-""")
-
-# 880612 Continuation character inside call
-tests.append("""
-Sub MySub _
-(ByVal a, ByRef y)
-a=10
-n=20
-c="hello"
-End Sub
-""")
-
-# Continuation using a comment
-tests.append("' This is a comment a _\n= 1 /")
-tests.append("B = 10 ' This is a comment a _\n= 1 /")
-
-# Continuation with a blank line
-tests.append("a = 1 _\n\nb = 2")
-
 # Continuation within a with
-tests.append('''
-With A
-  If LenB(contntMD5) <> 0 Then _
-   .setRequestHeader "Content-MD5", contntMD5
-End With
-''')
+tests.append(
+"""
+Sub a
+    b=12
+End Sub 
+"""
+)
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

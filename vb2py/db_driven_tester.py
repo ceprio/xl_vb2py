@@ -169,7 +169,7 @@ def matching_tests(conn, args):
             SELECT t.id, t.path, t.filename FROM group_entries 
             INNER JOIN groups g on group_entries.group_id = g.id
             INNER JOIN tests t on group_entries.test_id = t.id
-            WHERE g.name = ?
+            WHERE g.name LIKE ?
             {}
         '''.format(except_clause), [args.group])
         files = cur.fetchall()

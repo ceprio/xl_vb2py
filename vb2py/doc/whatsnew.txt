@@ -1,5 +1,6 @@
 **0.4.0.6**
 
+- Reworked the **line continuation** logic so should be much less succeptible to failing
 
 **0.4.0.5**
 

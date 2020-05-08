@@ -1,7 +1,7 @@
 
 
 NEWLINE ::=
-        "\n"
+       "\n"
 
 blank_line ::= wsp*, NEWLINE
 
