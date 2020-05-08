@@ -387,12 +387,20 @@ def detectLanguage(text):
 
 def getErrorLinesBySafeMode(vbtext, pytext):
     """Return all the failing lines using the safe mode approach"""
-    untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*')
+    untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*', re.DOTALL + re.MULTILINE)
     py_lines = []
     vb_lines = []
-    for py_line_num, line in enumerate(pytext.splitlines()):
-        m = untranslated.match(line)
+    start_pos = 0
+    vbtext = '\n'.join(l.strip() for l in vbtext.splitlines())
+    while True:
+        m = untranslated.match(pytext, start_pos)
         if m:
-            py_lines.append(py_line_num)
-            vb_lines.append(getLineMatch(m.group(1), vbtext))
+            py_line = len(pytext[:m.regs[1][0]].splitlines())
+            py_lines.append(py_line - 1)
+            vb_pos = vbtext.find(m.group(1))
+            vb_line = len(vbtext[:vb_pos].splitlines())
+            vb_lines.append(vb_line)
+            start_pos = m.regs[1][1]
+        else:
+            break
     return vb_lines, py_lines
