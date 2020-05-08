@@ -1,6 +1,7 @@
 **0.4.0.6**
 
 - Reworked the **line continuation** logic so should be much less succeptible to failing
+- Fixed issue with **highlighting the incorrect error** line when the error was on a continuation line
 
 **0.4.0.5**
 
