@@ -1,5 +1,6 @@
-**0.4.0.6**
+**0.4.1**
 
+- Made available through **pip**
 - Reworked the **line continuation** logic so should be much less succeptible to failing
 - Fixed issue with **highlighting the incorrect error** line when the error was on a continuation line
 - Fixed issue with **<> not being converted to !=** in comparison

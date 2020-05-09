@@ -17,7 +17,11 @@ import time  # For timing
 import inspect
 from decimal import Decimal
 from types import MethodType as instancemethod
-from vb2py.PythonCard.graphic import Bitmap
+
+try:
+    from vb2py.PythonCard.graphic import Bitmap
+except:
+    Bitmap = None
 
 try:
     import win32com.client
