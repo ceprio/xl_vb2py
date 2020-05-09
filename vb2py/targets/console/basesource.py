@@ -1,10 +1,14 @@
+"""Automatically converted by VB2Py"""
 
 
-
-class App():
-    """The main application"""
-    # CODE_GOES_HERE
+# CODE_GOES_HERE
 
 
-if __name__ == '__main__':
-    app = App()
+"""The following structure represents the controls on the page
+
+This is not useful as-is but you may be able to use it to map to 
+controls in the UI toolset you are using.
+
+"""
+
+# CONTROLS GO HERE

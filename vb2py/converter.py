@@ -109,9 +109,9 @@ class VBConverter(object):
             logText("Reading form '%s'" % form)
             frm = FormParser(os.path.join(project_root, form))
             frm.doParse(self.project_structure)
-            if frm.form:
+            if frm.form_data:
                 frm.resources = self._target_resource()
-                # frm.resources.updateFrom(frm.form)
+                frm.resources.updateFrom(frm.form)
                 frm.resources.updateCode(frm)
                 frm.resources.code_block = frm.code_block
                 frm.resources.log = log
@@ -324,7 +324,7 @@ class FormParser(BaseParser):
             self.form_data = self.code_block = None
         # -- end -- << Split off code section >>
         self.parseForm()
-        if self.form:
+        if self.form_data:
             self.parseCode(project)
 
             distinct_names = {}
@@ -367,10 +367,11 @@ class FormParser(BaseParser):
 
         def sub_begin(match):
             if match.groups()[1] in ("VB", "ComctlLib"):
-                return '%sclass vbobj_%s(resource.%s):' % (
+                return '%sclass vbobj_%s:\n%s   ControlType = "%s"' % (
                     match.groups()[0],
                     match.groups()[3],
-                    resource.possible_controls.get(match.groups()[2], "VBUnknownControl"))
+                    match.groups()[0],
+                    resource.possible_controls.get(match.groups()[2], match.groups()[2]))
             else:
                 log.warn('Unknown control %s.%s' % (match.groups()[1], match.groups()[2]))
                 return '%sclass vbobj_%s(resource.VBUnknownControl):' % (
@@ -381,10 +382,11 @@ class FormParser(BaseParser):
         pattern = re.compile(r'^(\s*)BeginProperty\s+(\w+)(\(.*?\))?\s(.*?)$', re.MULTILINE + re.UNICODE)
 
         def sub_beginproperty(match):
-            return '%sclass vbobj_%s(resource.%s): # %s %s' % (
+            return '%sclass vbobj_%s:\n%s   ControlType = "%s" # %s %s' % (
                 match.groups()[0],
                 match.groups()[1],
-                resource.possible_controls.get(match.groups()[1], "VBUnknownControl"),
+                match.groups()[0],
+                resource.possible_controls.get(match.groups()[1], match.groups()[1]),
                 match.groups()[2],
                 match.groups()[3],
             )
@@ -458,51 +460,7 @@ class FormParser(BaseParser):
 
         if Config["General", "DumpFormData"] == "Yes":
             log.debug(self.form_data)
-        self.namespace = {"resource": resource, "Object": NameSpace()}
-        import pdb; pdb.set_trace()
-        try:
-            exec(self.form_data.replace("\r", ""), self.namespace)
-        except Exception as err:
-            log.error("Failed during conversion of '%s': %s" % (self.name, err))
-            self.form = None
-        else:
-            self.form = self.namespace["vbobj_%s" % self.name]
-            self.form.name = self.name
-            # self.groupOptionButtons(self.form)
-
-    def groupOptionButtons(self, cls):
-        """Pull all the option buttons together for this class"""
-        #
-        # Get all options
-        options = cls._getControlsOfType("RadioGroup")
-        if not options:
-            return
-        #
-        # Get start properties
-        grp = options[0]
-        #
-        # Make a list of the captions and of the currently selected one
-        captions = []
-        selected = None
-        for option in options:
-            caption = option._get('Caption', 'Option')
-            captions.append(caption)
-            if option._get('Value', 0) == -1:
-                selected = caption
-                #
-                # TODO: map names of options to pycard names
-            #
-            # Delete the group
-            if option is not grp and hasattr(cls, option.__name__):
-                delattr(cls, option.__name__)
-        #
-        # Now add a new option group
-        grp.items = captions
-        grp.selected = selected
-        #
-        # Make sure we also look in other containers on this form
-        for container in cls._getContainerControls():
-            self.groupOptionButtons(container)
+        self.form = self
 
     def getContainer(self):
         """Return the container to use for code conversion"""
@@ -565,43 +523,7 @@ class BaseResource(object):
 
     def updateFrom(self, form):
         """Update our resource from the form object"""
-
-        #
-        # The main properties of the form
-        d = self._rsc['application']['backgrounds'][0]
-        self.name = form.name
-        d['name'] = form.name
-        d['title'] = form.Caption
-
-        #
-        # Add menu height to form height if it is needed
-        if form._getControlsOfType("Menu"):
-            height_modifier = form.HeightModifier + form.MenuHeight
-        else:
-            height_modifier = form.HeightModifier
-
-        d['size'] = (form.ClientWidth / twips_per_pixel, form.ClientHeight / twips_per_pixel + height_modifier)
-        d['position'] = (form.ClientLeft / twips_per_pixel, form.ClientTop / twips_per_pixel)
-        # -- end -- << Main properties >>
-
-        #
-        # The components (controls) on the form
-        c = self._rsc['application']['backgrounds'][0]['components']
-
-        for cmp in form._getControlList():
-            obj = form._get(cmp)
-            entry = obj._getControlEntry()
-            if entry:
-                c += entry
-        # -- end -- << Components >>
-
-        #
-        # The menus
-        m = []
-        self._rsc['application']['backgrounds'][0]['menubar']['menus'] = m
-
-        self.addMenus(form, m)
-        # -- end -- << Menus >>
+        self.form = form
 
     def updateCode(self, form):
         """Update our code blocks"""
