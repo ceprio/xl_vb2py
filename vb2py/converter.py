@@ -367,7 +367,7 @@ class FormParser(BaseParser):
 
         def sub_begin(match):
             if match.groups()[1] in ("VB", "ComctlLib"):
-                return '%sclass vbobj_%s:\n%s   ControlType = "%s"' % (
+                return '%sclass FormControls_%s:\n%s   ControlType = "%s"' % (
                     match.groups()[0],
                     match.groups()[3],
                     match.groups()[0],
@@ -529,7 +529,7 @@ class BaseResource(object):
         """Update our code blocks"""
         #
         # Make sure the code structure has the right context
-        form.code_structure.classname = self.form_class_name
+        form.code_structure.classname = self.form.name
         form.code_structure.superclasses = self.form_super_classes
         form.code_structure.allow_new_style_class = self.allow_new_style_class
         #

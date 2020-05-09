@@ -17,7 +17,7 @@ def loadAllPlugins():
     from . import plugins
     mods = []
     for mod in plugins.mods:
-        log.info("Checking '%s' for plugins" % mod)
+        log.debug("Checking '%s' for plugins" % mod)
         #
         filename = os.path.join(rootPath(), "plugins", "%s.py" % mod)
         f = open(filename, "r")
@@ -40,7 +40,7 @@ def loadAllPlugins():
             if is_plugin:
                 try:
                     p = cls()
-                    log.info("Added new plug-in: '%s" % p.name)
+                    log.debug("Added new plug-in: '%s" % p.name)
                     mods.append(p)
                 except Exception as err:
                     log.warn("Error creating plugin '%s' (%s). Class skipped" % (cls, err))

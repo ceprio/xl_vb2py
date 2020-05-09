@@ -1215,6 +1215,7 @@ class VBOperation(VBExpressionPart):
         "&": "+",
         "^": "**",
         "=": "==",
+        "<>": "!=",
         "\\": "//",  # TODO: Is this right?
         "is": "is",
         "or": "or",
