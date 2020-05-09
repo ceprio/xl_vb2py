@@ -15,7 +15,7 @@ import os  # For file processing
 import sys  # For getting Exec prefix
 import getopt  # For command line arguments
 
-from .utils import rootPath
+from . import utils
 from .config import VB2PYConfig
 from . import logger  # For logging output and debugging
 from . import vbparser
@@ -537,7 +537,7 @@ class BaseResource(object):
         """Initialize the resource"""
         if basesourcefile is None:
             self.basesourcefile = os.path.join(
-                rootPath(), "targets", self.target_name, "basesource")
+                utils.rootPath(), "targets", self.target_name, "basesource")
         else:
             self.basesourcefile = basesourcefile
         #
@@ -686,7 +686,7 @@ def importTarget(target):
     """Import the target resource"""
     global event_translator, resource
 
-    from .targets.vb2py.PythonCard import resource
+    from .targets.pythoncard import resource
     TargetResource = resource.Resource
 
     try:
