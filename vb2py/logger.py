@@ -17,9 +17,9 @@ class VB2PYLogger(logging.StreamHandler):
         """Filter logging events"""
         for allow in self.allowed:
             if fnmatch.fnmatch(record.name, allow) and record.name not in self.blocked:
-                # print 'filtering yes', record.name
+                # print('filtering yes', record.name)
                 return 1
-        # print 'filtering no "%s", allow %s, block %s' % (record.name, self.allowed, self.blocked)
+        # print('filtering no "%s", allow %s, block %s' % (record.name, self.allowed, self.blocked))
 
     def initConfiguration(self, conf):
         """Initialize the configuration"""

@@ -14,6 +14,7 @@ import re  # For text processing
 import os  # For file processing
 import sys  # For getting Exec prefix
 import getopt  # For command line arguments
+import chardet
 
 from . import utils
 from .config import VB2PYConfig
@@ -110,7 +111,7 @@ class VBConverter(object):
             frm.doParse(self.project_structure)
             if frm.form:
                 frm.resources = self._target_resource()
-                frm.resources.updateFrom(frm.form)
+                # frm.resources.updateFrom(frm.form)
                 frm.resources.updateCode(frm)
                 frm.resources.code_block = frm.code_block
                 frm.resources.log = log
@@ -187,8 +188,22 @@ class BaseParser(object):
     @staticmethod
     def readFileContent(filename):
         """Read the contents of the file"""
-        text = open(filename.strip(), "r").read()  # Use strip to remove \r
-        return text
+        #
+        # Get the text
+        with open(filename.strip(), 'r') as f:
+            try:
+                vb_code = f.read()
+            except:
+                #
+                # Get encoding
+                with open(filename, 'rb') as bf:
+                    binary_text = bf.read()
+                    details = chardet.detect(binary_text)
+                #
+                # Get the text
+                vb_code = binary_text.decode(details.get('encoding', 'utf-8'), 'replace')
+        #
+        return vb_code
 
     def doValidation(self):
         """Validate the data we parsed out of the file"""
@@ -313,24 +328,24 @@ class FormParser(BaseParser):
             self.parseCode(project)
 
             distinct_names = {}
-            for control in self.form._getControlsOfType():
-                #
-                # Add name to namespace
-                name = control._realName()
-                distinct_names[name] = 1
-                #
-                # Look for events for this control
-                for event in control._getEvents():
-                    event_name, new_name = event.vbname, event.pyname
-                    #
-                    # Look for local definitions of methods which match the VB events for this object
-                    for item in self.code_structure.locals:
-                        if event_name % name == item.identifier:
-                            # Add a name substitution to translate references to this name
-                            # to the vb2py.PythonCard version
-                            self.code_structure.name_substitution[event_name % name] = "self." + new_name % name
-                            # Change the definition
-                            event.updateMethodDefinition(item, name)
+            # for control in self.form._getControlsOfType():
+            #     #
+            #     # Add name to namespace
+            #     name = control._realName()
+            #     distinct_names[name] = 1
+            #     #
+            #     # Look for events for this control
+            #     for event in control._getEvents():
+            #         event_name, new_name = event.vbname, event.pyname
+            #         #
+            #         # Look for local definitions of methods which match the VB events for this object
+            #         for item in self.code_structure.locals:
+            #             if event_name % name == item.identifier:
+            #                 # Add a name substitution to translate references to this name
+            #                 # to the vb2py.PythonCard version
+            #                 self.code_structure.name_substitution[event_name % name] = "self." + new_name % name
+            #                 # Change the definition
+            #                 event.updateMethodDefinition(item, name)
 
             self.code_structure.local_names.extend(list(distinct_names.keys()))
 
@@ -444,15 +459,16 @@ class FormParser(BaseParser):
         if Config["General", "DumpFormData"] == "Yes":
             log.debug(self.form_data)
         self.namespace = {"resource": resource, "Object": NameSpace()}
+        import pdb; pdb.set_trace()
         try:
             exec(self.form_data.replace("\r", ""), self.namespace)
         except Exception as err:
-            log.error("Failed during conversion of '%s'" % self.name)
+            log.error("Failed during conversion of '%s': %s" % (self.name, err))
             self.form = None
         else:
             self.form = self.namespace["vbobj_%s" % self.name]
             self.form.name = self.name
-            self.groupOptionButtons(self.form)
+            # self.groupOptionButtons(self.form)
 
     def groupOptionButtons(self, cls):
         """Pull all the option buttons together for this class"""
@@ -639,8 +655,8 @@ def main():
         usage(error=err)
         sys.exit(2)
 
-    do_code = 0
-    target = "vb2py.PythonCard"
+    do_code = True
+    target = "vb2py.console"
     parser = ProjectParser
 
     for o, a in opts:
@@ -650,13 +666,9 @@ def main():
         if o in ("-s", "--supports"):
             supports()
             sys.exit()
-        if o in ("-c", "--code"):
-            do_code = 1
         if o in ("-v", "--version"):
             print("%s v%s" % (__app_name__, __version__))
             sys.exit(2)
-        if o in ("-t",):
-            target = a
         if o in ("-f",):
             parser = FileParser
         if o in ("-d",):
@@ -675,7 +687,7 @@ def main():
     elif not os.path.isdir(destination_dir):
         print("Second argument must be a valid directory")
         sys.exit(2)
-    # -- end -- << Validate arguments >>
+
     TargetResource = importTarget(target)
     conv = VBConverter(TargetResource, parser)
     conv.doConversion(project_file)
@@ -686,7 +698,7 @@ def importTarget(target):
     """Import the target resource"""
     global event_translator, resource
 
-    from .targets.pythoncard import resource
+    from .targets.console import resource
     TargetResource = resource.Resource
 
     try:
@@ -710,8 +722,6 @@ def usage(error=None):
     print("\nconverter -chvs project.vpb destination\n\n"
           "   project.vbp = VB project file\n"
           "   destination  = Destination directory for files\n\n"
-          "   -tTarget = Target platform"
-          "   -c = Convert VB code also\n"
           "   -v = Print version and exit\n"
           "   -h = Print this message\n"
           "   -f = Just process the given file\n"
@@ -722,12 +732,6 @@ def supports():
     """Show a list of controls supported by this converter"""
     print("This command line option is not currently available")
     return
-    print("\nSupported controls\n")
-    for control in possible_controls:
-        ctrl = possible_controls[control]
-        if ctrl != VBUnknownControl:
-            print("   - %s (as %s)" % (control, ctrl.pycard_name))
-    print()
 
 
 if __name__ == "__main__":
