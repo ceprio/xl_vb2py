@@ -1,6 +1,6 @@
 import vb2py
 import os
-import vb2py.converter
+import vb2py.projectconverter
 import vb2py.vbparser
 
 event_translator = {
@@ -10,14 +10,14 @@ event_translator = {
 possible_controls = {}
 
 
-class Resource(vb2py.converter.BaseResource):
+class Resource(vb2py.projectconverter.BaseResource):
     """Represents a resource object"""
 
     target_name = "Console"
 
     def __init__(self, *args, **kw):
         """Initialize the vb2py.PythonCard resource"""
-        vb2py.converter.BaseResource.__init__(self, *args, **kw)
+        vb2py.projectconverter.BaseResource.__init__(self, *args, **kw)
         # self._rsc = eval(open("%s.txt" % self.basesourcefile, "r").read())
         # self._rsc["controls"] = []
         self._code = open("%s.py" % self.basesourcefile, "r").read()

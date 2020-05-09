@@ -2,7 +2,7 @@
 
 from . import vbparser
 from . import parserclasses
-from . import converter
+from . import projectconverter as converter
 from . import config
 from docutils.core import publish_string
 import base64

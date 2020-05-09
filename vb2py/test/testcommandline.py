@@ -7,7 +7,7 @@ import os
 import sys
 
 import vb2py.utils
-import vb2py.converter
+import vb2py.projectconverter
 
 
 OUTPUT_FOLDER = os.path.join('/', 'tmp', 'vb2py_cl')
@@ -34,7 +34,7 @@ class TestCommandLine(unittest.TestCase):
             os.path.join(folder, project_file),
             OUTPUT_FOLDER
         ]
-        vb2py.converter.main()
+        vb2py.projectconverter.main()
         #
         # Check files
         expected_files = glob.glob(os.path.join(folder, '*.frm'))

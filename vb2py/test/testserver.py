@@ -11,7 +11,7 @@ from vb2py.test.testframework import *
 import vb2py.conversionserver
 import vb2py.parserclasses
 import vb2py.config
-import vb2py.converter
+import vb2py.projectconverter
 import urllib.request, urllib.parse, urllib.error
 import json
 import vb2py.utils
@@ -723,7 +723,7 @@ B =
         client = vb2py.conversionserver.app.test_client()
         result = client.post('/single_class_module', data={'text': code, 'style': 'vb'})
         data = json.loads(result.data)
-        self.assertEqual(data['version'], vb2py.converter.__version__)
+        self.assertEqual(data['version'], vb2py.projectconverter.__version__)
 
     def testCanDoQuickFailMode(self):
         """testCanDoQuickFailMode: can do conversion without error lines"""
@@ -811,7 +811,7 @@ B =
         result = client.get('/server_stats')
         data = json.loads(result.data)
         #
-        self.assertEqual(vb2py.converter.__version__, data['version'])
+        self.assertEqual(vb2py.projectconverter.__version__, data['version'])
         d = datetime.datetime.strptime(data['date'], '%Y-%M-%d')
         self.assertIsInstance(d, datetime.datetime)
         self.assertNotEqual(0, data['whats-new'].splitlines())
