@@ -4,3 +4,7 @@
 /vb2py/settings.ini
 /vb2py/.continuation.txt
 /vb2py/test_at_scale/testing.db-journal
+/build/lib/vb2py/
+/vb2py/vb2Py.egg-info/
+/vb2Py.egg-info/
+/dist/
