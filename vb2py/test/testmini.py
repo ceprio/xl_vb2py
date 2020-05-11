@@ -16,14 +16,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-# Continuation within a with
-tests.append(
-"""
-Sub a
-    b=12
-End Sub 
-"""
-)
+# The very odd Then else
+tests.append('If IsBadCodePtr(lngMethod) = 0 Then Else A = 1')
+tests.append('''
+If A = 1 Then Else
+    B = 1
+End If
+''')
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

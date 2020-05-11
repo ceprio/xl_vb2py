@@ -2576,6 +2576,9 @@ class VBIf(VBCodeBlock):
         self.elif_blocks = []
         self.else_block = None
         #
+        self.then_keyword = None
+        self.auto_handlers.append('then_keyword')
+        #
         self.auto_class_handlers = {
             "condition": (VBExpression, "condition"),
             "if_block": (VBCodeBlock, "if_block"),
@@ -2585,14 +2588,23 @@ class VBIf(VBCodeBlock):
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        ret = self.getIndent(indent) + "if %s:\n" % self.condition.renderAsCode()
-        ret += self.if_block.renderAsCode(indent + 1)
-        if self.elif_blocks:
-            for elif_block in self.elif_blocks:
-                ret += elif_block.renderAsCode(indent)
-        if self.else_block:
-            ret += self.getIndent(indent) + "else:\n"
-            ret += self.else_block.renderAsCode(indent + 1)
+        if self.then_keyword == 'Then' or not self.then_keyword:
+            ret = self.getIndent(indent) + "if %s:\n" % self.condition.renderAsCode()
+            ret += self.if_block.renderAsCode(indent + 1)
+            if self.elif_blocks:
+                for elif_block in self.elif_blocks:
+                    ret += elif_block.renderAsCode(indent)
+            if self.else_block:
+                ret += self.getIndent(indent) + "else:\n"
+                ret += self.else_block.renderAsCode(indent + 1)
+        else:
+            # The very weird "Then Else" construct, which seems to be a performance
+            # optimisation in VB
+            if self.elif_blocks:
+                raise VBParserError('Cannot have "Else If" with "Then Else" construct')
+            ret = self.getIndent(indent) + "if not(%s):\n" % self.condition.renderAsCode()
+            ret += self.if_block.renderAsCode(indent + 1)
+        #
         return ret
 
 
@@ -2651,15 +2663,23 @@ class VBInlineIf(VBCodeBlock):
         if_parts = "".join([line.renderAsCode(indent + 1) for line in self.if_statements])
         else_parts = "".join([line.renderAsCode(indent + 1) for line in self.else_statements])
 
-        ret = "%sif %s:\n%s" % (
-            self.getIndent(indent),
-            self.condition.renderAsCode(),
-            if_parts,)
-        #
-        if else_parts:
-            ret += "%selse:\n%s" % (
+        if if_parts:
+            ret = "%sif %s:\n%s" % (
                 self.getIndent(indent),
-                else_parts)
+                self.condition.renderAsCode(),
+                if_parts,)
+            #
+            if else_parts:
+                ret += "%selse:\n%s" % (
+                    self.getIndent(indent),
+                    else_parts)
+        else:
+            # This is the very weird "Then Else" construct, which just reverses the condition
+            # but seems like a performance optimisation in VB
+            ret = "%sif not(%s):\n%s" % (
+                self.getIndent(indent),
+                self.condition.renderAsCode(),
+                else_parts,)
         #
         return ret
 

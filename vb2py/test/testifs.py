@@ -330,7 +330,32 @@ If _x Or Not (_y = 1) Then a = 2
 If _x Or Not (_y = 0) Then b = 2
 """, {"a": 2, "b": 1}
 ))
-# -- end -- << If tests >>
+
+
+# Very weird "Then Else"
+tests.append((
+"""
+x = 0
+y = 0
+_a = 0
+If _a = 0 Then Else x = 1
+If _a = 1 Then Else y = 1
+""", {"x": 0, "y": 1}
+))
+tests.append((
+"""
+x = 0
+y = 0
+_a = 0
+If _a = 0 Then Else 
+    x = 1
+End If
+If _a = 1 Then Else
+    y = 1
+End If
+""", {"x": 0, "y": 1}
+))
+
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0) # Don't print all logging stuff

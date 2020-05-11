@@ -1,3 +1,7 @@
+**0.4.1.1**
+
+- Support for the weird **Then Else** construct (If A Then Else B)
+
 **0.4.1**
 
 - Made available through **pip**

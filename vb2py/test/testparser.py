@@ -983,6 +983,14 @@ If some_logical_construct
 End If
 """)
 
+# The very odd Then else
+tests.append('If IsBadCodePtr(lngMethod) = 0 Then Else A = 1')
+tests.append('''
+If A = 1 Then Else
+    B = 1
+End If
+''')
+
 tests.append("""
 If A Or Not (B = 1) Then C = 1
 """)
