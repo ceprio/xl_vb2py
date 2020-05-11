@@ -64,6 +64,9 @@ line_body ::=
 line_end ::=
              ":"?, comment_statement?, NEWLINE
 
+line_end_or_colon ::=
+    wsp*, (line_end / (":", wsp*))
+
 
 compound_line ::=
              block
@@ -556,7 +559,7 @@ do_statement ::=
                 do_start_statement, do_block?, do_end_statement
 
 do_start_statement ::=
-                c"Do", (while_clause / until_clause)?, line_end
+                c"Do", (while_clause / until_clause)?, line_end_or_colon
 
 do_end_statement ::=
                 label_definition?, c"Loop", (post_until_clause / post_while_clause)?
@@ -700,7 +703,7 @@ sub_definition ::=
 
 sub_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
-             formal_param_list?, handler_definition?, wsp*, ((":"?, line_end) / (":", wsp*))
+             formal_param_list?, handler_definition?, line_end_or_colon
 
 sub_block ::=
     (?-c"End Sub", line)+
@@ -734,7 +737,7 @@ fn_definition ::=
 
 fn_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Function", wsp+, identifier, wsp*,
-             formal_param_list?, type_definition?, wsp*, ((":"?, line_end) / (":", wsp*))
+             formal_param_list?, type_definition?, line_end_or_colon
 
 fn_end_definition ::=
              label_definition?, c"End Function"

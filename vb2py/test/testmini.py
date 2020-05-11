@@ -16,11 +16,11 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-# Sub and functions on a line
-tests.append('Sub A(): End Sub')
-tests.append('Public Sub A(): End Sub')
-tests.append('Function A(): End Function')
-tests.append('Public Function A(): End Function')
+# Do While on a single line
+tests.append('Do While A : A = A - 1 : Loop')
+tests.append('Do : A = A - 1 : Loop')
+tests.append('Do : A = A - 1 : Loop While A')
+tests.append('Do Until A = 0 : A = A - 1 : Loop')
 
 
 

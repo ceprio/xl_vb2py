@@ -2262,6 +2262,12 @@ tests.append("""
         Loop
 """)
 
+# Do While on a single line
+tests.append('Do While A : A = A - 1 : Loop')
+tests.append('Do : A = A - 1 : Loop')
+tests.append('Do : A = A - 1 : Loop While A')
+tests.append('Do Until A = 0 : A = A - 1 : Loop')
+
 # Simple do while with exit
 tests.append("""
         a = 0

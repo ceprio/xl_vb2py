@@ -2,6 +2,7 @@
 
 - Support for the weird **Then Else** construct (If A Then Else B)
 - Fixed parsing bug for **Sub/Function definition** all on one line
+- Fixed parsing bug for **Do/While** all on one line
 
 **0.4.1**
 
