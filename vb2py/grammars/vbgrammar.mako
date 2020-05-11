@@ -700,7 +700,7 @@ sub_definition ::=
 
 sub_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
-             formal_param_list?, handler_definition?, ":"?, line_end
+             formal_param_list?, handler_definition?, wsp*, ((":"?, line_end) / (":", wsp*))
 
 sub_block ::=
     (?-c"End Sub", line)+
@@ -734,7 +734,7 @@ fn_definition ::=
 
 fn_start_definition ::=
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Function", wsp+, identifier, wsp*,
-             formal_param_list?, type_definition?, ":"?, line_end
+             formal_param_list?, type_definition?, wsp*, ((":"?, line_end) / (":", wsp*))
 
 fn_end_definition ::=
              label_definition?, c"End Function"

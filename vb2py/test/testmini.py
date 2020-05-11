@@ -16,13 +16,12 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 
-# The very odd Then else
-tests.append('If IsBadCodePtr(lngMethod) = 0 Then Else A = 1')
-tests.append('''
-If A = 1 Then Else
-    B = 1
-End If
-''')
+# Sub and functions on a line
+tests.append('Sub A(): End Sub')
+tests.append('Public Sub A(): End Sub')
+tests.append('Function A(): End Function')
+tests.append('Public Function A(): End Function')
+
 
 
 class ParsingTest(unittest.TestCase):

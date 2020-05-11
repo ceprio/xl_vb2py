@@ -1436,6 +1436,11 @@ c="hello"
 End Sub
 """)
 
+# Sub and functions on a line
+tests.append('Sub A(): End Sub')
+tests.append('Public Sub A(): End Sub')
+tests.append('Function A(): End Function')
+tests.append('Public Function A(): End Function')
 
 # simple sub with exit
 tests.append("""
