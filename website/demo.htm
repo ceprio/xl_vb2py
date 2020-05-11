@@ -16,6 +16,7 @@
 <title>vb2Py Online</title>
 <!-- #EndEditable -->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="refresh" content="5; URL='/online_conversion.html'" />
 </head>
 
 <!-- Standard libraries -->
@@ -137,90 +138,9 @@ a:hover {
 
       </table>
     </td>
-    <td valign="top" rowspan="2" width="442"><!-- #BeginEditable "MainBody" --> 
-
-      <p><b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066">Note:</font></b><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066">
-        if you are pasting <i>form code</i>, please only paste the VB Code not 
-        the form definition (ie remove the bit between the <font face="Courier New, Courier, mono">Begin 
-        VB.Form</font> and the <font face="Courier New, Courier, mono">End<font face="Geneva, Arial, Helvetica, san-serif">). This will be stripped out anyway and not converted.</font></font></font></p>
-      <form name="convert">
-        <p align="center">
-          <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
-            VB Code
-          </font>
-        </p>
-        <p align="center">
-            <div id="vbcode">
-Dim A as Integer
-B = 20
-
-Sub DotIt(X as Double)
-  Select Case A
-        Case 1
-          B = B + X
-        Case 2
-          B = B - X
-        Case Else
-          B = 0
-  End Select
-End Sub
-
-Function GetHalfB() As Integer
-  GetHalfB = B / 2
-End Function
-            </div>
-        </p>
-
-        <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion Type</font>
-          <select id="type">
-            <option selected value="exact">Match VB exactly</option>
-            <option value="pythonic">Pythonic code</option>
-          </select>
-        </p>
-
-        <p align="center"><font face="Geneva, Arial, Helvetica, san-serif" color="#000066" size="2">Conversion
-          context (where this code lives) </font> 
-          <select id="context">
-            <option selected value="code">Code module</option>
-            <option value="class">Class module</option>
-            <option value="form">Form module</option>
-          </select>
-        </p>
-        <p align="center">
-          <input type="button" name="Do" value="Convert file to Python" onclick="convert_code();">
-            &nbsp;&nbsp;
-          <input type="button" name="Do" value="Just convert selection to Python" onclick="convert_selection();">
-        </p>
-
-        <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#660000">
-              <div>&nbsp;
-                <div id="error_message" style="display: none" align="center">
-                  There was a parsing error in, or just after, the highlighted block.
-                  <input type="button" value="Help the project by submitting this code as a test file" onclick="submit_file();"/>
-                </div>
-              </div>
-        </font>
-
-        <font face="Geneva, Arial, Helvetica, san-serif" size="4" color="#000066">
-        <p align="center">
-            Python Equivalent
-        </p>
-        <p align="center">
-            <div id="pycode"></div>
-        </p>
-
-        </font>
-      </form>
-      <p><font face="Geneva, Arial, Helvetica, san-serif" size="2" color="#000066"><b><font color="#FF0000">Notes:</font></b></font></p>
-      <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">1. 
-        Please note - your code is sent in plain text - do not send anything commercially sensitive!</font></b></font></p>
-      <p><font color="#FF0000"><b><font face="Geneva, Arial, Helvetica, san-serif" size="2">2. You
-        need the runtime files to run these. Click <a href="/downloads/vb2py.zip">here</a> to download them.</font></b></font></p>
-      <p>&nbsp;</p>
-
-      </div>
-
-      <!-- #EndEditable --></td>
+    <td><p>This page has been replaced by the <a href="online_conversion.html">Online Conversion</a> page.</p>
+      <p>You will be redirected in a few seconds.</p>
+    </td>
   </tr>
   <tr> 
     <td width="178" valign="top"><!-- #BeginEditable "LeftSidePanel" --><!-- #EndEditable --></td>
@@ -243,6 +163,7 @@ End Function
     pyeditor.session.setMode("ace/mode/python");
     var vb_marker = null;
     var py_marker = null;
+
 
 </script>
 
