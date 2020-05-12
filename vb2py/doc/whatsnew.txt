@@ -4,6 +4,7 @@
 - Fixed parsing bug for **Sub/Function definition** all on one line
 - Fixed parsing bug for **Do/While** all on one line
 - Fixed parsing of **date and time literals**
+- Fixed parsing issue of **space between formal parameter list and object** reference
 
 **0.4.1**
 

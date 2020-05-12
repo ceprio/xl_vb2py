@@ -7,6 +7,9 @@ StopSearch = -9999  # Used to terminate searches for parent properties
 TYPE_IDENTIFIERS = '#$%&!@'
 
 
+from vb2py.config import VB2PYConfig
+Config = VB2PYConfig()
+
 #
 class VBElement(object):
     """An element of VB code"""
