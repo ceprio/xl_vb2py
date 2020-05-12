@@ -73,6 +73,8 @@ tests.extend([
 'a = #1/10/2000 11:59:12#',
 'a = #1/10/2000 11:59:12 PM#',
 'a = #1/10/2000 11:59:12 AM#',
+'a = #11:59:12 AM#',
+'a = #11:59:12#',
 'a = #1/10#',
 'a = 10 Mod 2',
 'a = 1000!',
@@ -353,6 +355,9 @@ End Function
 """,
 
 ])
+
+# Continuation before a comma
+tests.append('Private A, B _\n , C as String')
 
 # Simple dims
 tests.extend([

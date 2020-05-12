@@ -340,7 +340,7 @@ scoped_dim ::=
   scope, wsp+, (c"Shared", wsp+)?, (c"Dim", wsp+)?, basic_dim
 
 basic_dim ::=
-  object_definition, (wsp?, ",", wsp*, object_definition)*
+  object_definition, (wsp*, ",", wsp*, object_definition)*
 
 object_definition ::=
   with_events?, dim_expression_object, (unsized_definition / size_definition)?, type_definition?, object_initial_value?
@@ -690,9 +690,9 @@ for_each_body ::=
 for_each_end_line ::=
                 label_definition?, wsp*, c"Next", (wsp+, object)?
 
-inline_for_statement ::=				
+inline_for_statement ::=
                 c"For", wsp+, object, wsp*, "=", wsp*,
-				expression, c"To", wsp+, expression, for_stepping?, 
+				expression, c"To", wsp+, expression, for_stepping?,
 				colon, block, c"Next", (wsp+, object)?
 
 body ::=
@@ -724,7 +724,7 @@ handler_definition ::=
             wsp+, c"Handles", wsp+, expression
 
 passing_semantics ::=
-             (c"ByVal" / c"ByRef"), wsp+           
+             (c"ByVal" / c"ByRef"), wsp+
 
 param_array ::=
             c"ParamArray", wsp+
@@ -749,7 +749,7 @@ return_statement ::=
     c"Return", expression
 
 default_value ::=
-            wsp*, "=", expression            
+            wsp*, "=", expression
 
 
 static ::=
