@@ -34,11 +34,14 @@ stringchar ::= (continuation / -('"' / NEWLINE))+
 
 continuation ::= ("_", NEWLINE)
 
-dateliteral ::=
-			"#", integer, "/", integer, ("/", integer)?, (wsp+, timeliteral)?, (wsp+, ampm)?, "#"
+datetimeliteral ::=
+			"#", dateliteral?, wsp*, timeliteral?, (wsp+, ampm)?, "#"
 
 ampm ::=
             c"AM" / c"PM"
+
+dateliteral ::=
+            integer, "/", integer, ("/", integer)?
 
 timeliteral ::=
             integer, ":", integer, (":", integer)?

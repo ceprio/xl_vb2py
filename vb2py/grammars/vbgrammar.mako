@@ -20,7 +20,7 @@ atom ::=
              object / literal
 
 literal ::=
-             dateliteral / stringliteral / floatnumber / integer / longinteger /
+             datetimeliteral / stringliteral / floatnumber / integer / longinteger /
              binaryinteger / hexinteger / octinteger
 
 name ::=

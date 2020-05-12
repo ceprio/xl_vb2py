@@ -1,3 +1,4 @@
+import datetime
 from vb2py.test.testframework import *
 import vb2py.utils
 
@@ -157,6 +158,30 @@ d = Environ("kskskskss")
        "d" : "",
        }),
 ])
+
+# Dates
+tests.extend([
+("""
+a = #2/3/2004 10:01:24 AM#
+b = #2/3/2004 10:01:24 PM#
+c = #2/3/2004 10:01:24#
+d = #2/3/2004 10:01#
+e = #2/3/2004#
+f = #2/3#
+g = #10:01:24#
+
+""", {
+    "a" : datetime.datetime(2004, 3, 2, 10, 1, 24),
+    "b" : datetime.datetime(2004, 3, 2, 22, 1, 24),
+    "c" : datetime.datetime(2004, 3, 2, 10, 1, 24),
+    "d" : datetime.datetime(2004, 3, 2, 10, 1),
+    "e" : datetime.date(2004, 3, 2),
+    "f" : datetime.date(datetime.datetime.now().year, 3, 2),
+    "g" : datetime.time(10, 1, 24),
+    "datetime" : datetime,
+       }),
+])
+
 # -- end -- << Intrinsic tests >>
 
 import vb2py.vbparser

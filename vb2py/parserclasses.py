@@ -1,5 +1,7 @@
 """A set of classes used during the parsing of VB code"""
 
+import datetime
+
 #
 StopSearch = -9999  # Used to terminate searches for parent properties
 TYPE_IDENTIFIERS = '#$%&!@'
@@ -449,7 +451,7 @@ class VBPrimary(VBNamespace):
             "octinteger": (VBExpressionPart, self.parts),
             "binaryinteger": (VBExpressionPart, self.parts),
             "stringliteral": (VBStringLiteral, self.parts),
-            "dateliteral": (VBDateLiteral, self.parts),
+            "datetimeliteral": (VBDateLiteral, self.parts),
             "floatnumber": (VBExpressionPart, self.parts),
             "longinteger": (VBExpressionPart, self.parts), })
 
@@ -477,7 +479,7 @@ class VBPrimary(VBNamespace):
                     'octinteger': 'Integer(',
                     'binaryinteger': 'Integer(',
                     'stringliteral': 'String(value=',
-                    'dateliteral': 'Date(',
+                    'datetimeliteral': 'Date(',
                     'floatnumber': 'Double(',
                     'longinteger': 'Integer(',
                 }[self.parts[0].element.name]
@@ -1072,7 +1074,7 @@ class VBParExpression(VBNamespace):
             "octinteger": (VBExpressionPart, self.parts),
             "binaryinteger": (VBExpressionPart, self.parts),
             "stringliteral": (VBStringLiteral, self.parts),
-            "dateliteral": (VBDateLiteral, self.parts),
+            "datetimeliteral": (VBDateLiteral, self.parts),
             "floatnumber": (VBExpressionPart, self.parts),
             "longinteger": (VBExpressionPart, self.parts),
             "object": (VBObject, self.parts),
@@ -1266,16 +1268,45 @@ class VBDateLiteral(VBParExpression):
     """Represents a date literal"""
 
     skip_handlers = [
-        "dateliteral",
+        "datetimeliteral",
     ]
+
+    def __init__(self, scope="Private"):
+        """Initialize the literal"""
+        super(VBDateLiteral, self).__init__(scope)
+        self.date_literal = None
+        self.time_literal = None
+        self.ampm = ''
+        self.auto_class_handlers = {
+            'dateliteral': (VBParExpression, 'date_literal'),
+            'timeliteral': (VBParExpression, 'time_literal'),
+        }
+        self.auto_handlers = ['ampm']
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         self.registerImportRequired('datetime')
-        return "datetime.datetime(%s)" % ", ".join([item.renderAsCode() for item in self.parts])
+        #
+        # The time bit
+        if self.time_literal:
+            time_parts = list(map(int, self.time_literal.renderAsCode().split()))
+            if self.ampm.lower() == 'pm':
+                time_parts[0] = time_parts[0] + 12
+            fn_name = 'datetime.datetime'
+        else:
+            time_parts = []
+            fn_name = 'datetime.date'
+        #
+        # The date part
+        if self.date_literal:
+            date_parts = list(map(int, self.date_literal.renderAsCode().split()))
+            if len(date_parts) == 2:
+                date_parts.append(datetime.datetime.now().year)
+            return fn_name + "(%s)" % ", ".join(map(str, list(reversed(date_parts)) + time_parts))
+        else:
+            return "datetime.time(%s)" % ", ".join(map(str, time_parts))
 
 
-#
 class VBProject(VBNamespace):
     """Handles a VB Project"""
 
