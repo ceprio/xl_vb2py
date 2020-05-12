@@ -2680,7 +2680,11 @@ Label:
 Next
 ''')
 
-
+# Spaces in object calls
+tests.append('a = b() .c')
+tests.append('a = b () .c')
+tests.append('a = b () . c')
+tests.append('a = b ( ) . c')
 
 failures = [
 ]
