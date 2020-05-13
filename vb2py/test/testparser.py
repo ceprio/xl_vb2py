@@ -1402,6 +1402,13 @@ tests.append("""
 #End If
 """)
 
+# If with comments at end
+tests.append('''
+#If Debug
+    DoIt
+#End If     ' 
+''')
+
 # Problematic if
 tests.append("""
 if a = 1 Then

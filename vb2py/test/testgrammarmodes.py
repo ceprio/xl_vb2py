@@ -242,6 +242,19 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParses(text)
 
+    def testDirectiveWithEndComment(self):
+        """testDirectiveWithEndComment: a directive with end comment"""
+        text = '''
+        #If DEBUG_MODE Then
+          If RootDepth > 5 Then
+      '      SendCommand "D:" & RootDepth & ">>> Search A:" & RootAlpha & ", B:" & RootBeta & " => SC: " & FinalScore
+          End If
+        #End If        '
+        '''
+        self._setSafe()
+        self.assertParses(text)
+
+
 
 class TestDotNet(TestGrammarModes):
     """Test of the .net conversion dialect"""

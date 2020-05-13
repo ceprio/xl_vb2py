@@ -5,6 +5,7 @@
 - Fixed parsing bug for **Do/While** all on one line
 - Fixed parsing of **date and time literals**
 - Fixed parsing issue of **space between formal parameter list and object** reference
+- Fixed parsing issue with comment on **#End If** line of directive
 
 **0.4.1**
 
