@@ -302,12 +302,35 @@ def get_last_tests(conn, test_id):
     return ''.join(results[-10:])
 
 
-def show_matching(conn, list_of_tests, show_output, history=1):
-    """Show which files match"""
+def show_matching(conn, list_of_tests, show_output, show_results, history=1):
+    """Show which files match
+    :param show_results:
+    """
     for item in list_of_tests:
         test_id, folder, filename = item
-        last_tests = get_last_tests(conn, test_id)
-        print('{} '.format(np(os.path.join(folder, filename))).ljust(WIDTH, '.') + last_tests)
+        if show_results:
+            c = conn.execute('''
+                select result, results.duration, r.date
+                from results join tests t on results.test_id = t.id
+                join runs r on results.run_id = r.id
+                where t.id = ?
+                order by path, filename, r.date
+            ''', [test_id])
+            print('{}{}{} '.format(C.HEADER, np(os.path.join(folder, filename)), C.ENDC))
+            for result, duration, timestamp in c.fetchall():
+                if result:
+                    result_text = '{}{}{}'.format(C.OKGREEN, 'OK', C.ENDC)
+                else:
+                    result_text = '{}{}{}'.format(C.FAIL, 'FAILED', C.ENDC)
+                print('{} - [{:5.1f}s] - {}'.format(
+                    datetime.datetime.fromtimestamp(int(float(timestamp))),
+                    duration,
+                    result_text,
+                ))
+            print()
+        else:
+            last_tests = get_last_tests(conn, test_id)
+            print('{} '.format(np(os.path.join(folder, filename))).ljust(WIDTH, '.') + last_tests)
         if show_output:
             c = conn.execute('''
                 select output from results
@@ -318,6 +341,7 @@ def show_matching(conn, list_of_tests, show_output, history=1):
             ''', [test_id, history])
             for report in c.fetchall():
                 print('\n{}\n'.format(report[0]))
+
     #
     print('\nTotal {} tests\n'.format(len(list_of_tests)))
 
@@ -553,6 +577,9 @@ if __name__ == '__main__':
     parser.add_argument('--show-output', required=False,
                         dest='show_output', action='store_true',
                         help='whether to show the output')
+    parser.add_argument('--show-results', required=False,
+                        dest='show_results', action='store_true',
+                        help='whether to show all the results')
     parser.add_argument('--history', required=False, type=int,
                         dest='history', action='store', default=1,
                         help='the number of reports to show for a test')
@@ -618,7 +645,7 @@ if __name__ == '__main__':
         if args.enable:
             set_active(connection, tests, True)
         if args.show:
-            show_matching(connection, tests, args.show_output, args.history)
+            show_matching(connection, tests, args.show_output, args.show_results, args.history)
         if args.create_group:
             create_group(connection, tests, args.create_group)
         if args.add_to_group:
