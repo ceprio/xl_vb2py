@@ -245,7 +245,8 @@ class TestSafeMode(TestGrammarModes):
     def testDirectiveWithEndComment(self):
         """testDirectiveWithEndComment: a directive with end comment"""
         text = '''
-        #If DEBUG_MODE Then
+        #If DEBUG_MODE Then  
+
           If RootDepth > 5 Then
       '      SendCommand "D:" & RootDepth & ">>> Search A:" & RootAlpha & ", B:" & RootBeta & " => SC: " & FinalScore
           End If
@@ -254,7 +255,15 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParses(text)
 
-
+    def testDirectiveWithStartComment(self):
+        """testDirectiveWithStartComment: a directive with start comment"""
+        text = '''
+            #If 0 Then  ' In Visual Basic? No way!
+             a = 1
+            #End If
+        '''
+        self._setSafe()
+        self.assertParses(text)
 
 class TestDotNet(TestGrammarModes):
     """Test of the .net conversion dialect"""

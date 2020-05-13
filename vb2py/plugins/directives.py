@@ -15,7 +15,7 @@ class VBDirectives(extensions.SystemPlugin):
     __enabled = 1
 
     directive_blocks = re.compile(
-        r'(.*?)^#\s*If\s+(.*?)\sThen\s*$(.*?)^#End\s+If.*?$(.*)',
+        r'(.*?)^#\s*If\s+(.*?)\sThen.*?$(.*?)^#End\s+If.*?$(.*)',
         re.DOTALL+re.M
     )
     warner = parserclasses.VBNamespace()
