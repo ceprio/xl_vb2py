@@ -265,6 +265,101 @@ class TestConfig(unittest.TestCase):
         self.assertIn('B = Integer(10)', c3)
         self.assertIn('return Integer(20)', c3)
 
+    def testPythonicSelectSimpleVariable(self):
+        """testPythonicSelectSimpleVariable: should be able to just use variable"""
+        code = """
+            Select Case Simple
+                Case 1
+                    DoIt
+                Case 2
+                    Again
+                Case Else
+                    OtherCall
+            End Select
+        """
+        #
+        # Default case
+        self.c.setLocalOveride('Select', 'SelectVariablePrefix', 'Cached')
+        self.c.setLocalOveride('Select', 'UseNumericIndex', 'No')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall('Simple', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+        #
+        # Pythonic case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Smart')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(2, len(re.findall('Simple', c1)))
+        self.assertEqual(0, len(re.findall('Cached', c1)))
+        #
+        # Explicit Case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Once')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall('Simple', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+
+    def testPythonicSelectObjectAttribute(self):
+        """testPythonicSelectObjectAttribute: should be able to use simple attribute"""
+        code = """
+            Select Case Simple.Attribute
+                Case 1
+                    DoIt
+                Case 2
+                    Again
+                Case Else
+                    OtherCall
+            End Select
+        """
+        #
+        # Default case
+        self.c.setLocalOveride('Select', 'SelectVariablePrefix', 'Cached')
+        self.c.setLocalOveride('Select', 'UseNumericIndex', 'No')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall('Simple\.Attribute', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+        #
+        # Pythonic case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Smart')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(2, len(re.findall('Simple\.Attribute', c1)))
+        self.assertEqual(0, len(re.findall('Cached', c1)))
+        #
+        # Explicit Case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Once')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall('Simple\.Attribute', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+
+    def testPythonicSelectForCall(self):
+        """testPythonicSelectForCall: should cache a call"""
+        code = """
+            Select Case Simple()
+                Case 1
+                    DoIt
+                Case 2
+                    Again
+                Case Else
+                    OtherCall
+            End Select
+        """
+        #
+        # Default case
+        self.c.setLocalOveride('Select', 'SelectVariablePrefix', 'Cached')
+        self.c.setLocalOveride('Select', 'UseNumericIndex', 'No')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall(r'Simple\(\)', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+        #
+        # Pythonic case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Smart')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall(r'Simple\(\)', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
+        #
+        # Explicit Case
+        self.c.setLocalOveride('Select', 'EvaluateVariable', 'Once')
+        c1 = convertVBtoPython(code)
+        self.assertEqual(1, len(re.findall(r'Simple\(\)', c1)))
+        self.assertEqual(3, len(re.findall('Cached', c1)))
 
 
 

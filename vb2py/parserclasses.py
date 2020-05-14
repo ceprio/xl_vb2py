@@ -138,6 +138,22 @@ class VBNamespace(object):
                 return loc.is_function
         raise UnresolvableName("Name '%s' is not known in this context" % name)
 
+    def includesCall(self):
+        """Return True if this expression includes a function call
+
+        We walk the parts to see if there is a VBParameterList somewhere
+
+        """
+        parts = getattr(self, 'parts', [])
+        for item in parts:
+            log.debug('Looking for call in %s' % item)
+            try:
+                if item.includesCall():
+                    return True
+            except AttributeError:
+                pass
+        return False
+
     @staticmethod
     def checkOptionChoice(section, name, choices):
         """Return the index of a config option in a list of choices
@@ -830,7 +846,7 @@ class VBObject(VBNamespace):
         return ".".join(ret)
 
     def fnPart(self):
-        """Return the function part of this object (ie without any parameters"""
+        """Return the function part of this object (ie without any parameters)"""
         return self._renderPartialObject(indent=0, modifier=VBAttribute)
 
     def _renderPartialObject(self, indent=0, modifier=None):
@@ -884,6 +900,13 @@ class VBObject(VBNamespace):
             modifier_text,
         )
 
+    def includesCall(self):
+        """Return True if this object reference includes a call"""
+        for item in self.modifiers:
+            if isinstance(item, VBParameterList):
+                return True
+        else:
+            return False
 
 #
 class VBLHSObject(VBObject):
@@ -2748,12 +2771,15 @@ class VBSelect(VBCodeBlock):
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
+        if self.expression:
+            self.expression_includes_call = self.expression.includesCall()
         #
         # Change if/elif status on the first child
         if self.blocks:
             self.blocks[0].if_or_elif = "if"
         #
-        if Config["Select", "EvaluateVariable"] != "EachTime":
+        eval_var = Config["Select", "EvaluateVariable"]
+        if eval_var == "Once" or (eval_var == "Smart" and self.expression_includes_call):
             ret = "%s%s = %s\n" % (self.getIndent(indent),
                                    self.getSelectVariable(),
                                    self.expression.renderAsCode())
@@ -2766,14 +2792,16 @@ class VBSelect(VBCodeBlock):
     def getSelectVariable(self):
         """Return the name of the select variable"""
         eval_variable = Config["Select", "EvaluateVariable"]
-        if eval_variable == "Once":
+        if eval_variable == "EachTime":
+            select_var = "%s" % self.getParentProperty("expression").renderAsCode()
+        elif eval_variable == "Smart" and not self.getParentProperty("expression_includes_call"):
+            select_var = self.getParentProperty("expression").renderAsCode()
+        elif eval_variable in ("Once", "Smart"):
             if Config["Select", "UseNumericIndex"] == "Yes":
                 select_var = "%s%d" % (Config["Select", "SelectVariablePrefix"],
                                        self.getParentProperty("select_variable_index"))
             else:
                 select_var = Config["Select", "SelectVariablePrefix"]
-        elif eval_variable == "EachTime":
-            select_var = "%s" % self.getParentProperty("expression").renderAsCode()
         else:
             raise InvalidOption("Evaluate variable option not understood: '%s'" % eval_variable)
         return select_var
