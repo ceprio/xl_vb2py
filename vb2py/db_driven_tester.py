@@ -53,7 +53,7 @@ def create_database(filename):
     #
     conn.execute('''
         CREATE TABLE tests
-        (id integer primary key, path text, filename text, active bool)
+        (id integer primary key, path text, filename text, active bool, lines int, annotation text)
     ''')
     #
     conn.execute('''
@@ -78,8 +78,8 @@ def create_database(filename):
     conn.execute('''
         CREATE TABLE results
         (test_id integer not null, run_id integer not null, result bool, duration float, output text,
-            FOREIGN KEY (test_id) REFERENCES tests (id),
-            FOREIGN KEY (run_id) REFERENCES runs (id)
+            FOREIGN KEY (test_id) REFERENCES tests (id) ON DELETE CASCADE,
+            FOREIGN KEY (run_id) REFERENCES runs (id) ON DELETE CASCADE
         )
     ''')
     conn.close()
@@ -102,12 +102,15 @@ def create_tests(conn):
         with open(file, 'r') as f:
             file_text = f.read()
             for test_file in re.findall("_testFile\('(.*?)'", file_text):
-                folder, filename = os.path.split(test_file)
-                count += 1
-                conn.execute('''
-                INSERT INTO tests ('path', 'filename', 'active') 
-                VALUES (?, ?, 1)
-                ''', (folder, filename))
+                if os.path.isfile(test_file):
+                    with open(test_file, 'rb') as t:
+                        line_count = len(t.read().splitlines())
+                    folder, filename = os.path.split(test_file)
+                    count += 1
+                    conn.execute('''
+                    INSERT INTO tests ('path', 'filename', 'active', 'lines', 'annotation') 
+                    VALUES (?, ?, 1, ?, ?)
+                    ''', (folder, filename, line_count, ''))
         total_count += count
         print('{} DONE [{} tests]{}'.format(C.OKGREEN, count, C.ENDC))
     #
@@ -149,7 +152,7 @@ def matching_tests(conn, args):
             datetime.datetime.fromtimestamp(int(float(timestamp))),
             C.ENDC
         ))
-        cur = conn.execute('''SELECT tests.id, tests.path, tests.filename FROM tests 
+        cur = conn.execute('''SELECT tests.id, tests.path, tests.filename, tests.lines, tests.annotation FROM tests 
             INNER JOIN results ON tests.id = results.test_id
             WHERE results.run_id = ?
             AND path LIKE ?
@@ -166,7 +169,7 @@ def matching_tests(conn, args):
             except_clause = ''
         #
         cur = conn.execute('''
-            SELECT t.id, t.path, t.filename FROM group_entries 
+            SELECT t.id, t.path, t.filename, t.lines, t.annotation FROM group_entries 
             INNER JOIN groups g on group_entries.group_id = g.id
             INNER JOIN tests t on group_entries.test_id = t.id
             WHERE g.name LIKE ?
@@ -175,12 +178,12 @@ def matching_tests(conn, args):
         files = cur.fetchall()
     elif args.never_run:
         cursor = conn.execute('''
-            select id, path, filename from tests
+            select id, path, filename, lines, annotation from tests
             WHERE path like ?
             AND filename like ?
             AND active
             EXCEPT 
-            SELECT tests.id, path, filename FROM tests INNER JOIN results r ON tests.id = r.test_id      
+            SELECT tests.id, path, filename, lines, annotation FROM tests INNER JOIN results r ON tests.id = r.test_id      
         ''', [args.folder, args.filename])
         files = cursor.fetchall()
     else:
@@ -188,7 +191,7 @@ def matching_tests(conn, args):
         # Get files based on folders and files
         active_clause = 'AND active' if not args.enable else ''
         cursor = conn.execute('''
-        SELECT id, path, filename FROM tests 
+        SELECT id, path, filename, lines, annotation FROM tests 
         WHERE path LIKE ?
         AND filename LIKE ? 
         ''' + active_clause, [args.folder, args.filename])
@@ -227,7 +230,7 @@ def run_file(conn, list_of_tests, name, show_output):
     #
     try:
         for idx, item in enumerate(list_of_tests):
-            test_id, folder, filename = item
+            test_id, folder, filename, lines, annotation = item
             print('{:3.0f}% {} '.format(
                 float(idx + 1) / len(list_of_tests) * 100.0,
                 np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.') +
@@ -278,7 +281,7 @@ def store_continue_files(conn, list_of_files):
 def set_active(conn, list_of_tests, active):
     """Set whether tests are active or not"""
     for item in list_of_tests:
-        test_id, folder, filename = item
+        test_id, folder, filename, lines, annotation = item
         print('Setting {} to {}{}{}'.format(
             np(os.path.join(folder, filename)), C.OKBLUE, active, C.ENDC))
         conn.execute('UPDATE tests SET active = ? WHERE id = ?', (active, test_id))
@@ -307,7 +310,7 @@ def show_matching(conn, list_of_tests, show_output, show_results, history=1):
     :param show_results:
     """
     for item in list_of_tests:
-        test_id, folder, filename = item
+        test_id, folder, filename, lines, annotation = item
         if show_results:
             c = conn.execute('''
                 select result, results.duration, r.date
@@ -316,7 +319,10 @@ def show_matching(conn, list_of_tests, show_output, show_results, history=1):
                 where t.id = ?
                 order by path, filename, r.date
             ''', [test_id])
-            print('{}{}{} '.format(C.HEADER, np(os.path.join(folder, filename)), C.ENDC))
+            print('{}{}{} [{:5d} lines] [{}]'.format(
+                C.HEADER, np(os.path.join(folder, filename)).ljust(WIDTH, '.'), C.ENDC,
+                lines, annotation,
+            ))
             for result, duration, timestamp in c.fetchall():
                 if result:
                     result_text = '{}{}{}'.format(C.OKGREEN, 'OK', C.ENDC)
@@ -330,7 +336,12 @@ def show_matching(conn, list_of_tests, show_output, show_results, history=1):
             print()
         else:
             last_tests = get_last_tests(conn, test_id)
-            print('{} '.format(np(os.path.join(folder, filename))).ljust(WIDTH, '.') + last_tests)
+            print('{} [{:5d} lines] {} [{}]'.format(
+                np(os.path.join(folder, filename)).ljust(WIDTH, '.'),
+                lines,
+                last_tests,
+                annotation,
+            ))
         if show_output:
             c = conn.execute('''
                 select output from results
@@ -358,7 +369,7 @@ def create_group(conn, list_of_tests, new_group_name):
     print('\nCreated group {}"{}"{}'.format(C.OKBLUE, new_group_name, C.ENDC))
     #
     for item in list_of_tests:
-        test_id, folder, filename = item
+        test_id, folder, filename, lines, annotation = item
         conn.execute('INSERT INTO group_entries (group_id, test_id) VALUES(?, ?)', [group_id, test_id])
         print('Added {} to group'.format(np(os.path.join(folder, filename))))
     #
@@ -378,7 +389,7 @@ def add_to_group(conn, list_of_tests, group_name):
     #
     count = 0
     for item in list_of_tests:
-        test_id, folder, filename = item
+        test_id, folder, filename, lines, annotation = item
         try:
             conn.execute('INSERT INTO group_entries (group_id, test_id) VALUES(?, ?)', [group_id, test_id])
         except sqlite3.IntegrityError:
@@ -425,29 +436,45 @@ def show_groups(conn):
     ''')
     print('\nList of groups\n')
     total_groups = cur.fetchall()
+    total_passed = total_failed = total_duration = total_lines = 0
+    #
     for item in total_groups:
         name, count = item
         results = get_group_summary(conn, name)
         passed = sum(1 for i in results if i[2])
         failed = sum(1 for i in results if not i[2])
         duration = sum(i[3] for i in results)
-        print(' - {}{:20}{} {}{:4} tests{} [{:4.0f}s].{}{:4}{} pass, {}{:4}{} failed'.format(
+        lines = sum(i[4] for i in results)
+        #
+        total_passed += passed
+        total_failed += failed
+        total_duration += duration
+        total_lines += lines
+        #
+        print(' - {}{:20}{} {}{:4} tests{} [{:6d} loc] [{:4.0f}s].{}{:4}{} pass, {}{:4}{} failed'.format(
             C.WARNING if not (passed + failed) else C.OKGREEN if not failed else C.FAIL,
             name, C.ENDC,
             C.OKBLUE,
             count, C.ENDC,
+            lines,
             duration,
             C.OKGREEN, passed, C.ENDC,
             C.FAIL, failed, C.ENDC,
         ))
-    print('\nNumber of groups = {}\n'.format(len(total_groups)))
+    print('\nNumber groups = {}\n{} tests ({} passed, {} failed)\nDuration = {:6.1f}s\n{} lines\n\n'.format(
+        len(total_groups),
+        total_passed + total_failed, total_passed, total_failed,
+        total_duration,
+        total_lines,
+    ))
 
 
 def get_group_summary(conn, group_name):
     """Return the summary of the group results"""
     cur = conn.execute('''
         select t.path, t.filename, 
-            cast(substr(reverse(group_concat(cast(result as char))), 1, 1) as integer), duration from results
+            cast(substr(reverse(group_concat(cast(result as char))), 1, 1) as integer), 
+            duration, t.lines from results
         inner join tests t on results.test_id = t.id
         inner join group_entries ge on t.id = ge.test_id
         inner join groups g on ge.group_id = g.id

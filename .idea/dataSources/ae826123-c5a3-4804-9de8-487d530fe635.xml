@@ -100,11 +100,13 @@ test_id</ColNames>
       <ColNames>test_id</ColNames>
       <RefTableName>tests</RefTableName>
       <RefColNames>id</RefColNames>
+      <OnDelete>cascade</OnDelete>
     </foreign-key>
     <foreign-key id="29" parent="8">
       <ColNames>run_id</ColNames>
       <RefTableName>runs</RefTableName>
       <RefColNames>id</RefColNames>
+      <OnDelete>cascade</OnDelete>
     </foreign-key>
     <column id="30" parent="9" name="id">
       <Position>1</Position>
@@ -180,7 +182,15 @@ test_id</ColNames>
       <Position>4</Position>
       <DataType>bool|0s</DataType>
     </column>
-    <key id="48" parent="11">
+    <column id="48" parent="11" name="lines">
+      <Position>5</Position>
+      <DataType>int|0s</DataType>
+    </column>
+    <column id="49" parent="11" name="annotation">
+      <Position>6</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <key id="50" parent="11">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
