@@ -15,7 +15,7 @@ class TestConfig(unittest.TestCase):
 
     def setUp(self):
         """Set up the test"""
-        # << Setup info >>
+
         self.c = vb2py.config.VB2PYConfig(init=1)
 
         self.code1 =  """
@@ -38,9 +38,9 @@ class TestConfig(unittest.TestCase):
             Case 20
             End Select
             """
-        # -- end -- << Setup info >>
 
-    # << Config tests >> (1 of 14)
+
+
     def testGetconfig(self):
         """testGetConfig: should be able to get config items"""
         for section, name in (("General", "LoadUserPlugins"),
@@ -48,7 +48,7 @@ class TestConfig(unittest.TestCase):
                               ("Labels", "IgnoreLabels"),
                              ):
             a = self.c[section, name]
-    # << Config tests >> (2 of 14)
+
     def testGetConfigMissing(self):
         """testGetConfigMissing: should raise an error if no config items"""
         for section, name in (("Generalyy", "LoadUserPlugins"),
@@ -56,7 +56,7 @@ class TestConfig(unittest.TestCase):
                               ("Labelsyy", "IgnoreLabels"),
                              ):
             self.assertRaises(configparser.NoSectionError, self.c.__getitem__, (section, name))
-    # << Config tests >> (3 of 14)
+
     def testSetLocalOveride(self):
         """testSetLocalOveride: should be able to overide config items"""
         for section, name in (("General", "LoadUserPlugins"),
@@ -69,7 +69,7 @@ class TestConfig(unittest.TestCase):
             b = self.c[section, name]
             self.assertEqual(b, c)
             self.assertNotEqual(a, b)
-    # << Config tests >> (4 of 14)
+
     def testSetLocalOverideDoesntExist(self):
         """testSetLocalOverideDoesntExist: should raise an error if overide non-existant value"""
         for section, name in (("Genekkral", "LoadUserPlugins"),
@@ -85,7 +85,7 @@ class TestConfig(unittest.TestCase):
                               ("Labelkks", "IgnoreLabels"),
                              ):
             self.assertRaises(configparser.NoSectionError, self.c.removeLocalOveride, section, name)
-    # << Config tests >> (5 of 14)
+
     def testRemoveLocalOveride(self):
         """testRemoveLocalOveride: should be able to remove overide of config items"""
         for section, name in (("General", "LoadUserPlugins"),
@@ -98,7 +98,7 @@ class TestConfig(unittest.TestCase):
             self.c.removeLocalOveride(section, name)
             b = self.c[section, name]
             self.assertEqual(a, b)
-    # << Config tests >> (6 of 14)
+
     def testSpaceOrTab(self):
         """testSpaceOrTab: should be change between spaces and tabs"""
         self.c.setLocalOveride("General", "IndentAmount", 4)	
@@ -113,7 +113,7 @@ class TestConfig(unittest.TestCase):
         #
         # But only tabs and spaces
         self.assertEqual(c_space, c_tabs.replace("\t", "    "))
-    # << Config tests >> (7 of 14)
+
     def testIndentAmount(self):
         """testSpaceOrTab: should be change between spaces and tabs"""
         self.c.setLocalOveride("General", "IndentAmount", 4)	
@@ -127,7 +127,7 @@ class TestConfig(unittest.TestCase):
         #
         # But only by number of spaces
         self.assertEqual(c_four, c_eight.replace("        ", "    "))
-    # << Config tests >> (8 of 14)
+
     def testRespectPrivateStatus(self):
         """testRespectPrivateStatus: should be able to turn off data hiding"""
         self.c.setLocalOveride("General", "RespectPrivateStatus", "Yes")	
@@ -141,7 +141,7 @@ class TestConfig(unittest.TestCase):
         # On should have __, off should not
         self.assertNotEqual(-1, c_on.find("__f"), "Yes didn't have __: '%s'" % c_on)
         self.assertEqual(-1, c_off.find("__f"), "No had __: '%s'" % c_off)
-    # << Config tests >> (9 of 14)
+
     def testPrivateDataPrefix(self):
         """testPrivateDataPrefix: should be able to data hiding prefix"""
         self.c.setLocalOveride("General", "RespectPrivateStatus", "Yes")	
@@ -156,7 +156,7 @@ class TestConfig(unittest.TestCase):
         # On should have __, off should have m_
         self.assertNotEqual(-1, c_on.find("__f"), "Yes didn't have __: '%s'" % c_on)
         self.assertNotEqual(-1, c_off.find("m_f"), "No didn't have m_: '%s'" % c_off)
-    # << Config tests >> (10 of 14)
+
     def testFunctionVariable(self):
         """testFunctionVariable: should be able to change function variable"""
         self.c.setLocalOveride("Functions", "ReturnVariableName", "_ret")	
@@ -169,7 +169,7 @@ class TestConfig(unittest.TestCase):
         #
         # But only tabs and spaces
         self.assertEqual(c_ret, c_other.replace("_other", "_ret"))
-    # << Config tests >> (11 of 14)
+
     def testPreInitVariable(self):
         """testPreInitVariable: should be able to change if variable is pre initialized"""
         self.c.setLocalOveride("Functions", "ReturnVariableName", "_ret")	
@@ -184,7 +184,7 @@ class TestConfig(unittest.TestCase):
         # With init should have _ret = None, not without
         self.assertNotEqual(c_yes.find("_ret = None"), -1)
         self.assertEqual(c_no.find("_ret = None"), -1)
-    # << Config tests >> (12 of 14)
+
     def testSelectVariable(self):
         """testSelectVariable: should be able to change select variable"""
         self.c.setLocalOveride("Select", "UseNumericIndex", "No")	
@@ -198,7 +198,7 @@ class TestConfig(unittest.TestCase):
         #
         # But only tabs and spaces
         self.assertEqual(c_ret, c_other.replace("_other", "_ret"))
-    # << Config tests >> (13 of 14)
+
     def testSelectVariableIndex(self):
         """testSelectVariableIndex: should be able to turn off select variable index"""
         self.c.setLocalOveride("Select", "UseNumericIndex", "Yes")	
@@ -209,7 +209,7 @@ class TestConfig(unittest.TestCase):
         #
         # Should be different
         self.assertNotEqual(c_1, c_2)
-    # << Config tests >> (14 of 14)
+
     def testEvalVariable(self):
         """testEvalVariable: should be able to change whether variable is used once or more than once"""
         self.c.setLocalOveride("Select", "EvaluateVariable", "Once")	
@@ -221,7 +221,7 @@ class TestConfig(unittest.TestCase):
         r = re.compile("_ret")
         self.assertTrue(len(r.findall(c_1)) > 1)	
         self.assertEqual(len(r.findall(c_2)), 0)
-    # -- end -- << Config tests >>
+
     def testReturnStatements(self):
         """testReturnStatements: can rely on return statements"""
         code = """
