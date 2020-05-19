@@ -132,21 +132,31 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Clone repo and create tests')
     parser.add_argument('repos', type=str, nargs='+',
                         help='repo to clone and create tests for')
+    parser.add_argument('--no-git', required=False,
+                        dest='no_git', action='store_true',
+                        help='just use existing folder, do not checkout from git')
     args = parser.parse_args()
     #
     # Create a repo
     for repo in args.repos:
-        name_match = re.match('https://github.com/(.*?)/', repo)
-        if not name_match:
-            print('Repo format not recognized: %s' % repo)
-            sys.exit(1)
+        if args.no_git:
+            name = repo
+        else:
+            name_match = re.match('https://github.com/(.*?)/', repo)
+            if not name_match:
+                print('Repo format not recognized: %s' % repo)
+                sys.exit(1)
+            #
+            name = name_match.groups()[0]
         #
-        name = name_match.groups()[0]
         folder_name = os.path.join(BASE_FOLDER, name)
         #
         # Clone if it is not there
         if os.path.isdir(folder_name):
             print('Folder exists. Skipping clone')
+        elif args.no_git:
+            print('Folder not found. Quiting')
+            sys.exit(1)
         else:
             print('Cloning repository %s as %s' % (repo, name))
             subprocess.call(['git', 'clone', repo, folder_name])
