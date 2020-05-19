@@ -97,24 +97,30 @@ def create_tests(conn):
     files = glob.glob(utils.relativePath('test_at_scale', 'test*.py'))
     total_count = 0
     for file in files:
-        count = 0
-        print('Adding {} '.format(np(file)).ljust(WIDTH, '.'), end='')
-        with open(file, 'r') as f:
-            file_text = f.read()
-            for test_file in re.findall("_testFile\('(.*?)'", file_text):
-                if os.path.isfile(test_file):
-                    with open(test_file, 'rb') as t:
-                        line_count = len(t.read().splitlines())
-                    folder, filename = os.path.split(test_file)
-                    count += 1
-                    conn.execute('''
-                    INSERT INTO tests ('path', 'filename', 'active', 'lines', 'annotation') 
-                    VALUES (?, ?, 1, ?, ?)
-                    ''', (folder, filename, line_count, ''))
+        count = create_test(conn, file)
         total_count += count
         print('{} DONE [{} tests]{}'.format(C.OKGREEN, count, C.ENDC))
     #
     print('\nCompleted {} tests\n'.format(total_count))
+
+
+def create_test(conn, file):
+    """Create a single file"""
+    count = 0
+    print('Adding {} '.format(np(file)).ljust(WIDTH, '.'), end='')
+    with open(file, 'r') as f:
+        file_text = f.read()
+        for test_file in re.findall("_testFile\('(.*?)'", file_text):
+            if os.path.isfile(test_file):
+                with open(test_file, 'rb') as t:
+                    line_count = len(t.read().splitlines())
+                folder, filename = os.path.split(test_file)
+                count += 1
+                conn.execute('''
+                INSERT INTO tests ('path', 'filename', 'active', 'lines', 'annotation') 
+                VALUES (?, ?, 1, ?, ?)
+                ''', (folder, filename, line_count, ''))
+    return count
 
 
 def matching_tests(conn, args):
@@ -617,6 +623,9 @@ if __name__ == '__main__':
     parser.add_argument('--create-tests', required=False, default=False, action='store_true',
                         dest='create_tests',
                         help='create the test cases')
+    parser.add_argument('--create-test', required=False, type=str,
+                        dest='create_test', action='store', default='',
+                        help='a single test file to create from')
     parser.add_argument('--create-test-groups', required=False, default=False, action='store_true',
                         dest='create_test_groups',
                         help='create the groups for the test cases')
@@ -663,6 +672,8 @@ if __name__ == '__main__':
             create_tests(connection)
         if args.create_test_groups:
             create_test_groups(connection)
+        if args.create_test:
+            create_test(connection, utils.relativePath('test_at_scale', args.create_test))
         #
         tests = matching_tests(connection, args)
         if args.run_file:
