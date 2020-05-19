@@ -163,6 +163,7 @@ def matching_tests(conn, args):
             WHERE results.run_id = ?
             AND path LIKE ?
             AND filename LIKE ?
+            AND tests.active
             {}
         '''.format(success_clause), [run_id, args.folder, args.filename])
         files = cur.fetchall()
@@ -179,6 +180,7 @@ def matching_tests(conn, args):
             INNER JOIN groups g on group_entries.group_id = g.id
             INNER JOIN tests t on group_entries.test_id = t.id
             WHERE g.name LIKE ?
+            AND t.active
             {}
         '''.format(except_clause), [args.group])
         files = cur.fetchall()

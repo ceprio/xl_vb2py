@@ -1,3 +1,9 @@
+**0.4.1.2**
+
+- Fixed lower case "then" in an if
+- Fixed "reset" not being a reserved keyword
+- Fixed parsing of Declare PtrSafe
+
 **0.4.1.1**
 
 - Implemented new "Smart" option for select variables. Tries to guess best approach.

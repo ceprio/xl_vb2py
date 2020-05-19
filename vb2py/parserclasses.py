@@ -2645,7 +2645,7 @@ class VBIf(VBCodeBlock):
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
-        if self.then_keyword == 'Then' or not self.then_keyword:
+        if self.then_keyword.lower() == 'then' or not self.then_keyword:
             ret = self.getIndent(indent) + "if %s:\n" % self.condition.renderAsCode()
             ret += self.if_block.renderAsCode(indent + 1)
             if self.elif_blocks:
