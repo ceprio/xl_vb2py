@@ -487,6 +487,7 @@ def get_group_summary(conn, group_name):
         inner join group_entries ge on t.id = ge.test_id
         inner join groups g on ge.group_id = g.id
         where g.name = ?
+        and t.active
         group by t.id
         order by run_id
     ''', [group_name])
