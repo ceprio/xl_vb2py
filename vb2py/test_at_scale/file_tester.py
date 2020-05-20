@@ -31,7 +31,8 @@ FAILURES_FOLDER = '/Users/paul/Workspace/sandbox/vb2py-git-files/AAA-Failing-Fil
 class FileTester(unittest.TestCase):
     """Base class for file testing"""
 
-    def _getFileText(self, filename):
+    @staticmethod
+    def getFileText(filename):
         """Return the file text"""
         #
         # Get the text
@@ -52,7 +53,7 @@ class FileTester(unittest.TestCase):
 
     def _testFile(self, filename, store_failure=True):
         """Try to parse a file"""
-        vb_code = self._getFileText(filename)
+        vb_code = self.getFileText(filename)
         #
         # Some strange preamble seen in some code
         preamble = '\xef\xbb\xbf'
@@ -126,6 +127,19 @@ class FileTester(unittest.TestCase):
             self.fail('Server reported an error: %s' % data['result'])
 
 
+def scanForFiles(folder_name, extensions=('.frm', '.bas', '.cls', '.vb')):
+    """Return all suitable VB files in a folder and subfolders"""
+    filenames = []
+    for subdir, dirs, files in os.walk(folder_name):
+        for filename in files:
+            filepath = os.path.join(subdir, filename)
+            extn = os.path.splitext(filepath)[1]
+            if extn.lower() in extensions:
+                print('Creating tests for %s' % filepath)
+                filenames.append(filepath)
+    return filenames
+
+
 if __name__ == '__main__':
     #
     # Arguments
@@ -162,14 +176,7 @@ if __name__ == '__main__':
             subprocess.call(['git', 'clone', repo, folder_name])
         #
         # Now try to find all the files
-        filenames = []
-        for subdir, dirs, files in os.walk(folder_name):
-            for filename in files:
-                filepath = os.path.join(subdir, filename)
-                extn = os.path.splitext(filepath)[1]
-                if extn.lower() in ['.frm', '.bas', '.cls', '.vb']:
-                    print('Creating tests for %s' % filepath)
-                    filenames.append(filepath)
+        filenames = scanForFiles(folder_name)
         #
         # Now create the test file
         file_start_text = '''

@@ -371,16 +371,29 @@ def locateBadLine(vb, error_line):
         return 0
 
 
+flags = re.DOTALL + re.MULTILINE
+LANGUAGE_SIGNALS = [
+    ('C#', re.compile(r'.*^((using)|(#include))\s+.*', flags)),
+    ('C#', re.compile(r'.*for\(int\s+i.*', flags)),
+    ('C#', re.compile(r'.*return\s+\w+;.*', flags)),
+    ('VB.NET', re.compile('.*End Class.*', flags)),
+    ('VB.NET', re.compile('.*End Module.*', flags)),
+    ('VB.NET', re.compile('.*End Namespace.*', flags)),
+    ('VB.NET', re.compile('.*^Imports.*', flags)),
+    ('VB.NET', re.compile('.*End Try.*', flags)),
+    ('VBP', re.compile('.*^Type=Exe$.*', flags)),
+    ('VBA', re.compile(r'.*Active((Book)|(Sheet)|(Chart)).*', flags)),
+    ('VBA', re.compile(r'.*Cells\(.*?\)\.Value.*', flags)),
+    ('VBA', re.compile(r'.*Range\(.*?\)\.\w+.*', flags)),
+    ('VBA', re.compile(r'.*Macro\w*\s+Macro.*', flags)),
+]
+
+
 def detectLanguage(text):
     """Try to detect the underlying VB dialect"""
-    flags = re.DOTALL + re.MULTILINE
-    dot_net_signals = [
-        re.compile('.*End Class.*', flags),
-        re.compile('.*End Module.*', flags),
-    ]
-    for signal in dot_net_signals:
+    for language, signal in LANGUAGE_SIGNALS:
         if signal.match(text):
-            return 'VB.NET'
+            return language
     else:
         return 'VB6'
 
