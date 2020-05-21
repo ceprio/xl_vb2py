@@ -10,11 +10,13 @@ import time
 import datetime
 import io
 import signal
+import clipboard
 
 signal.signal(signal.SIGINT, signal.default_int_handler)
 sys.path.append('..')
 from vb2py import utils
 from vb2py.test_at_scale import file_tester
+from vb2py import conversionserver
 
 C = utils.TextColours
 WIDTH = 90
@@ -163,9 +165,10 @@ def matching_tests(conn, args):
             WHERE results.run_id = ?
             AND path LIKE ?
             AND filename LIKE ?
+            AND tests.annotation LIKE ?
             AND tests.active
             {}
-        '''.format(success_clause), [run_id, args.folder, args.filename])
+        '''.format(success_clause), [run_id, args.folder, args.filename, args.with_annotation])
         files = cur.fetchall()
     elif args.group:
         if args.never_run:
@@ -181,8 +184,9 @@ def matching_tests(conn, args):
             INNER JOIN tests t on group_entries.test_id = t.id
             WHERE g.name LIKE ?
             AND t.active
+            AND t.annotation LIKE ?
             {}
-        '''.format(except_clause), [args.group])
+        '''.format(except_clause), [args.group, args.with_annotation])
         files = cur.fetchall()
     elif args.never_run:
         cursor = conn.execute('''
@@ -190,9 +194,10 @@ def matching_tests(conn, args):
             WHERE path like ?
             AND filename like ?
             AND active
+            AND annotation like ?
             EXCEPT 
             SELECT tests.id, path, filename, lines, annotation FROM tests INNER JOIN results r ON tests.id = r.test_id      
-        ''', [args.folder, args.filename])
+        ''', [args.folder, args.filename, args.with_annotation])
         files = cursor.fetchall()
     else:
         #
@@ -202,7 +207,8 @@ def matching_tests(conn, args):
         SELECT id, path, filename, lines, annotation FROM tests 
         WHERE path LIKE ?
         AND filename LIKE ? 
-        ''' + active_clause, [args.folder, args.filename])
+        AND annotation LIKE ?
+        ''' + active_clause, [args.folder, args.filename, args.with_annotation])
         files = cursor.fetchall()
     #
     if args.failed_last_time:
@@ -522,6 +528,39 @@ def create_test_groups(conn):
     print('\nCreated {} groups\n'.format(count))
 
 
+def annotate_language(conn, list_of_tests):
+    """Annotate the items by language"""
+    for test_id, folder, filename, lines, annotation in list_of_tests:
+        print('Annotating {} '.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.'), end='')
+        #
+        text = file_tester.FileTester.getFileText(os.path.join(folder, filename))
+        language = conversionserver.detectLanguage(text)
+        conn.execute('''
+            UPDATE tests SET annotation = ?
+            WHERE id = ?
+        ''', [language, test_id])
+        print(' {}{}{}'.format(C.OKBLUE, language, C.ENDC))
+
+
+def clipboard_runs(conn, list_of_tests):
+    """Run through all tests copying the text to clipboard"""
+    print('Running through all tests\n')
+    for test_id, folder, filename, lines, annotation in list_of_tests:
+        print('Copy {} to clipboard'.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.'), end='')
+        #
+        text = file_tester.FileTester.getFileText(os.path.join(folder, filename))
+        clipboard.copy(text)
+        #
+        result = input(' n = next, x = exit, d = disable: [n] ')
+        if result == 'x':
+            break
+        elif result == 'd':
+            conn.execute('''
+                UPDATE tests SET active = ?
+                WHERE id = ?
+            ''', [0, test_id])
+
+
 class Suppress:
     def __init__(self, *, suppress_stdout=True, suppress_stderr=True):
         self.suppress_stdout = suppress_stdout
@@ -620,7 +659,7 @@ if __name__ == '__main__':
                         dest='history', action='store', default=1,
                         help='the number of reports to show for a test')
     #
-    # The commands
+    # The commands to create the overall database
     parser.add_argument('--create', required=False, default=False, action='store_true',
                         help='create the database')
     parser.add_argument('--create-tests', required=False, default=False, action='store_true',
@@ -632,13 +671,22 @@ if __name__ == '__main__':
     parser.add_argument('--create-test-groups', required=False, default=False, action='store_true',
                         dest='create_test_groups',
                         help='create the groups for the test cases')
-    parser.add_argument('--run-file', required=False, default=False, action='store_true',
-                        help='run a test on a file or file pattern')
+    #
+    # Annotating
+    parser.add_argument('--annotate-language', required=False, default=False, action='store_true',
+                        dest='annotate_language',
+                        help='add annotation of the language')
+    parser.add_argument('--with-annotation', required=False, type=str,
+                        dest='with_annotation', action='store', default='%',
+                        help='limit to only files with annotation')
+    #
+    # Marking and unmarking tests
     parser.add_argument('--disable', required=False, default=False, action='store_true',
                         help='disable the given tests')
     parser.add_argument('--enable', required=False, default=False, action='store_true',
                         help='enable the given tests')
-
+    #
+    # Groups
     parser.add_argument('--create-group', required=False, type=str,
                         dest='create_group', action='store', default='',
                         help='a group to create')
@@ -650,11 +698,16 @@ if __name__ == '__main__':
                         help='a group to delete')
     parser.add_argument('--delete-all-groups', required=False, default=False, action='store_true',
                         help='delete all the groups')
-
+    #
+    # Doing things
+    parser.add_argument('--run-file', required=False, default=False, action='store_true',
+                        help='run a test on a file or file pattern')
     parser.add_argument('--show', required=False, default=False, action='store_true',
                         help='just show the matching tests')
     parser.add_argument('--show-groups', required=False, default=False, action='store_true',
                         help='show the groups')
+    parser.add_argument('--clipboard', required=False, default=False, action='store_true',
+                        help='run through each test copying to clipboard')
 
     args = parser.parse_args()
     print('\n{}{}Database testing application - {}\n{}'.format(
@@ -697,3 +750,7 @@ if __name__ == '__main__':
             delete_all_groups(connection)
         if args.show_groups:
             show_groups(connection)
+        if args.annotate_language:
+            annotate_language(connection, tests)
+        if args.clipboard:
+            clipboard_runs(connection, tests)
