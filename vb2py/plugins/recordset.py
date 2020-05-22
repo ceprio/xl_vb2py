@@ -29,6 +29,7 @@ class RecordSetShort(extensions.SystemPluginREPlugin):
 
     #name = 'RecordSetShort'
     __enabled = 1
+    __is_plugin__ = 0
 
     pre_process_patterns = (
     (r'(?P<RS>[\w\d_]+)!(?P<FN>[\w\d_]+)', r'%(RS)s.Fields("%(FN)s").Value'),

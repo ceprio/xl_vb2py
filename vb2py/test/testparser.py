@@ -1066,6 +1066,7 @@ tests.extend([
 "RS!diskID = DriveID",
 "RS!diskID = DriveID+10",
 'RS!diskID = "DriveID"',
+"nice_view_water release & ![schema], nFileNum, ![schema_short]",
 ])
 
 # Implicit Range identifiers

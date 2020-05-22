@@ -793,7 +793,33 @@ class VBRangeDefinition(VBCodeBlock):
         return ".Range(%s)" % content
 
 
-#
+class VBRecordSet(VBNamespace):
+    """A recordset object"""
+
+    def __init__(self, scope="Private"):
+        """Initialise the recordset"""
+        super(VBRecordSet, self).__init__(scope)
+        #
+        self.identifier = self.field_name = self.simple_field_name = None
+        self.auto_handlers = [
+            'identifier',
+            'field_name',
+            'simple_field_name',
+        ]
+
+    def getName(self):
+        """Return the name of this recordset"""
+        field = self.field_name if self.field_name else self.simple_field_name
+        if self.identifier:
+            identifier = self.identifier
+        else:
+            try:
+                identifier = self.getParentProperty('with_object')
+            except NestingError:
+                identifier = 'UNKNOWN_RECORDSET'
+        return '%s.Fields("%s").Value' % (identifier, field)
+
+
 class VBObject(VBNamespace):
     """Handles a VB Object"""
 
@@ -809,6 +835,7 @@ class VBObject(VBNamespace):
 
         self.auto_class_handlers.update({
             "primary": (VBPrimary, "primary"),
+            "recordset_object": (VBRecordSet, "primary"),
             "attribute": (VBAttribute, self.modifiers),
             "range_definition": (VBRangeDefinition, self.modifiers),
             "parameter_list": (VBParameterList, self.modifiers),

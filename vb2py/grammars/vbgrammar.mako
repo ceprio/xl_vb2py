@@ -11,7 +11,7 @@ identifier ::=
 
 
 type_marker ::=
-        "$" / "%" / "#" / "&" / "!"
+        "$" / "%" / "#" / "&"
 
 channelid ::=
 			"#", atom
@@ -262,7 +262,7 @@ callable_object ::=
             ?-keyword, implicit_object?, (primary, ((".", wsp*, attribute / range_definition) / parameter_list)*)
 
 object ::=
-             ?-keyword, implicit_object?, (primary, ((wsp*, ".", wsp*, attribute / range_definition) / (wsp*, parameter_list))*)
+             ?-keyword, implicit_object?, recordset_object / (primary, ((wsp*, ".", wsp*, attribute / range_definition) / (wsp*, parameter_list))*)
 
 bare_object ::=
 			 ?-keyword, implicit_object?, primary, (".", wsp*, attribute)*
@@ -285,6 +285,13 @@ primary ::=
 %else:
     identifier / range_definition
 %endif
+
+recordset_object ::= (identifier, "!", (("[", field_name, "]") / simple_field_name)) / ("![", field_name, "]")
+
+simple_field_name ::= identifier
+field_name ::= field_name_char*
+<field_name_char> ::= (lowercase / uppercase / digit / " " / "_" / "-")*
+
 
 attribute ::=
              identifier
@@ -493,7 +500,7 @@ implicit_call_statement ::=
             / (par_expression, (line_end / colon))
 % else:
 implicit_call_statement ::=
-            label_definition?, ?-keyword, (callable_object, bare_list?, (line_end / colon))
+            label_definition?, ?-keyword, (callable_object, (wsp+, bare_list)?, (line_end / colon))
 % endif
 
 explicit_call_statement ::=

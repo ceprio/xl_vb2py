@@ -15,12 +15,13 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-
-# #If
-tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If')
-tests.append('If A Then:\nDoIt\nElse:\nDoOther\nEnd If')
-tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If:')
-
+# Recordset notation
+tests.extend([
+"RS!diskID = DriveID",
+"RS!diskID = DriveID+10",
+'RS!diskID = "DriveID"',
+"nice_view_water release & ![schema], nFileNum, ![schema_short]",
+])
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

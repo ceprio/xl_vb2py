@@ -5,6 +5,7 @@
 - Fixed parsing of Declare PtrSafe
 - Improved language detection to warn if invalid file is being converted
 - Fixed parsing issue with trailing colon in else statement (**"Else:"**)
+- Improved **RecordSet** parsing and conversion
 
 **0.4.1.1**
 
