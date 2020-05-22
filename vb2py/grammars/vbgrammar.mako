@@ -329,7 +329,7 @@ label_statement ::=
         (label, ":") / decimalinteger
 
 label ::=
-        (identifier / decimalinteger)
+        ((?-(keyword), identifier) / decimalinteger)
 
 goto_statement ::=
         c"GoTo", wsp+, label, ":"?
@@ -648,7 +648,7 @@ else_if_statement ::=
              (label_definition?, hash?, c"ElseIf", condition, hash?, c"Then", (comment_statement?, line_end, else_if_block?) / else_if_inline)
 
 else_statement ::=
-             (label_definition?, hash?, c"Else", wsp*, line_end, else_block?)
+             (label_definition?, hash?, c"Else", ":"?, wsp*, line_end, else_block?)
 
 if_block ::= (?-((label_statement, wsp+)?, (c"End If" / c"Else")), line)+
 else_block ::= block

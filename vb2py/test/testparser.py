@@ -315,6 +315,11 @@ End Function
 
 ])
 
+tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If')
+tests.append('If A Then:\nDoIt\nElse:\nDoOther\nEnd If')
+tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If:')
+
+
 # Directives
 tests.extend([
     "' VB2PY-Set General.Blah = Yes",

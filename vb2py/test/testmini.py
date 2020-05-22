@@ -17,55 +17,10 @@ tests = []
 
 
 # #If
-tests.append("""
-#If a = 10 Then
-    b = 20
-#Else
-    c=2
-#End If
-#If c < 1 Then
-    d = 15
-#Else
-    c=2
-#End If
-""")
+tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If')
+tests.append('If A Then:\nDoIt\nElse:\nDoOther\nEnd If')
+tests.append('If A Then\nDoIt\nElse:\nDoOther\nEnd If:')
 
-# Empty #If
-tests.append("""
-#If a = 10 Then
-#Else
-    c=2
-#End If
-""")
-
-# Empty #If with comments
-tests.append("""
-#If a = 10 Then ' comment here
-#Else
-    c=2
-#End If
-""")
-
-# Simple #If with And/Or
-tests.append("""
-#If a = 10 And k = "test" Then
-    b = 20
-#Else
-    c=2
-#End If
-#If c < 1 Or d Then
-    d = 15
-#Else
-    c=2
-#End If
-""")
-
-# If with comments at end
-tests.append('''
-#If Debug
-    DoIt
-#End If     ' 
-''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

@@ -4,6 +4,7 @@
 - Fixed "reset" not being a reserved keyword
 - Fixed parsing of Declare PtrSafe
 - Improved language detection to warn if invalid file is being converted
+- Fixed parsing issue with trailing colon in else statement (**"Else:"**)
 
 **0.4.1.1**
 
