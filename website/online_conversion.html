@@ -217,6 +217,12 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Progres Indicator -->
+                        <div class="progress" style="height: 20px;">
+                            <div id="progress-indicator" class="progress-bar bg-success" role="progressbar" style="width: 100%;transition:none;display: block" aria-valuenow="0" aria-valuemin="100" aria-valuemax="100"></div>
+                        </div>
+
                     </div>
 
                     <!-- Code boxes -->
@@ -1001,7 +1007,8 @@ End Using
     }
 
     function convert_text(vbtext, selection_offset) {
-        pyeditor.session.setValue('# Converting code now ...');
+        show_start_conversion(vbtext);
+
         var context = $('#context')[0].value;
         var type = $('#type')[0].value;
         var class_name = $('#class-name')[0].value;
@@ -1095,6 +1102,7 @@ End Using
 
                 // Watch for parsing failure
                 if (data.parsing_failed) {
+                    show_stop_conversion(false);
                     document.getElementsByClassName('error-header')[0].style.display = 'block';
                     document.getElementsByClassName('error-header')[1].style.display = 'block';
 
@@ -1133,6 +1141,7 @@ End Using
                     language = data.language;
 
                 } else {
+                    show_stop_conversion(true);
                     document.getElementsByClassName('error-header')[0].style.display = 'none';
                     document.getElementsByClassName('error-header')[1].style.display = 'none';
                 }
@@ -1146,6 +1155,7 @@ End Using
                     });
                 }
             } else {
+                show_stop_conversion(false);
                 alert('Came back ' + data.status + ': ' + data.result);
                 if (!DEVELOPMENT) {
                     gtag('event', 'Convert', {
@@ -1158,6 +1168,7 @@ End Using
             $('#version')[0].innerHTML = '(VB2PY version=' + data.version + ')';
         }, 'json')
             .fail(function (data, status, error) {
+                show_stop_conversion(false);
                 pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
                     status + '\n' + 'Error=' + error);
                 if (!DEVELOPMENT) {
@@ -1364,6 +1375,56 @@ End Using
             }
         }
     }
+
+    //region Timing and Progress
+    function estimateTime(text) {
+        // Return an estimate of how long it will take to convert
+        return 0.2 * 0.0189 * text.split('\n').length + 0.1;
+    }
+
+    function show_start_conversion(text) {
+        pyeditor.session.setValue('# Converting code now ...');
+        conversion_expected_duration = estimateTime(text);
+        conversion_total_duration = 0.0;
+        setTimeout(updateProgress, conversion_callback_interval);
+        conversion_show_progress = true;
+        conversion_bar.css('width', '0%');
+        conversion_bar.removeClass('bg-warning');
+        conversion_bar.removeClass('bg-success');
+        conversion_bar.addClass('bg-info');
+    }
+
+    function show_stop_conversion(succeeded) {
+        conversion_show_progress = false;
+        conversion_bar.removeClass('bg-info');
+        if (succeeded) {
+            conversion_bar.addClass('bg-success');
+        } else {
+            conversion_bar.addClass('bg-warning');
+        }
+    }
+
+    let conversion_expected_duration = 0.0;
+    let conversion_total_duration = 0.0;
+    let conversion_callback_interval = 100.0;
+    let conversion_show_progress = true;
+    let conversion_bar = $('.progress-bar');
+
+    function updateProgress() {
+        if (conversion_show_progress) {
+            conversion_total_duration += conversion_callback_interval / 1000.0;
+            let pc_done = conversion_total_duration / conversion_expected_duration * 100.0;
+            if (pc_done > 90) {
+                pc_done = 90;
+            }
+            $('.progress-bar').css('width', pc_done.toString() + '%').attr('aria-valuenow', pc_done.toString());
+            setTimeout(updateProgress, conversion_callback_interval);
+        } else {
+            $('.progress-bar').css('width', '100%');
+        }
+    }
+    //endregion
+
 </script>
 
 </body>

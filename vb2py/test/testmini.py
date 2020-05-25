@@ -14,12 +14,13 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 tests = []
-# If with no spaces
-tests.append("""
-If(a = 10) Then ' comment here
-End If
-""")
-tests.append('If(A=1) Then DoIt')
+
+# Explicit Bare calls with arguments
+tests.extend([
+        "Call subr 10, 20, 30",
+        "Call object.method a, b, c+d, e",
+        'Call object.method.method2.method 10, "hello", "goodbye" & name',
+])
 
 
 class ParsingTest(unittest.TestCase):

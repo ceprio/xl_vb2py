@@ -530,6 +530,13 @@ tests.extend([
         'object.method.method2.method 10, "hello", "goodbye" & name',
 ])
 
+# Explicit Bare calls with arguments
+tests.extend([
+        "Call subr 10, 20, 30",
+        "Call object.method a, b, c+d, e",
+        'Call object.method.method2.method 10, "hello", "goodbye" & name',
+])
+
 # Explicit calls with arguments
 tests.extend([
         "Call subr(10, 20, 30)",

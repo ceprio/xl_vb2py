@@ -214,6 +214,22 @@ End Sub
 """, {"result": [4, 3, 2, 1]}))
 #
 
+# Test with explicit call with no brackets
+tests.append(("""
+Dim result(3) As Double
+Call _calcSum result, 4, 3, 2, 1
+
+Sub _calcSum(results() as Double, ParamArray args() as Double)
+    If UBound(args, 1) <= 0 Then Exit Function
+    For i = 0 to UBound(args, 1) - 1
+        results(i) = args(i)
+    Next i
+End Sub
+
+""", {"result": [4, 3, 2, 1]}))
+#
+
+
 # New keyword in the call
 tests.append(("""
 

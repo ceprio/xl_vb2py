@@ -575,6 +575,7 @@ class VBCodeBlock(VBNamespace):
             "explicit_call_statement": (VBExplicitCall, self.blocks),
             "implicit_call_statement": (VBCall, self.blocks),
             "inline_implicit_call": (VBCall, self.blocks),
+            "call_statement": (VBCall, self.blocks),
             "label_statement": (VBLabel, self.blocks),
             "with_statement": (VBWith, self.blocks),
             "using_statement": (VBUsing, self.blocks),
@@ -2111,9 +2112,13 @@ class VBCall(VBCodeBlock):
         #
         self.object.am_on_lhs = 1
         #
-        return "%s%s(%s)\n" % (self.getIndent(indent),
-                               self.object.renderAsCode(),
-                               params)
+        if self.object.renderAsCode().lower() == 'call':
+            return "%s%s\n" % (self.getIndent(indent),
+                                   params)
+        else:
+            return "%s%s(%s)\n" % (self.getIndent(indent),
+                                   self.object.renderAsCode(),
+                                   params)
 
 
 #

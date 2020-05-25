@@ -492,7 +492,7 @@ channel_number ::=
 
 
 call_statement ::=
-            label_definition?, (c"Call", wsp+, object, list?)
+            label_definition?, (c"Call", wsp+, object, (list / bare_list)?)
 
 % if dialect == 'vb.net':
 implicit_call_statement ::=
