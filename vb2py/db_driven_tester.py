@@ -568,7 +568,7 @@ def clipboard_runs(conn, list_of_tests):
         text = file_tester.FileTester.getFileText(os.path.join(folder, filename))
         clipboard.copy(text)
         #
-        result = input(' n = next, p = prev, x = exit, d = disable: [n] ')
+        result = input(' n = next, p = prev, x = exit, t = test, d = disable: [n] ')
         if result == 'x':
             break
         elif result == 'd':
