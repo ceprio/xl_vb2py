@@ -11,7 +11,7 @@ identifier ::=
 
 
 type_marker ::=
-        "$" / "%" / "#" / "&"
+        "$" / "%" / "#" / "&" / ("!", ?-safe_letter)
 
 channelid ::=
 			"#", atom

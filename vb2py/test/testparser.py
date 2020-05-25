@@ -483,6 +483,7 @@ tests.extend([
     "Private Const a = 1#",
     "Private Const a = 1%",
     "Private Const a = 1&",
+    "Private Const a! = 1",
 ])
 
 # Constants

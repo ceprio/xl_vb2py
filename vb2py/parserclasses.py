@@ -1780,6 +1780,8 @@ class VBVariableDefinition(VBVariable):
 
     def renderAsCode(self, indent=0):
         """Render this element as code"""
+        if self.identifier[-1:] in TYPE_IDENTIFIERS:
+            self.identifier = self.identifier[:-1]
         #
         local_name = self.resolveName(self.identifier)
         #
@@ -1868,6 +1870,8 @@ class VBConstant(VBVariableDefinition):
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         # local_name = self.getLocalNameFor(self.identifier)
+        if self.identifier[-1:] in TYPE_IDENTIFIERS:
+            self.identifier = self.identifier[:-1]
         local_name = self.resolveName(self.identifier)
         return "%s%s = %s\n" % (
             self.getIndent(indent),

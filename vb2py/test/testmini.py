@@ -15,6 +15,31 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
+tests.extend([
+    "Const a = 10",
+    'Const a = "Hello"',
+    "Const a = &HA1",
+    "Const a = 1#",
+    "Const a = 1%",
+    "Const a = 1&",
+    "Const a = 1@",
+    "Const a = 0.01@ + 0.02@",
+    "#Const a = 123",
+    "Public Const a = 10",
+    'Public Const a = "Hello"',
+    "Public Const a = &HA1",
+    "Public Const a = 1#",
+    "Public Const a = 1%",
+    "Public Const a = 1&",
+    "Private Const a = 10",
+    'Private Const a = "Hello"',
+    "Private Const a = &HA1",
+    "Private Const a = 1#",
+    "Private Const a = 1%",
+    "Private Const a = 1&",
+    "Private Const a! = 1",
+])
+
 # Recordset notation
 tests.extend([
 "RS!diskID = DriveID",
@@ -22,6 +47,8 @@ tests.extend([
 'RS!diskID = "DriveID"',
 "nice_view_water release & ![schema], nFileNum, ![schema_short]",
 ])
+
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
