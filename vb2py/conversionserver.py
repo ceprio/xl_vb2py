@@ -286,11 +286,14 @@ def singleModule(module_type, dot_net_module_type):
     ))
     if failure_mode == 'fail-safe' and parsing_stopped_vb:
         for line_num in parsing_stopped_vb:
-            app.logger.info('Failed: ||%s%s%s||' % (
-                utils.TextColours.FAIL,
-                lines[line_num],
-                utils.TextColours.ENDC,
-            ))
+            try:
+                app.logger.info('Failed: ||%s%s%s||' % (
+                    utils.TextColours.FAIL,
+                    lines[line_num],
+                    utils.TextColours.ENDC,
+                ))
+            except IndexError:
+                app.logger.info('Failed and also out of bounds: %s, %s' % (line_num, len(lines)))
     #
     result = json.dumps({
         'status': status,
