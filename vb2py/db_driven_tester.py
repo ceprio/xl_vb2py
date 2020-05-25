@@ -444,6 +444,18 @@ def delete_all_groups(conn):
     print('\nDeleted {} groups'.format(len(all_groups)))
 
 
+def clear_group(conn, group_name):
+    """Clear an existing group"""
+    cur = conn.execute('SELECT id, name FROM groups where name like ?', [group_name])
+    all_groups = cur.fetchall()
+    for result in all_groups:
+        group_id, group_name = result
+        conn.execute('DELETE FROM group_entries WHERE group_id = ?', [group_id])
+        print('Group {}"{}"{} cleared'.format(C.OKBLUE, group_name, C.ENDC))
+    #
+    print('\nCleared {} groups'.format(len(all_groups)))
+
+
 def show_groups(conn):
     """Show all the groups"""
     cur = conn.execute('''
@@ -702,6 +714,9 @@ if __name__ == '__main__':
     parser.add_argument('--delete-group', required=False, type=str,
                         dest='delete_group', action='store', default='',
                         help='a group to delete')
+    parser.add_argument('--clear-group', required=False, type=str,
+                        dest='clear_group', action='store', default='',
+                        help='a group to clear')
     parser.add_argument('--delete-all-groups', required=False, default=False, action='store_true',
                         help='delete all the groups')
     #
@@ -746,6 +761,8 @@ if __name__ == '__main__':
             set_active(connection, tests, True)
         if args.show:
             show_matching(connection, tests, args.show_output, args.show_results, args.history)
+        #
+        # Groups
         if args.create_group:
             create_group(connection, tests, args.create_group)
         if args.add_to_group:
@@ -754,8 +771,11 @@ if __name__ == '__main__':
             delete_group(connection, tests, args.delete_group)
         if args.delete_all_groups:
             delete_all_groups(connection)
+        if args.clear_group:
+            clear_group(connection, args.clear_group)
         if args.show_groups:
             show_groups(connection)
+        #
         if args.annotate_language:
             annotate_language(connection, tests)
         if args.clipboard:
