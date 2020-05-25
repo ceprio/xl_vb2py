@@ -58,3 +58,18 @@
     font-style: italic;
     color: rgba(139, 59, 25, 0.58);
 }
+
+
+.main-logo {
+    background-image: url("gifs/vb2pylogosm.jpg");
+    width: 158px;
+    height: 92px;
+}
+
+.main-title {
+    font-size: xx-large;
+}
+
+.donate-box {
+    padding-top: 20px;
+}
