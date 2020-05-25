@@ -560,13 +560,15 @@ def annotate_language(conn, list_of_tests):
 def clipboard_runs(conn, list_of_tests):
     """Run through all tests copying the text to clipboard"""
     print('Running through all tests\n')
-    for test_id, folder, filename, lines, annotation in list_of_tests:
+    position = 0
+    while position < len(list_of_tests):
+        test_id, folder, filename, lines, annotation = list_of_tests[position]
         print('Copy {} to clipboard'.format(np(os.path.join(folder, filename))).ljust(WIDTH - 10, '.'), end='')
         #
         text = file_tester.FileTester.getFileText(os.path.join(folder, filename))
         clipboard.copy(text)
         #
-        result = input(' n = next, x = exit, d = disable: [n] ')
+        result = input(' n = next, p = prev, x = exit, d = disable: [n] ')
         if result == 'x':
             break
         elif result == 'd':
@@ -574,6 +576,10 @@ def clipboard_runs(conn, list_of_tests):
                 UPDATE tests SET active = ?
                 WHERE id = ?
             ''', [0, test_id])
+        elif result == 'p':
+            position = max(0, position - 1)
+        else:
+            position += 1
 
 
 class Suppress:
