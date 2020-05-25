@@ -8,6 +8,8 @@ blank_line ::= wsp*, NEWLINE
 <wsp> ::=
             (continuation / " " / "\t")
 
+<keyword_boundary> ::= wsp+ / ?"("
+
 # Also includes the hack for a unicode marker
 <safe_letter> ::=
              letter / '~~'

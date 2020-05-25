@@ -1118,6 +1118,13 @@ If a = 10 Then ' comment here
 End If
 """)
 
+# If with no spaces
+tests.append("""
+If(a = 10) Then ' comment here
+End If
+""")
+tests.append('If(A=1) Then DoIt')
+
 # Simple If with And/Or
 tests.append("""
 If a = 10 And k = "test" Then

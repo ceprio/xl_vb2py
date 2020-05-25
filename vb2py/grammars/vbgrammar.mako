@@ -631,7 +631,7 @@ case_comment_block ::=
 				  block
 
 inline_if_statement ::=
-             label_definition?, hash?, c"If", wsp+, condition, hash?, c"Then", wsp+, inline_if_block?,
+             label_definition?, hash?, c"If", keyword_boundary, condition, hash?, c"Then", wsp+, inline_if_block?,
              (wsp*, hash?, colon?, c"Else", wsp+, inline_else_block)?
 
 if_statement ::=
@@ -643,7 +643,7 @@ if_statement ::=
 
 
 if_start_statement ::=
-             hash?, c"If", wsp+, condition, hash?, then_keyword?, ":"?, line_end
+             hash?, c"If", keyword_boundary, condition, hash?, then_keyword?, ":"?, line_end
 
 then_keyword ::= (c"Then", wsp+, c"Else") / c"Then"
 

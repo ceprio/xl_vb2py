@@ -6,6 +6,7 @@
 - Improved language detection to warn if invalid file is being converted
 - Fixed parsing issue with trailing colon in else statement (**"Else:"**)
 - Improved **RecordSet** parsing and conversion
+- Fixed parsing issue with brackets only around an If condition **If(A=1) Then ...**
 
 **0.4.1.1**
 
