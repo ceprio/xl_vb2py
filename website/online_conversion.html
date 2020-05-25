@@ -510,6 +510,27 @@
     </div>
 </div>
 
+<!-- Pop-up language error dialog -->
+<div class="modal fade" id="language-error-dialog" tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="languageErrorModalLabel">Conversion Issue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="language-error-content">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Code samples -->
 <div style="display: none">
     <div id="ex-general">
@@ -1006,6 +1027,25 @@ End Using
         convert_text(vbtext, 0);
     }
 
+    function show_language_alert(type, error_kind) {
+        $('#language-error-dialog').modal('show');
+        let error_text = 'It looks like this might be <b>' +
+            type + '</b> rather than VB text.';
+        if (error_kind === 'type') {
+            error_text = error_text + '<br><br>If loading or copying files please ensure ' +
+               'to pick the actual source, class, or form definition files.';
+        } else if (error_kind === 'language') {
+            error_text = error_text + '<br><br>VB2PY can only convert VB type languages to Python.';
+        }
+        $('#language-error-content')[0].innerHTML = error_text;
+        if (!DEVELOPMENT) {
+            gtag('event', 'Caught Wrong File', {
+                'event_category': 'UI',
+                'event_label': error_kind,
+            });
+        }
+    }
+
     function convert_text(vbtext, selection_offset) {
         show_start_conversion(vbtext);
 
@@ -1136,6 +1176,10 @@ End Using
                     $('#error_message')[0].style['display'] = 'block';
                     if (data.language === 'VB.NET') {
                         $('#dot_net_message')[0].style['display'] = 'block';
+                    } else if (data.language === 'VBP') {
+                        show_language_alert('a VB Project File', 'type');
+                    } else if (data.language === 'C#') {
+                        show_language_alert('a C#, C++ or C File', 'language');
                     }
                     ;
                     language = data.language;

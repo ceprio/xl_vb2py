@@ -9,6 +9,7 @@
 - Fixed parsing issue with brackets only around an If condition **If(A=1) Then ...**
 - Fixed parsing issue with explicit call with parameters **Call Something 10**
 - Added **progress bar** to online conversion to estimate how long it should take
+- Added a better check for some file types **(VBP, C# etc)** and warn about these
 
 **0.4.1.1**
 
