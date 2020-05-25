@@ -214,21 +214,24 @@ def matching_tests(conn, args):
     if args.failed_last_time:
         files = [item for item in files if get_last_result(conn, item[0]) == 0]
     #
+    if args.broken:
+        files = [item for item in files if get_last_result(conn, item[0], 1) and not get_last_result(conn, item[0])]
+    #
     return files
 
 
-def get_last_result(conn, test_id):
+def get_last_result(conn, test_id, number_from_last=0):
     """Return the last test result"""
     cur = conn.execute('''select result from results
         inner join runs r on results.run_id = r.id
         where test_id = ?
         order by date desc 
     ''', [test_id])
-    result = cur.fetchone()
+    result = cur.fetchall()
     if not result:
         return None
     else:
-        return result[0]
+        return result[number_from_last][0]
 
 
 def run_file(conn, list_of_tests, name, show_output):
@@ -637,6 +640,9 @@ if __name__ == '__main__':
     parser.add_argument('--failed-last-time', required=False, default=False, action='store_true',
                         dest='failed_last_time',
                         help='a test that failed last time it was run')
+    parser.add_argument('--broken', required=False, default=False, action='store_true',
+                        dest='broken',
+                        help='a test that used to work but is now broken')
     parser.add_argument('--group', required=False, type=str,
                         dest='group', action='store', default='',
                         help='a named group to act on')
@@ -680,7 +686,7 @@ if __name__ == '__main__':
                         dest='with_annotation', action='store', default='%',
                         help='limit to only files with annotation')
     #
-    # Marking and unmarking tests
+    # Marking and un-marking tests
     parser.add_argument('--disable', required=False, default=False, action='store_true',
                         help='disable the given tests')
     parser.add_argument('--enable', required=False, default=False, action='store_true',
