@@ -1218,7 +1218,8 @@ End Using
                 if (!DEVELOPMENT) {
                     gtag('event', 'Convert', {
                         'event_category': category,
-                        'event_label': "Server AJAX Error - " + error,
+                        'event_label': "Server AJAX Error - " + error + " - " + status + " = " +
+                            vbtext.split('\n').length,
                     });
                 }
                 ;
