@@ -8,7 +8,7 @@ from docutils.core import publish_string
 import base64
 import io
 import zipfile
-import subprocess
+import random
 import logging
 import json
 import re
@@ -194,6 +194,13 @@ def getRunTimeZip():
 
 def singleModule(module_type, dot_net_module_type):
     """Convert a single module"""
+    correlation_id = random.randint(0, 10000)
+    correlation_string = '%s%06d%s' % (
+        utils.TextColours.OKBLUE,
+        correlation_id,
+        utils.TextColours.ENDC,
+    )
+    app.logger.info('%s | Starting request' % correlation_string)
     start_time = time.time()
     #
     # Failure information
@@ -275,7 +282,8 @@ def singleModule(module_type, dot_net_module_type):
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
 
     #
-    app.logger.info('%s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
+    app.logger.info('%s | %s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
+        correlation_string,
         logging_colour,
         request.remote_addr,
         line_count, module_type.__class__.__name__, conversion_style,
