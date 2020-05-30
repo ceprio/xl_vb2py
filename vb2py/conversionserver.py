@@ -407,6 +407,7 @@ LANGUAGE_SIGNALS = [
     ('VB.NET', re.compile('.*End Namespace.*', flags)),
     ('VB.NET', re.compile('.*^Imports.*', flags)),
     ('VB.NET', re.compile('.*End Try.*', flags)),
+    ('VB.NET', re.compile('.*#End\s+Region.*', flags)),
     ('VBP', re.compile('.*^Type=Exe$.*', flags)),
     ('VBA', re.compile(r'.*Active((Book)|(Sheet)|(Chart)).*', flags)),
     ('VBA', re.compile(r'.*Cells\(.*?\)\.Value.*', flags)),
