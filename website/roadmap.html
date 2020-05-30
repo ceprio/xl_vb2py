@@ -1,5 +1,16 @@
 <html>
     <head>
+        <!-- Google stuff -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23654340-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'UA-23654340-2');
+        </script>
+
         <!-- CSS only -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
@@ -11,9 +22,15 @@
         <!-- Main CSS for site -->
         <link rel="stylesheet" href="main.css">
 
+        <!-- Page specific includes -->
+        
+
     </head>
 
     <body>
+        <!-- Feather icon set -->
+        <script src="https://unpkg.com/feather-icons"></script>
+
         <div class="container main-header">
             <div class="row">
                 <div class="col">
@@ -25,12 +42,20 @@
                             <div class="col">Convert Visual Basic To Python</div>
                         </div>
                         <div class="row"><div class="col">
+
+
 <div class="container">
     <div class="row">
-        <div class="col"><a href="index.html">HOME<a/></div>
-        <div class="col"><a href="online_conversion.html">CONVERT</a></div>
-        <div class="col"><a href="documentation.htm">DOCUMENTATION</a></div>
-        <div class="col"><a href="roadmap.html">ROADMAP</a></div>
+        <div class="col"><a href="index.html">
+            <i data-feather="home"></i>&nbsp;HOME</a></div>
+        <div class="col"><a href="online_conversion.html">
+            <i data-feather="cpu"></i>&nbsp;CONVERT</a></div>
+        <div class="col"><a href="documentation.html">
+            <i data-feather="help-circle"></i>&nbsp;DOCS</a></div>
+        <div class="col"><a href="roadmap.html">
+            <i data-feather="map"></i>&nbsp;ROADMAP</a></div>
+        <div class="col"><a href="news.html">
+            <i data-feather="calendar"></i>&nbsp;NEWS</a></div>
     </div>
 </div></div></div>
                     </div>
@@ -91,18 +116,26 @@ color: #ffffff !important;
             
         </div>
 
-        
-    <div class="container">
-        <div class="row">
-            <div class="col"><img src="roadmap.png" style="padding-top: 50px;"></div>
-        </div>
-    </div>
+        <div class="container">
+            <div class="row">
+                
+    <div class="col"><img src="roadmap.png" style="padding-top: 50px;"></div>
 
+            </div>
+        </div>
+
+        
 
         <div class="footer">
             
 
             
         </div>
+
+        <!-- Render Feather icons -->
+        <script>
+          feather.replace({class: "feather-icon"})
+        </script>
+
     </body>
 </html>

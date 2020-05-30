@@ -1,29 +1,6 @@
-<html>
-    <head>
-        <!-- Google stuff -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23654340-2"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-            gtag('config', 'UA-23654340-2');
-        </script>
+<%inherit file="components/base.mako"/>
 
-        <!-- CSS only -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-        <!-- JS, Popper.js, and jQuery -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-        <!-- Main CSS for site -->
-        <link rel="stylesheet" href="main.css">
-
-        <!-- Page specific includes -->
-        
+<%block name="includes">
     <title>vb2py Online Conversion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,106 +15,10 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="split.js"></script>
     <link rel="stylesheet" type="text/css" href="split.css"/>
+</%block>
 
 
-    </head>
-
-    <body>
-        <!-- Feather icon set -->
-        <script src="https://unpkg.com/feather-icons"></script>
-
-        <div class="container main-header">
-            <div class="row">
-                <div class="col">
-                    <div class="main-logo"></div>
-                </div>
-                <div class="col-8">
-                    <div class="container">
-                        <div class="row main-title" style="text-align: center">
-                            <div class="col">Convert Visual Basic To Python</div>
-                        </div>
-                        <div class="row"><div class="col">
-
-
-<div class="container">
-    <div class="row">
-        <div class="col"><a href="index.html">
-            <i data-feather="home"></i>&nbsp;HOME</a></div>
-        <div class="col"><a href="online_conversion.html">
-            <i data-feather="cpu"></i>&nbsp;CONVERT</a></div>
-        <div class="col"><a href="documentation.html">
-            <i data-feather="help-circle"></i>&nbsp;DOCS</a></div>
-        <div class="col"><a href="roadmap.html">
-            <i data-feather="map"></i>&nbsp;ROADMAP</a></div>
-        <div class="col"><a href="news.html">
-            <i data-feather="calendar"></i>&nbsp;NEWS</a></div>
-    </div>
-</div></div></div>
-                    </div>
-                </div>
-                <div class="col donate-box">
-                    <style>.bmc-button img {
-height: 34px !important;
-width: 35px !important;
-margin-bottom: 1px !important;
-box-shadow: none !important;
-border: none !important;
-vertical-align: middle !important;
-}
-
-.bmc-button {
-padding: 7px 10px 7px 10px !important;
-line-height: 35px !important;
-height: 51px !important;
-min-width: 217px !important;
-text-decoration: none !important;
-display: inline-flex !important;
-color: #ffffff !important;
-background-color: #5F7FFF !important;
-border-radius: 5px !important;
-border: 1px solid transparent !important;
-padding: 7px 10px 7px 10px !important;
-font-size: 22px !important;
-letter-spacing: 0.6px !important;
-box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;
--webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-margin: 0 auto !important;
-font-family: 'Cookie', cursive !important;
--webkit-box-sizing: border-box !important;
-box-sizing: border-box !important;
--o-transition: 0.3s all linear !important;
--webkit-transition: 0.3s all linear !important;
--moz-transition: 0.3s all linear !important;
--ms-transition: 0.3s all linear !important;
-transition: 0.3s all linear !important;
-}
-
-.bmc-button:hover, .bmc-button:active, .bmc-button:focus {
--webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-text-decoration: none !important;
-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-opacity: 0.85 !important;
-color: #ffffff !important;
-}</style>
-<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet">
-<a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/paulpaterson"><img
-    src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span
-    style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a>
-
-                </div>
-            </div>
-        </div>
-        <div class="header">
-            
-        </div>
-
-        <div class="container">
-            <div class="row">
-                
-            </div>
-        </div>
-
-        
+<%block name="raw_content">
 <!-- Buttons and Menus-->
 <table border="0" cellspacing="0" width="100%">
 
@@ -886,6 +767,9 @@ End Using
         updateServerStatus();
 
         // Allow popover
+        ##  $(function () {
+        ##      $('[data-toggle="popover"]').popover()
+        ##  });
 
         // Allow pasting in dev only
         if (DEVELOPMENT) {
@@ -1492,18 +1376,4 @@ End Using
     //endregion
 
 </script>
-
-
-        <div class="footer">
-            
-
-            
-        </div>
-
-        <!-- Render Feather icons -->
-        <script>
-          feather.replace({class: "feather-icon"})
-        </script>
-
-    </body>
-</html>
+</%block>
