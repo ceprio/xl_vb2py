@@ -4,6 +4,10 @@
 <%include file="basics.mako"/>
 <%include file="expression.mako"/>
 
+% if dialect == "vb.net":
+    <%include file="vbdotnet.mako"/>
+% endif
+
 
 
 identifier ::= 
@@ -136,7 +140,9 @@ compound_statement ::=
              non_vb_block /
              class_definition /
              module_definition
-
+% if dialect == 'vb.net':
+    / region_statement
+% endif
 
 isolated_single_line ::=
             using_start_statement /

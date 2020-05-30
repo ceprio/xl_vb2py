@@ -1,6 +1,6 @@
 **0.4.1.3**
 
-
+- Improve detection of .NET to look for #Regions and ignore them when parsing
 
 **0.4.1.2**
 

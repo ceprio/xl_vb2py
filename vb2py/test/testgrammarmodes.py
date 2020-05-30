@@ -43,13 +43,6 @@ class TestGrammarModes(unittest.TestCase):
         """Set VB6 mode on"""
         vb2py.utils.BASE_GRAMMAR_SETTINGS['dialect'] = 'VB6'
 
-
-class TestSafeMode(TestGrammarModes):
-    """Test of the SafeMode class"""
-
-    def setUp(self):
-        """Set up the tests"""
-
     def _setSafe(self):
         """Set safe mode on"""
         vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
@@ -57,6 +50,13 @@ class TestSafeMode(TestGrammarModes):
     def _setUnsafe(self):
         """Set safe mode off"""
         vb2py.utils.BASE_GRAMMAR_SETTINGS['mode'] = 'rigorous'
+
+
+class TestSafeMode(TestGrammarModes):
+    """Test of the SafeMode class"""
+
+    def setUp(self):
+        """Set up the tests"""
 
     def testSingleLine(self):
         """testSingleLine: single line works in safe mode"""
@@ -286,6 +286,21 @@ class TestDotNet(TestGrammarModes):
         self.assertParses(text)
         self._setDotNet()
         self.assertParserFails(text, 1)
+
+    def testDotNetRegions(self):
+        """testDotNetRegions: test that regions work"""
+        text = '''
+        #Region "the first"
+        Public Sub DoIt()
+        End Sub
+        #End Region
+        '''
+        self._setVB6()
+        self.assertParserFails(text, 1)
+        self._setDotNet()
+        self.assertParses(text)
+        self._setSafe()
+        self.assertParses(text)
 
 
 if __name__ == '__main__':
