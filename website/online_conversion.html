@@ -1221,8 +1221,8 @@ End Using
                         'event_label': "Server AJAX Error - " + error + " - " + status + " = " +
                             vbtext.split('\n').length,
                     });
-                }
-                ;
+                };
+                $.get(HOST + '/server_log?text=Ajax Failure');
             });
     }
     //endregion

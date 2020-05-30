@@ -7,4 +7,7 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (vb2py_p37)" project-jdk-type="Python SDK" />
+  <component name="PyPackaging">
+    <option name="earlyReleasesAsUpgrades" value="true" />
+  </component>
 </project>

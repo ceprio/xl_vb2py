@@ -133,6 +133,21 @@ def submitFile():
     return storeSubmittedFile()
 
 
+@app.route('/server_log', methods=['GET'])
+def serverLog():
+    """Write a log to the server"""
+    app.logger.info('%s[%s] Client logging: %s%s%s' % (
+        utils.TextColours.OKBLUE,
+        request.remote_addr,
+        utils.TextColours.FAIL,
+        request.values['text'],
+        utils.TextColours.ENDC,
+    ))
+    return json.dumps({
+        'status': 'OK',
+    })
+
+
 @app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
