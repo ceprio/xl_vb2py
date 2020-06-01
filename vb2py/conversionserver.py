@@ -148,6 +148,16 @@ def serverLog():
     })
 
 
+@app.route('/request_status', methods=['GET'])
+def getCurrentStatus():
+    """Return the status of our currently processing"""
+    return json.dumps({
+        'status': 'OK',
+        'stage': 'Parsing',
+        'line_number': vbparser.VBElement.max_line,
+    })
+
+
 @app.route('/server_stats', methods=['POST', 'GET'])
 def getServerStats():
     """Return stats from the server"""
@@ -210,6 +220,7 @@ def getRunTimeZip():
 def singleModule(module_type, dot_net_module_type):
     """Convert a single module"""
     correlation_id = random.randint(0, 10000)
+    vbparser.VBElement.resetLineCounter()
     correlation_string = '%s%06d%s' % (
         utils.TextColours.OKBLUE,
         correlation_id,

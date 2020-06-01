@@ -10,13 +10,14 @@ TYPE_IDENTIFIERS = '#$%&!@'
 from vb2py.config import VB2PYConfig
 Config = VB2PYConfig()
 
-#
+
 class VBElement(object):
     """An element of VB code"""
 
+    max_line = 0
+
     def __init__(self, details, text, text_offset, line_offset):
         """Initialize from the details"""
-        # import pdb; pdb.set_trace()
         self.name = details[0]
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
         self.elements = convertToElements(details[3], text, text_offset, line_offset)
@@ -24,6 +25,7 @@ class VBElement(object):
         self.end = details[2]
         self.text_offset = text_offset
         self.line_offset = line_offset + len(text[:details[1]].splitlines())
+        self.reportLine(self.line_offset)
 
     def printTree(self, offset=0):
         """Print out this tree"""
@@ -31,6 +33,15 @@ class VBElement(object):
         for subelement in self.elements:
             subelement.printTree(offset + 1)
 
+    @classmethod
+    def reportLine(cls, line_num):
+        """Report the line we reached"""
+        cls.max_line = max(line_num, cls.max_line)
+
+    @classmethod
+    def resetLineCounter(cls):
+        """Rest the overall Line counters"""
+        cls.max_line = 0
 
 #
 class VBFailedElement(object):

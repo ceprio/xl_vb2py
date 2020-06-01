@@ -13,4 +13,27 @@
 
         </div>
     </div>
+
+    <div id="error-list">
+
+    </div>
 </div>
+
+
+<script>
+
+    function get_error_menu_item(line_text, line_vb, line_py) {
+        let short_name = line_text;
+        if (name.length > 25) {
+            short_name = name.substring(0, 25) + ' ...';
+        }
+        let text = '<a href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')"><br>' + short_name + '</a>';
+        return text;
+    }
+
+    function move_to(vb_line, py_line) {
+        vbeditor.scrollToLine(vb_line);
+        pyeditor.scrollToLine(py_line);
+    }
+
+</script>

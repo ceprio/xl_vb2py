@@ -5,7 +5,7 @@
     var py_marker = null;
     let conversion_expected_duration = 0.0;
     let conversion_total_duration = 0.0;
-    let conversion_callback_interval = 100.0;
+    let conversion_callback_interval = 500.0;
     let conversion_show_progress = true;
     let conversion_bar = null;
     let start_time = null;
@@ -97,19 +97,11 @@
             }
             if (data.status === 'OK') {
                 pyeditor.session.setValue(data.result);
-
-                // Initialise the dropdown list of errors
-                ##  let vb_error_list = $('#vb-error-dropdown-menu')[0];
-                ##  let py_error_list = $('#py-error-dropdown-menu')[0];
-                ##  vb_error_list.innerHTML = '';
-                ##  py_error_list.innerHTML = '';
-
+                let vb_error_list = $('#error-list')[0];
+                vb_error_list.innerHTML = '';
                 // Watch for parsing failure
                 if (data.parsing_failed) {
                     show_stop_conversion(false);
-                    ##  document.getElementsByClassName('error-header')[0].style.display = 'block';
-                    ##  document.getElementsByClassName('error-header')[1].style.display = 'block';
-
                     for (i = 0; i < data.parsing_stopped_vb.length; i++) {
                         let vb_offset = data.parsing_stopped_vb[i] + selection_offset;
                         let py_offset = data.parsing_stopped_py[i];
@@ -117,16 +109,11 @@
                         vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                             "errorMarker", "line", true);
 
-                        ##  vb_error_list.innerHTML += get_error_menu_item(
-                        ##      vbeditor.session.getLine(vb_offset),
-                        ##      vb_offset,
-                        ##      data.parsing_stopped_py[i]
-                        ##  );
-                        ##  py_error_list.innerHTML += get_error_menu_item(
-                        ##      pyeditor.session.getLine(py_offset),
-                        ##      vb_offset,
-                        ##      py_offset
-                        ##  );
+                         vb_error_list.innerHTML += get_error_menu_item(
+                             vbeditor.session.getLine(vb_offset),
+                             vb_offset,
+                             data.parsing_stopped_py[i]
+                         );
 
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
                             "errorMarker", "line", true);

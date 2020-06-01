@@ -12,6 +12,7 @@
     <div class="progress" style="height: 20px;">
         <div id="progress-indicator" class="progress-bar bg-success" role="progressbar" style="width: 100%;transition:none;display: block" aria-valuenow="0" aria-valuemin="100" aria-valuemax="100"></div>
     </div>
+    <div id="progress-text"></div>
   </div>
 </div>
 

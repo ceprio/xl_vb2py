@@ -24,7 +24,7 @@
 
 <div style="margin:20px 0 10px 0;"></div>
 
-<div class="easyui-panel" style="width:100%;height:100%;padding:10px;">
+<div class="easyui-panel" style="width:100%;height:90%;padding:10px;">
     <div class="easyui-layout" data-options="fit:true">
         <%include file="components/converter/content_panel.mako"/>
         <%include file="components/converter/vb_editor.mako"/>
