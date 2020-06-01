@@ -196,8 +196,13 @@ def renderCodeStructure(structure):
 # << Utility functions >> (8 of 10)
 def convertVBtoPython(vbtext, *args, **kw):
     """Convert some VB text to Python"""
+    VBElement.setCurrentAction('Parsing')
     m = parseVB(vbtext, *args, **kw)
-    return applyPlugins("postProcessPythonText", m.renderAsCode())
+    VBElement.setCurrentAction('Generating Python')
+    python = applyPlugins("postProcessPythonText", m.renderAsCode())
+    VBElement.setCurrentAction('Finishing')
+    return python
+
 # << Utility functions >> (9 of 10)
 def applyPlugins(methodname, txt):
     """Apply the method of all active plugins to this text"""

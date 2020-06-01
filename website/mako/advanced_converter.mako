@@ -35,7 +35,7 @@
 <%include file="components/converter/examples.mako"/>
 
 <script>
-    var DEVELOPMENT = !location.host.startsWith('vb2py');
+    var DEVELOPMENT = true; //!location.host.startsWith('vb2py');
     var HOST;
     if (DEVELOPMENT) {
         HOST = 'http://localhost:8090';

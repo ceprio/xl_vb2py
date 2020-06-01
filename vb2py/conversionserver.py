@@ -153,7 +153,7 @@ def getCurrentStatus():
     """Return the status of our currently processing"""
     return json.dumps({
         'status': 'OK',
-        'stage': 'Parsing',
+        'stage': vbparser.VBElement.current_action,
         'line_number': vbparser.VBElement.max_line,
     })
 

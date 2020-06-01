@@ -1,9 +1,9 @@
-
 <script>
 
     var vb_marker = null;
     var py_marker = null;
     let conversion_expected_duration = 0.0;
+    let conversion_total_lines = 0.0;
     let conversion_total_duration = 0.0;
     let conversion_callback_interval = 500.0;
     let conversion_show_progress = true;
@@ -107,16 +107,16 @@
                         let py_offset = data.parsing_stopped_py[i];
                         let Range = ace.require('ace/range').Range;
                         vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
-                            "errorMarker", "line", true);
+                                "errorMarker", "line", true);
 
-                         vb_error_list.innerHTML += get_error_menu_item(
-                             vbeditor.session.getLine(vb_offset),
-                             vb_offset,
-                             data.parsing_stopped_py[i]
-                         );
+                        vb_error_list.innerHTML += get_error_menu_item(
+                                vbeditor.session.getLine(vb_offset),
+                                vb_offset,
+                                data.parsing_stopped_py[i]
+                        );
 
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
-                            "errorMarker", "line", true);
+                                "errorMarker", "line", true);
 
                         if (i === 0) {
                             vbeditor.scrollToLine(vb_offset);
@@ -162,19 +162,20 @@
             }
             ##  $('#version')[0].innerHTML = '(VB2PY version=' + data.version + ')';
         }, 'json')
-            .fail(function (data, status, error) {
-                show_stop_conversion(false);
-                pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
-                    status + '\n' + 'Error=' + error);
-                if (!DEVELOPMENT) {
-                    gtag('event', 'Convert', {
-                        'event_category': category,
-                        'event_label': "Server AJAX Error - " + error + " - " + status + " = " +
-                            vbtext.split('\n').length,
-                    });
-                };
-                $.get(HOST + '/server_log?text=Ajax Failure');
-            });
+                .fail(function (data, status, error) {
+                    show_stop_conversion(false);
+                    pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
+                            status + '\n' + 'Error=' + error);
+                    if (!DEVELOPMENT) {
+                        gtag('event', 'Convert', {
+                            'event_category': category,
+                            'event_label': "Server AJAX Error - " + error + " - " + status + " = " +
+                                    vbtext.split('\n').length,
+                        });
+                    }
+                    ;
+                    $.get(HOST + '/server_log?text=Ajax Failure');
+                });
     }
 
     function estimateTime(text) {
@@ -184,6 +185,7 @@
 
     function show_start_conversion(text) {
         conversion_expected_duration = estimateTime(text);
+        conversion_total_lines = vbeditor.session.getValue().split('\n').length;
         conversion_total_duration = 0.0;
         setTimeout(updateProgress, conversion_callback_interval);
         conversion_show_progress = true;
@@ -192,6 +194,7 @@
         conversion_bar.removeClass('bg-success');
         conversion_bar.addClass('bg-info');
         $('#conversion-progress-toast').toast('show');
+        $('#progress-text')[0].innerHTML = 'Starting ...';
     }
 
     function show_stop_conversion(succeeded) {
@@ -202,18 +205,22 @@
             $('#conversion-progress-toast').toast('hide');
         } else {
             conversion_bar.addClass('bg-warning');
+            $('#progress-text')[0].innerHTML = 'Some parsing errors occurred';
         }
     }
 
     function updateProgress() {
         if (conversion_show_progress) {
-            conversion_total_duration += conversion_callback_interval / 1000.0;
-            let pc_done = conversion_total_duration / conversion_expected_duration * 100.0;
-            if (pc_done > 90) {
-                pc_done = 90;
-            }
-            $('.progress-bar').css('width', pc_done.toString() + '%').attr('aria-valuenow', pc_done.toString());
-            setTimeout(updateProgress, conversion_callback_interval);
+            let url = '/request_status';
+            $.get(HOST + url, function (data) {
+                if (data.status === 'OK') {
+                    let pc_done = 100.0 * data.line_number / conversion_total_lines;
+                    $('.progress-bar').css('width', pc_done.toString() + '%').attr('aria-valuenow', pc_done.toString());
+                    $('#progress-text')[0].innerHTML = data.stage + ' line ' + data.line_number.toString() +
+                            ' / ' + conversion_total_lines.toString()
+                    setTimeout(updateProgress, conversion_callback_interval);
+                }
+            }, 'json');
         } else {
             $('.progress-bar').css('width', '100%');
         }

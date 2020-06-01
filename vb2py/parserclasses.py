@@ -15,6 +15,7 @@ class VBElement(object):
     """An element of VB code"""
 
     max_line = 0
+    current_action = 'None'
 
     def __init__(self, details, text, text_offset, line_offset):
         """Initialize from the details"""
@@ -43,7 +44,12 @@ class VBElement(object):
         """Rest the overall Line counters"""
         cls.max_line = 0
 
-#
+    @classmethod
+    def setCurrentAction(cls, action):
+        """Set the current action"""
+        cls.current_action = action
+
+
 class VBFailedElement(object):
     """An failed element of VB code"""
 
