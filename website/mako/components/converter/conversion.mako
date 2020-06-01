@@ -1,13 +1,18 @@
 
 <script>
+
     var vb_marker = null;
     var py_marker = null;
-    let start_time = null;
     let conversion_expected_duration = 0.0;
     let conversion_total_duration = 0.0;
     let conversion_callback_interval = 100.0;
     let conversion_show_progress = true;
-    let conversion_bar = $('.progress-bar');
+    let conversion_bar = null;
+    let start_time = null;
+
+    $(document).ready(function () {
+        conversion_bar = $('#progress-indicator');
+    });
 
     function convert_selection() {
         let range = vbeditor.selection.getRange();
@@ -191,7 +196,6 @@
     }
 
     function show_start_conversion(text) {
-        pyeditor.session.setValue('# Converting code now ...');
         conversion_expected_duration = estimateTime(text);
         conversion_total_duration = 0.0;
         setTimeout(updateProgress, conversion_callback_interval);
@@ -200,6 +204,7 @@
         conversion_bar.removeClass('bg-warning');
         conversion_bar.removeClass('bg-success');
         conversion_bar.addClass('bg-info');
+        $('#conversion-progress-toast').toast('show');
     }
 
     function show_stop_conversion(succeeded) {
@@ -207,6 +212,7 @@
         conversion_bar.removeClass('bg-info');
         if (succeeded) {
             conversion_bar.addClass('bg-success');
+            $('#conversion-progress-toast').toast('hide');
         } else {
             conversion_bar.addClass('bg-warning');
         }

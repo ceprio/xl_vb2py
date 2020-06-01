@@ -24,13 +24,11 @@
 
 <div style="margin:20px 0 10px 0;"></div>
 
-<div class="easyui-panel" title="Online Conversion" style="width:100%;height:800px;padding:10px;">
-    <div class="easyui-panel" style="width:100%;height:100%;padding:10px;">
-        <div class="easyui-layout" data-options="fit:true">
-            <%include file="components/converter/content_panel.mako"/>
-            <%include file="components/converter/vb_editor.mako"/>
-            <%include file="components/converter/py_editor.mako"/>
-        </div>
+<div class="easyui-panel" style="width:100%;height:100%;padding:10px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <%include file="components/converter/content_panel.mako"/>
+        <%include file="components/converter/vb_editor.mako"/>
+        <%include file="components/converter/py_editor.mako"/>
     </div>
 </div>
 
@@ -67,6 +65,9 @@
 
         // Hide button labels
         $('.button-label').hide();
+
+        // Enable toasts
+        $('.toast').toast({'autohide': false});
     });
 
 
@@ -74,6 +75,7 @@
 
 <%include file="components/converter/conversion.mako"/>
 <%include file="components/converter/config.mako"/>
+<%include file="components/converter/progress.mako"/>
 
 </%block>
 
