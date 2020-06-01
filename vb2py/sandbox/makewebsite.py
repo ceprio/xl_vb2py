@@ -7,6 +7,7 @@ import os
 import re
 from vb2py import utils
 from vb2py.utils import TextColours as C
+from vb2py.doc import examples
 
 #
 # Key paths
@@ -64,6 +65,7 @@ if __name__ == '__main__':
         result = template.render(attributes={
             'news': getNews(),
             'changes': getChanges(),
+            'examples': examples.code_samples,
         })
         with open(os.path.join(ROOT_PATH, '{}.html'.format(base_name)), 'w') as f:
             f.write(result)

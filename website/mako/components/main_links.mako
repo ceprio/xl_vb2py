@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col"><a href="index.html">
-            <i data-feather="home"></i>&nbsp;HOME</a></div>
+            <i data-feather="home"></i> HOME</a></div>
         <div class="col"><a href="online_conversion.html">
             <i data-feather="cpu"></i>&nbsp;CONVERT</a></div>
         <div class="col"><a href="documentation.html">
