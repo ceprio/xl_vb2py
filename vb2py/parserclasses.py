@@ -14,14 +14,16 @@ Config = VB2PYConfig()
 class VBElement(object):
     """An element of VB code"""
 
-    def __init__(self, details, text):
+    def __init__(self, details, text, text_offset, line_offset):
         """Initialize from the details"""
         # import pdb; pdb.set_trace()
         self.name = details[0]
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
-        self.elements = convertToElements(details[3], text)
+        self.elements = convertToElements(details[3], text, text_offset, line_offset)
         self.start = details[1]
         self.end = details[2]
+        self.text_offset = text_offset
+        self.line_offset = line_offset + len(text[:details[1]].splitlines())
 
     def printTree(self, offset=0):
         """Print out this tree"""
@@ -77,6 +79,7 @@ class VBNamespace(object):
 
     def __init__(self, scope="Private"):
         """Initialize the namespace"""
+        self.original_element = None
         self.locals = []
         self.local_default_scope = self.default_scope
         self.auto_class_handlers = {
@@ -297,6 +300,7 @@ class VBNamespace(object):
     def handleSubObject(self, element, obj_class, add_to):
         """Handle an object which creates a sub object"""
         v = obj_class(self.local_default_scope)
+        v.original_element = element
         v.processElement(element)
         v.assignParent(self)
         v.finalizeObject()
@@ -3433,7 +3437,11 @@ class VBUntranslatedText(VBConsumer):
 
     def renderAsCode(self, indent=0):
         """Render it"""
-        return "%sassert False, '# UNTRANSLATED VB LINE [%s]'\n" % (self.getIndent(indent), self.element.text)
+        return "%sassert False, '# UNTRANSLATED VB LINE #%d [%s]'\n" % (
+            self.getIndent(indent),
+            self.original_element.line_offset,
+            self.element.text
+        )
 
 
 from .vbparser import *

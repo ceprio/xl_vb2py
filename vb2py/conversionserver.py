@@ -274,7 +274,7 @@ def singleModule(module_type, dot_net_module_type):
             #
             # Check for errors and store them
             if failure_mode == 'fail-safe':
-                match = re.match(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*', result, re.DOTALL)
+                match = re.match(r'.*?UNTRANSLATED VB LINE #(\d+)\s+\[(.*?)\].*', result, re.DOTALL)
             else:
                 match = re.match(r".*\(ParserError\).*?'(.*?)'", result, re.DOTALL)
             if match:
@@ -427,7 +427,7 @@ def detectLanguage(text):
 
 def getErrorLinesBySafeMode(vbtext, pytext):
     """Return all the failing lines using the safe mode approach"""
-    untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \[(.*?)\].*', re.DOTALL + re.MULTILINE)
+    untranslated = re.compile(r'.*?UNTRANSLATED VB LINE \#(\d+)\s+\[(.*?)\].*', re.DOTALL + re.MULTILINE)
     py_lines = []
     vb_lines = []
     start_pos = 0
@@ -437,8 +437,7 @@ def getErrorLinesBySafeMode(vbtext, pytext):
         if m:
             py_line = len(pytext[:m.regs[1][0]].splitlines())
             py_lines.append(py_line - 1)
-            vb_pos = vbtext.find(m.group(1))
-            vb_line = len(vbtext[:vb_pos].splitlines())
+            vb_line = int(m.group(1))
             vb_lines.append(vb_line)
             start_pos = m.regs[1][1]
         else:

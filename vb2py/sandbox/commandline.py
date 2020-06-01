@@ -8,7 +8,7 @@ We just import a lot of useful things with short names so they are easy to type!
 import sys
 sys.path.append('..')
 
-from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t
+from vb2py.vbparser import convertVBtoPython, parseVB as p, parseVBFile as f, getAST as t, ParseTree as PT
 import vb2py.vbparser
 import vb2py.logger
 b = vb2py.vbparser.utils.TextColours
@@ -28,6 +28,8 @@ def pp(ast, text, indent=0):
         return None
     cleaned_ast = []
     for entry in ast:
+        if isinstance(entry, PT):
+            text = entry.original_text
         if isinstance(entry, vb2py.vbparser.VBFailedElement):
             print((' ' * indent), entry)
         elif len(entry) == 4 and isinstance(entry[0], str):

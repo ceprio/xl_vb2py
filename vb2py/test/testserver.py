@@ -267,8 +267,8 @@ class TestServer(unittest.TestCase):
         result = client.post('/single_code_module', data={'text': code, 'style': 'vb',  'failure-mode': 'fail-safe'})
         data = json.loads(result.data)
         self.assertEqual(True, data['parsing_failed'])
-        self.assertEqual([7], data['parsing_stopped_vb'])
-        self.assertEqual([10], data['parsing_stopped_py'])
+        self.assertEqual([8, 9], data['parsing_stopped_vb'])
+        self.assertEqual([11, 12], data['parsing_stopped_py'])
 
     def testParserInSubFailure(self):
         """testParserInSubFailure: can get to failing line in subroutine"""

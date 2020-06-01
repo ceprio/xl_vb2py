@@ -1,6 +1,7 @@
 **0.4.1.3**
 
-- Improve detection of .NET to look for #Regions and ignore them when parsing
+- Improved detection of .NET to look for #Regions and ignore them when parsing
+- Improved **reporting of the line number** that a parsing error occurred on
 
 **0.4.1.2**
 

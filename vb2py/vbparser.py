@@ -44,12 +44,12 @@ pass
 # -- end -- << Definitions >>
 
 # << Utility functions >> (1 of 10)
-def convertToElements(details, txt):
+def convertToElements(details, txt, text_offset, line_offset):
     """Convert a parse tree to elements"""
     ret = []
     if details:
         for item in details:
-            ret.append(VBElement(item, txt))
+            ret.append(VBElement(item, txt, text_offset, line_offset))
     return ret
 # << Utility functions >> (2 of 10)
 def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, dialect=None, grammar=None):
@@ -64,9 +64,11 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
 
     txt = applyPlugins("preProcessVBText", vbtext)  + '\n\n'
 
-    txt = makeSafeFromUnicode(txt)
+    txt = original_txt = makeSafeFromUnicode(txt)
 
     nodes = []
+    text_offset = 0
+    line_offset = 0
     while 1:
         ##print 'Loop', len(txt)
         success, tree, next = parser.parse(txt)
@@ -87,9 +89,14 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
             pp(tree)
             print(".")
         if not returnast:
-            nodes.extend(convertToElements(tree, txt))
+            nodes.extend(convertToElements(tree, txt, text_offset, line_offset))
         else:
-            nodes.append(tree)
+            new_entry = ParseTree(tree)
+            new_entry.original_text = txt[:next]
+            nodes.append(new_entry)
+        #
+        line_offset += len(txt[:next].splitlines())
+        text_offset += next
         txt = txt[next:]
 
     return nodes
@@ -136,6 +143,14 @@ def makeUnicodeFromSafe(text):
     proper_text = re.sub('(xX)(\d+)(Xx)', replacer, text)
 
     return proper_text
+
+
+class ParseTree(list):
+    """Markup in a parse tree to store original text"""
+
+    original_text = ''
+
+
 # << Utility functions >> (5 of 10)
 def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None, dialect=None):
     """Parse some VB"""
