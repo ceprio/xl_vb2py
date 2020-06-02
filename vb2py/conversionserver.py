@@ -65,7 +65,7 @@ class ConversionHandler(object):
             ConversionHandler.setOptions(options)
         ConversionHandler.clearHistory()
         try:
-            return vbparser.convertVBtoPython(text, container, returnpartial=returnpartial, dialect=dialect)
+            return vbparser.convertVBtoPythonAndGetModule(text, container, returnpartial=returnpartial, dialect=dialect)
         except vbparser.VBParserError as err:
             raise ConversionError('Error converting VB. %s' % err)
 
@@ -235,6 +235,7 @@ def singleModule(module_type, dot_net_module_type):
     parsing_stopped_py = None
     #
     conversion_style = 'unknown'
+    return_structure = False
     extra = ''
     failure_mode = ''
     lines = []
@@ -249,6 +250,7 @@ def singleModule(module_type, dot_net_module_type):
         class_name = request.values.get('class_name', 'MyClass')
         failure_mode = request.values.get('failure-mode', 'line-by-line')
         requested_dialect = request.values.get('dialect', 'detect')
+        return_structure = int(request.values.get('return-structure', 0))
         options = json.loads(request.values.get('options', '[]').strip())
     except KeyError:
         result = 'No text or style parameter passed'
@@ -273,8 +275,8 @@ def singleModule(module_type, dot_net_module_type):
             try:
                 if failure_mode == 'fail-safe':
                     utils.BASE_GRAMMAR_SETTINGS['mode'] = 'safe'
-                result = ConversionHandler.convertSingleFile(stripped_text, module_type, conversion_style,
-                                                             dialect=dialect, options=options)
+                result, module = ConversionHandler.convertSingleFile(stripped_text, module_type, conversion_style,
+                                                                     dialect=dialect, options=options)
             finally:
                 utils.BASE_GRAMMAR_SETTINGS['mode'] = 'line-by-line'
             status = 'OK'
@@ -306,7 +308,9 @@ def singleModule(module_type, dot_net_module_type):
                 elif failure_mode == 'fail-safe':
                     parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(text, result)
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
-
+    #
+    if return_structure:
+        structure = getStructure(module.structure)
     #
     app.logger.info('%s | %s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
         correlation_string,
@@ -329,7 +333,7 @@ def singleModule(module_type, dot_net_module_type):
             except IndexError:
                 app.logger.info('Failed and also out of bounds: %s, %s' % (line_num, len(lines)))
     #
-    result = json.dumps({
+    main_response = {
         'status': status,
         'result': result,
         'parsing_failed': parsing_failed,
@@ -337,9 +341,11 @@ def singleModule(module_type, dot_net_module_type):
         'parsing_stopped_py': parsing_stopped_py,
         'language': language,
         'version': version,
-    })
-
-    return result
+    }
+    if return_structure:
+        main_response['structure'] = structure
+    #
+    return json.dumps(main_response)
 
 
 def log_request(text):
@@ -454,3 +460,12 @@ def getErrorLinesBySafeMode(vbtext, pytext):
         else:
             break
     return vb_lines, py_lines
+
+
+def getStructure(structure):
+    """Return a JSON suitable structure for the VB code"""
+    result = []
+    for item in structure:
+        children = getStructure(item.elements)
+        result.append([item.line_offset, item.name, item.start_on_line, item.length, children])
+    return result

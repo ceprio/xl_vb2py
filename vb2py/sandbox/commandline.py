@@ -51,8 +51,8 @@ def pp_t(container):
 
 def pp_t_item(item, indent):
     conjoined = item.text.replace('\n', ' $ ')
-    print('{:04d} | {}{} [{}]'.format(
-        item.line_offset,
+    print('{:04d} {:04d} | {}{} [{}]'.format(
+        item.line_offset, item.start_on_line,
         ' ' * indent,
         b.UNDERLINE + b.BOLD + item.name + b.ENDC,
         b.OKBLUE + conjoined + b.ENDC

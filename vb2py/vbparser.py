@@ -202,13 +202,20 @@ def renderCodeStructure(structure):
     return applyPlugins("postProcessPythonText", structure.renderAsCode())
 
 
-def convertVBtoPython(vbtext, *args, **kw):
+def convertVBtoPythonAndGetModule(vbtext, *args, **kw):
     """Convert some VB text to Python"""
     VBElement.setCurrentAction('Parsing')
     m = parseVB(vbtext, *args, **kw)
     VBElement.setCurrentAction('Generating Python')
     python = applyPlugins("postProcessPythonText", m.renderAsCode())
     VBElement.setCurrentAction('Finishing')
+    return python, m
+
+
+def convertVBtoPython(vbtext, *args, **kw):
+    """Convert some VB text to Python"""
+    m = parseVB(vbtext, *args, **kw)
+    python = applyPlugins("postProcessPythonText", m.renderAsCode())
     return python
 
 

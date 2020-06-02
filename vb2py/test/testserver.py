@@ -28,7 +28,7 @@ class TestServer(unittest.TestCase):
     def setUp(self):
         """Set up the tests"""
         Config["General", "ReportPartialConversion"] == "Yes"
-        self.c = vb2py.conversionserver.ConversionHandler.convertSingleFile
+        self.c = lambda *a, **k: vb2py.conversionserver.ConversionHandler.convertSingleFile(*a, **k)[0]
 
     def tearDown(self):
         """Tear down the tests"""
@@ -835,6 +835,45 @@ B =
         func = z.getinfo(os.path.join('vb2py', 'vbfunctions.py'))
         dbg = z.getinfo(os.path.join('vb2py', 'vbdebug.py'))
         dbg = z.getinfo(os.path.join('vb2py', '__init__.py'))
+
+    def testCanGetStructure(self):
+        """testCanGetStructure: should be able to get structure"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function      
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 1,
+        })
+        data = json.loads(result.data)
+        self.assertTrue(hasattr(data, 'structure'))
+        self.assertEqual(4, len(data.structure))
+
+    def testDefaultIsNotToGetStructure(self):
+        """testDefaultIsNotToGetStructure: default is not getting structure"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function      
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+        })
+        data = json.loads(result.data)
+        self.assertNotIn('structure', data)
+        #
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 0,
+        })
+        data = json.loads(result.data)
+        self.assertNotIn('structure', data)
 
 
 if __name__ == '__main__':
