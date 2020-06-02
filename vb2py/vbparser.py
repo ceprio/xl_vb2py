@@ -1,6 +1,5 @@
 """Main parsing and conversion routines for translating VB to Python code"""
 
-# << Imports >>
 #
 # Configuration options
 from . import config
@@ -8,6 +7,7 @@ Config = config.VB2PYConfig()
 
 from pprint import pprint as pp
 from simpleparse.common import chartypes
+from simpleparse.parser import Parser
 import sys
 import os
 import re
@@ -15,35 +15,39 @@ from . import utils
 
 GRAMMAR_FILE = utils.relativePath("grammars", "vbgrammar.mako")
 
-from simpleparse.parser import Parser
 
 from . import logger
 log = logger.getLogger("VBParser")
-# -- end -- << Imports >>
-# << Error Classes >>
-class VBParserError(Exception): 
-    """An error occured during parsing"""
+
+
+class VBParserError(Exception):
+    """An error occurred during parsing"""
+
 
 class UnhandledStructureError(VBParserError): 
     """A structure was parsed but could not be handled by class"""
-class InvalidOption(VBParserError): 
+
+
+class InvalidOption(VBParserError):
     """An invalid config option was detected"""
-class NestingError(VBParserError): 
-    """An error occured while handling a nested structure"""
+
+
+class NestingError(VBParserError):
+    """An error occurred while handling a nested structure"""
+
+
 class UnresolvableName(VBParserError):
     """We were asked to resolve a name but couldn't because we don't know it"""
+
 
 class SystemPluginFailure(VBParserError): 
     """A system level plugin failed"""
 
+
 class DirectiveError(VBParserError): 
     """An unknown directive was found"""
-# -- end -- << Error Classes >>
-# << Definitions >>
-pass
-# -- end -- << Definitions >>
 
-# << Utility functions >> (1 of 10)
+
 def convertToElements(details, txt, text_offset, line_offset):
     """Convert a parse tree to elements"""
     ret = []
@@ -51,7 +55,8 @@ def convertToElements(details, txt, text_offset, line_offset):
         for item in details:
             ret.append(VBElement(item, txt, text_offset, line_offset))
     return ret
-# << Utility functions >> (2 of 10)
+
+
 def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, returnast=0, dialect=None, grammar=None):
     """Parse some VB
     :param dialect:
@@ -70,7 +75,6 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
     text_offset = 0
     line_offset = 0
     while 1:
-        ##print 'Loop', len(txt)
         success, tree, next = parser.parse(txt)
         if not success:
             if txt.strip():
@@ -100,7 +104,8 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
         txt = txt[next:]
 
     return nodes
-# << Utility functions >> (3 of 10)
+
+
 def makeSafeFromUnicode(text):
     """Return a safe version of the text without unicode characters
 
@@ -123,7 +128,8 @@ def makeSafeFromUnicode(text):
             result.extend(marker2)
     #
     return "".join(map(chr, result))
-# << Utility functions >> (4 of 10)
+
+
 def makeUnicodeFromSafe(text):
     """Recover the unicode text from a safe version of the text
 
@@ -151,7 +157,6 @@ class ParseTree(list):
     original_text = ''
 
 
-# << Utility functions >> (5 of 10)
 def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=None, grammar=None, dialect=None):
     """Parse some VB"""
 
@@ -175,7 +180,8 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
             log.warn("Unhandled: %s\n%s" % (node.structure_name, node.text))
 
     return m
-# << Utility functions >> (6 of 10)
+
+
 def getAST(vbtext, starttoken="line", returnpartial=None, grammar=None, dialect='VB6'):
     """Parse some VB to produce an AST"""
 
@@ -185,7 +191,8 @@ def getAST(vbtext, starttoken="line", returnpartial=None, grammar=None, dialect=
     nodes = buildParseTree(vbtext, starttoken, 0, returnpartial, returnast=1, grammar=grammar, dialect=dialect)
 
     return nodes
-# << Utility functions >> (7 of 10)
+
+
 def renderCodeStructure(structure):
     """Render a code structure as Python
 
@@ -193,7 +200,8 @@ def renderCodeStructure(structure):
 
     """
     return applyPlugins("postProcessPythonText", structure.renderAsCode())
-# << Utility functions >> (8 of 10)
+
+
 def convertVBtoPython(vbtext, *args, **kw):
     """Convert some VB text to Python"""
     VBElement.setCurrentAction('Parsing')
@@ -203,7 +211,7 @@ def convertVBtoPython(vbtext, *args, **kw):
     VBElement.setCurrentAction('Finishing')
     return python
 
-# << Utility functions >> (9 of 10)
+
 def applyPlugins(methodname, txt):
     """Apply the method of all active plugins to this text"""
     use_user_plugins = Config["General", "LoadUserPlugins"] == "Yes"
@@ -221,7 +229,8 @@ def applyPlugins(methodname, txt):
                             plugin.name, err, methodname))
                     plugin.disable()
     return txt
-# << Utility functions >> (10 of 10)
+
+
 def parseVBFile(filename, text=None, parent=None, **kw):
     """Parse some VB from a file"""
     if not text:
@@ -252,7 +261,7 @@ def parseVBFile(filename, text=None, parent=None, **kw):
         new_container.parent = parent
     code_structure = parseVB(text, container=new_container, **kw)
     return code_structure
-# -- end -- << Utility functions >>
+
 
 # The following imports must go at the end to avoid import errors 
 # caused by poor structuring of the package. This needs to be refactored!
