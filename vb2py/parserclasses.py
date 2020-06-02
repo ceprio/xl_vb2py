@@ -20,12 +20,15 @@ class VBElement(object):
     def __init__(self, details, text, text_offset, line_offset):
         """Initialize from the details"""
         self.name = details[0]
+        num_new_lines = max(0, len(text[:details[1] + 1].splitlines()) - 1)
+        # if num_new_lines != 0:
+        #     import pdb; pdb.set_trace()
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
         self.elements = convertToElements(details[3], text, text_offset, line_offset)
         self.start = details[1]
         self.end = details[2]
         self.text_offset = text_offset
-        self.line_offset = line_offset + len(text[:details[1]].splitlines())
+        self.line_offset = line_offset + num_new_lines
         self.reportLine(self.line_offset)
 
     def printTree(self, offset=0):

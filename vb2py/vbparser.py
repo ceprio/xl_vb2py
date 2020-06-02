@@ -171,7 +171,6 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
         m = container
 
     for idx, node in zip(range(sys.maxsize), nodes):
-        ##print 'Process', idx, len(nodes)
         if verbose:
             print(idx, end=' ')
         try:
@@ -179,6 +178,7 @@ def parseVB(vbtext, container=None, starttoken="line", verbose=0, returnpartial=
         except UnhandledStructureError:
             log.warn("Unhandled: %s\n%s" % (node.structure_name, node.text))
 
+    m.structure = nodes
     return m
 
 

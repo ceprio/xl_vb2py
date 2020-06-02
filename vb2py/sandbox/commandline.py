@@ -44,6 +44,23 @@ def pp(ast, text, indent=0):
     return cleaned_ast
 
 
+def pp_t(container):
+    for item in container.structure:
+        pp_t_item(item, indent=0)
+
+
+def pp_t_item(item, indent):
+    conjoined = item.text.replace('\n', ' $ ')
+    print('{:04d} | {}{} [{}]'.format(
+        item.line_offset,
+        ' ' * indent,
+        b.UNDERLINE + b.BOLD + item.name + b.ENDC,
+        b.OKBLUE + conjoined + b.ENDC
+    ))
+    for sub_item in item.elements:
+        pp_t_item(sub_item, indent + 1)
+
+
 def n(text, *args, **kw):
     ast = t(text, *args, **kw)
     pp(ast, text)
