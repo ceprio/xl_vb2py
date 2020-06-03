@@ -109,13 +109,6 @@
                         let Range = ace.require('ace/range').Range;
                         vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                                 "errorMarker", "line", true);
-
-                        vb_error_list.innerHTML += get_error_menu_item(
-                                vbeditor.session.getLine(vb_offset),
-                                vb_offset,
-                                data.parsing_stopped_py[i]
-                        );
-
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
                                 "errorMarker", "line", true);
 
@@ -141,7 +134,8 @@
                     ##  document.getElementsByClassName('error-header')[0].style.display = 'none';
                     ##  document.getElementsByClassName('error-header')[1].style.display = 'none';
                 }
-                create_tree_from_structure(data.structure);
+                create_tree_from_structure(data.structure,
+                        data.parsing_stopped_vb, data.parsing_stopped_py, selection_offset);
                 if (!DEVELOPMENT) {
                     let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
                     gtag('event', 'Convert', {

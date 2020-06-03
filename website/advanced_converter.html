@@ -165,17 +165,18 @@ color: #ffffff !important;
     <div id="error-list">
 
     </div>
+
 </div>
 
 
 <script>
 
-    function get_error_menu_item(line_text, line_vb, line_py) {
+    function get_content_menu_item(line_text, line_vb, line_py) {
         let short_name = line_text;
         if (name.length > 25) {
             short_name = name.substring(0, 25) + ' ...';
         }
-        let text = '<a href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')"><br>' + short_name + '</a>';
+        let text = '<a href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')">' + short_name + '</a>';
         return text;
     }
 
@@ -184,8 +185,15 @@ color: #ffffff !important;
         pyeditor.scrollToLine(py_line);
     }
 
-    function create_tree_from_structure(structure) {
-        html = '<ul id="tree" class="easyui-tree">' + get_tree_nodes(structure) + '</ul>';
+    function create_tree_from_structure(structure, vb_error_lines, py_error_lines, selection_offset) {
+        html = '<ul id="tree" class="easyui-tree">' +
+                    '<li><span>Errors</span><ul>' +
+                        get_error_nodes(vb_error_lines, py_error_lines, selection_offset) +
+                    '</ul></li>' +
+                    '<li><span>Structure</span><ul>' +
+                        get_tree_nodes(structure) +
+                    '</ul></li>' +
+                '</ul>';
         $('#error-list')[0].innerHTML = html;
         $('#tree').tree();
     }
@@ -194,11 +202,36 @@ color: #ffffff !important;
         let html = '';
         structure.forEach(function (item, index) {
             let children_html = get_tree_nodes(item[5]);
-            html += '<li><span>' + item[2] + '</span><ul>' + children_html + '</ul></li>';
+            html += '<li><span>' +
+                    get_content_menu_item(
+                        item[2],
+                        item[0],
+                        -1
+                    ) +
+                    '</span><ul>' +
+                    children_html +
+                    '</ul></li>';
         });
         return html;
     }
 
+    function get_error_nodes(vb_error_lines, py_error_lines, selection_offset) {
+        let html = '';
+        if (vb_error_lines) {
+            for (let i = 0; i < vb_error_lines.length; i++) {
+                let vb_offset = vb_error_lines[i] + selection_offset;
+                let py_offset = py_error_lines[i];
+                html += '<li><span>' +
+                        get_content_menu_item(
+                                vbeditor.session.getLine(vb_offset),
+                                vb_offset,
+                                py_offset
+                        ) +
+                        '</span><ul></ul></li>'
+            }
+        }
+        return html;
+    }
 
 </script>
         <div data-options="region:'center', split:true" style="width:50%" title="Enter VB Code Here">
@@ -910,13 +943,6 @@ End Using
                         let Range = ace.require('ace/range').Range;
                         vb_marker = vbeditor.session.addMarker(new Range(vb_offset, 0, vb_offset, 100),
                                 "errorMarker", "line", true);
-
-                        vb_error_list.innerHTML += get_error_menu_item(
-                                vbeditor.session.getLine(vb_offset),
-                                vb_offset,
-                                data.parsing_stopped_py[i]
-                        );
-
                         py_marker = pyeditor.session.addMarker(new Range(data.parsing_stopped_py[i], 0, data.parsing_stopped_py[i], 100),
                                 "errorMarker", "line", true);
 
@@ -931,7 +957,8 @@ End Using
                 } else {
                     show_stop_conversion('succeeded');
                 }
-                create_tree_from_structure(data.structure);
+                create_tree_from_structure(data.structure,
+                        data.parsing_stopped_vb, data.parsing_stopped_py, selection_offset);
                 if (!DEVELOPMENT) {
                     let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
                     gtag('event', 'Convert', {

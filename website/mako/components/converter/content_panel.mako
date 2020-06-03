@@ -23,12 +23,12 @@
 
 <script>
 
-    function get_error_menu_item(line_text, line_vb, line_py) {
+    function get_content_menu_item(line_text, line_vb, line_py) {
         let short_name = line_text;
         if (name.length > 25) {
             short_name = name.substring(0, 25) + ' ...';
         }
-        let text = '<a href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')"><br>' + short_name + '</a>';
+        let text = '<a href="#" onclick="move_to(' + line_vb + ', ' + line_py + ')">' + short_name + '</a>';
         return text;
     }
 
@@ -37,8 +37,15 @@
         pyeditor.scrollToLine(py_line);
     }
 
-    function create_tree_from_structure(structure) {
-        html = '<ul id="tree" class="easyui-tree">' + get_tree_nodes(structure) + '</ul>';
+    function create_tree_from_structure(structure, vb_error_lines, py_error_lines, selection_offset) {
+        html = '<ul id="tree" class="easyui-tree">' +
+                    '<li><span>Parsing Issues</span><ul>' +
+                        get_error_nodes(vb_error_lines, py_error_lines, selection_offset) +
+                    '</ul></li>' +
+                    '<li><span>Structure</span><ul>' +
+                        get_tree_nodes(structure) +
+                    '</ul></li>' +
+                '</ul>';
         $('#error-list')[0].innerHTML = html;
         $('#tree').tree();
     }
@@ -47,10 +54,35 @@
         let html = '';
         structure.forEach(function (item, index) {
             let children_html = get_tree_nodes(item[5]);
-            html += '<li><span>' + item[2] + '</span><ul>' + children_html + '</ul></li>';
+            html += '<li><span>' +
+                    get_content_menu_item(
+                        item[2],
+                        item[0],
+                        -1
+                    ) +
+                    '</span><ul>' +
+                    children_html +
+                    '</ul></li>';
         });
         return html;
     }
 
+    function get_error_nodes(vb_error_lines, py_error_lines, selection_offset) {
+        let html = '';
+        if (vb_error_lines) {
+            for (let i = 0; i < vb_error_lines.length; i++) {
+                let vb_offset = vb_error_lines[i] + selection_offset;
+                let py_offset = py_error_lines[i];
+                html += '<li><span>' +
+                        get_content_menu_item(
+                                vbeditor.session.getLine(vb_offset),
+                                vb_offset,
+                                py_offset
+                        ) +
+                        '</span><ul></ul></li>'
+            }
+        }
+        return html;
+    }
 
 </script>
