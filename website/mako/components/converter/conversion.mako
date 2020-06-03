@@ -82,7 +82,8 @@
 
         $.post(HOST + url, {
             'text': vbtext, 'style': conversion_style, 'class_name': class_name,
-            'failure-mode': failure_mode, 'dialect': dialect, 'options': config
+            'failure-mode': failure_mode, 'dialect': dialect, 'options': config,
+            'return-structure': 1
         }, function (data) {
             if (!DEVELOPMENT && window.performance) {
                 let end_time = window.performance.now();
@@ -140,6 +141,7 @@
                     ##  document.getElementsByClassName('error-header')[0].style.display = 'none';
                     ##  document.getElementsByClassName('error-header')[1].style.display = 'none';
                 }
+                create_tree_from_structure(data.structure);
                 if (!DEVELOPMENT) {
                     let label = (data.parsing_failed ? "Parsing Failed" : "Succeeded");
                     gtag('event', 'Convert', {

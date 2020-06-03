@@ -850,8 +850,8 @@ B =
             'return-structure': 1,
         })
         data = json.loads(result.data)
-        self.assertTrue(hasattr(data, 'structure'))
-        self.assertEqual(4, len(data.structure))
+        self.assertIn('structure', data)
+        self.assertEqual(4, len(data['structure']))
 
     def testDefaultIsNotToGetStructure(self):
         """testDefaultIsNotToGetStructure: default is not getting structure"""

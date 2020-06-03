@@ -36,4 +36,35 @@
         pyeditor.scrollToLine(py_line);
     }
 
+    function create_tree_from_structure(structure) {
+        html = '<ul id="tree" class="easyui-tree">' + get_tree_nodes(structure) + '</ul>';
+        $('#error-list')[0].innerHTML = html;
+        $('#tree').tree();
+    }
+
+    function get_tree_nodes(structure) {
+        let html = '';
+        structure.forEach(function (item, index) {
+            let children_html = get_tree_nodes(item[4]);
+            if (TREE_ITEMS.indexOf(item[1]) != -1) {
+                html += '<li><span>' + item[1] + '</span><ul>' + children_html + '</ul></li>';
+            } else {
+                html += children_html;
+            }
+        });
+        return html;
+    }
+
+    let TREE_ITEMS = [
+            'sub_start_definition',
+            'sub_end_definition',
+            'fn_start_definition',
+            'fn_end_definition',
+            'assignment_statement',
+            'select_start_statement',
+            'case_item_block',
+            'case_else_block',
+            'select_end_statement',
+            'dim_statement',
+    ]
 </script>
