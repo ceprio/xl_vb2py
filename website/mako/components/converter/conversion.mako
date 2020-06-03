@@ -102,7 +102,7 @@
                 vb_error_list.innerHTML = '';
                 // Watch for parsing failure
                 if (data.parsing_failed) {
-                    show_stop_conversion(false);
+                    show_stop_conversion('parsing-failed');
                     for (i = 0; i < data.parsing_stopped_vb.length; i++) {
                         let vb_offset = data.parsing_stopped_vb[i] + selection_offset;
                         let py_offset = data.parsing_stopped_py[i];
@@ -137,7 +137,7 @@
                     language = data.language;
 
                 } else {
-                    show_stop_conversion(true);
+                    show_stop_conversion('succeeded');
                     ##  document.getElementsByClassName('error-header')[0].style.display = 'none';
                     ##  document.getElementsByClassName('error-header')[1].style.display = 'none';
                 }
@@ -152,7 +152,7 @@
                     });
                 }
             } else {
-                show_stop_conversion(false);
+                show_stop_conversion('parsing-failed');
                 alert('Came back ' + data.status + ': ' + data.result);
                 if (!DEVELOPMENT) {
                     gtag('event', 'Convert', {
@@ -165,7 +165,7 @@
             ##  $('#version')[0].innerHTML = '(VB2PY version=' + data.version + ')';
         }, 'json')
                 .fail(function (data, status, error) {
-                    show_stop_conversion(false);
+                    show_stop_conversion('server-error');
                     pyeditor.session.setValue('There was an error talking to the server\nStatus=' +
                             status + '\n' + 'Error=' + error);
                     if (!DEVELOPMENT) {
@@ -193,21 +193,25 @@
         conversion_show_progress = true;
         conversion_bar.css('width', '0%');
         conversion_bar.removeClass('bg-warning');
+        conversion_bar.removeClass('bg-danger');
         conversion_bar.removeClass('bg-success');
         conversion_bar.addClass('bg-info');
         $('#conversion-progress-toast').toast('show');
         $('#progress-text')[0].innerHTML = 'Starting ...';
     }
 
-    function show_stop_conversion(succeeded) {
+    function show_stop_conversion(result) {
         conversion_show_progress = false;
         conversion_bar.removeClass('bg-info');
-        if (succeeded) {
+        if (result === 'succeeded') {
             conversion_bar.addClass('bg-success');
             $('#conversion-progress-toast').toast('hide');
-        } else {
+        } else if (result === 'parsing-failed') {
             conversion_bar.addClass('bg-warning');
             $('#progress-text')[0].innerHTML = 'Some parsing errors occurred';
+        } else {
+            conversion_bar.addClass('bg-danger');
+            $('#progress-text')[0].innerHTML = 'A server error occurred';
         }
     }
 
