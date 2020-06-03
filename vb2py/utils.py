@@ -1,4 +1,5 @@
 import os
+import re
 import mako.template
 import mako.lookup
 
@@ -46,3 +47,8 @@ def loadGrammarFrom(filename, data=None):
                 base_data[k] = v
     #
     return str(template.render(**base_data))
+
+
+def countNewlines(text):
+    """Return the number of newlines in some text"""
+    return len(re.findall('\n', text))

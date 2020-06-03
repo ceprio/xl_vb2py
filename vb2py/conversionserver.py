@@ -311,7 +311,7 @@ def singleModule(module_type, dot_net_module_type):
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
     #
     if return_structure != 'no':
-        structure = getStructure(module.structure, return_structure, stripped_text.splitlines() + [''])
+        structure = getStructure(module.structure, return_structure, stripped_text.splitlines() + ['', ''])
     #
     app.logger.info('%s | %s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
         correlation_string,

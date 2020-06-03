@@ -21,8 +21,7 @@ class VBElement(object):
         """Initialize from the details"""
         self.name = details[0]
         self.text = makeUnicodeFromSafe(text[details[1]:details[2]])
-        lines = text[:details[1] + 1].splitlines()
-        num_new_lines = max(0, len(lines) - 1)
+        num_new_lines = utils.countNewlines(text[:details[1] + 1])
         if num_new_lines:
             left, right = text[:details[1] + 1].rsplit('\n', 1)
             self.start_on_line = max(0, len(right) - 1)

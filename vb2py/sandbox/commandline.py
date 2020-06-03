@@ -44,6 +44,11 @@ def pp(ast, text, indent=0):
     return cleaned_ast
 
 
+def nn(text, *args, **kw):
+    m = p(text, *args, **kw)
+    pp_t(m)
+
+
 def pp_t(container):
     for item in container.structure:
         pp_t_item(item, indent=0)

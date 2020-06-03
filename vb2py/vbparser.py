@@ -99,7 +99,7 @@ def buildParseTree(vbtext, starttoken="line", verbose=0, returnpartial=0, return
             new_entry.original_text = txt[:next]
             nodes.append(new_entry)
         #
-        line_offset += len(txt[:next].splitlines())
+        line_offset += utils.countNewlines(txt[:next])
         text_offset += next
         txt = txt[next:]
 

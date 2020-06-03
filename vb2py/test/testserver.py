@@ -759,6 +759,19 @@ B =
         self.assertEqual(True, data['parsing_failed'])
         self.assertEqual([3, 5, 6, 8], data['parsing_stopped_vb'])
 
+    def testCanDoErrorLinesWithColons(self):
+        """testCanDoErrorLinesWithColons: error lines should work with colons"""
+        code = '''
+            Dim A
+            Dim B as Integer, C As String
+            A = 10: B = 30: C = "Hello World"/              
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={'text': code, 'style': 'vb', 'failure-mode': 'fail-safe'})
+        data = json.loads(result.data)
+        self.assertEqual(True, data['parsing_failed'])
+        self.assertEqual([3], data['parsing_stopped_vb'])
+
     def testCanSendYesNoOptions(self):
         """testCanSendYesNoOptions: should be able to send yes/no options"""
         code = '''
