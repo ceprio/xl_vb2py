@@ -83,7 +83,7 @@
         $.post(HOST + url, {
             'text': vbtext, 'style': conversion_style, 'class_name': class_name,
             'failure-mode': failure_mode, 'dialect': dialect, 'options': config,
-            'return-structure': 1
+            'return-structure': 'methods'
         }, function (data) {
             if (!DEVELOPMENT && window.performance) {
                 let end_time = window.performance.now();

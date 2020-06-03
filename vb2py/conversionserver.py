@@ -6,6 +6,7 @@ from . import projectconverter as converter
 from . import config
 from docutils.core import publish_string
 import base64
+import fnmatch
 import io
 import zipfile
 import random
@@ -235,7 +236,7 @@ def singleModule(module_type, dot_net_module_type):
     parsing_stopped_py = None
     #
     conversion_style = 'unknown'
-    return_structure = False
+    return_structure = 'no'
     extra = ''
     failure_mode = ''
     lines = []
@@ -250,7 +251,7 @@ def singleModule(module_type, dot_net_module_type):
         class_name = request.values.get('class_name', 'MyClass')
         failure_mode = request.values.get('failure-mode', 'line-by-line')
         requested_dialect = request.values.get('dialect', 'detect')
-        return_structure = int(request.values.get('return-structure', 0))
+        return_structure = request.values.get('return-structure', 'no')
         options = json.loads(request.values.get('options', '[]').strip())
     except KeyError:
         result = 'No text or style parameter passed'
@@ -309,8 +310,8 @@ def singleModule(module_type, dot_net_module_type):
                     parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(text, result)
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
     #
-    if return_structure:
-        structure = getStructure(module.structure)
+    if return_structure != 'no':
+        structure = getStructure(module.structure, return_structure, stripped_text.splitlines() + [''])
     #
     app.logger.info('%s | %s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
         correlation_string,
@@ -342,7 +343,7 @@ def singleModule(module_type, dot_net_module_type):
         'language': language,
         'version': version,
     }
-    if return_structure:
+    if return_structure != 'no':
         main_response['structure'] = structure
     #
     return json.dumps(main_response)
@@ -462,10 +463,26 @@ def getErrorLinesBySafeMode(vbtext, pytext):
     return vb_lines, py_lines
 
 
-def getStructure(structure):
+STRUCTURE_TYPES = {
+    'all': ['*'],
+    'methods': ['sub_definition', 'fn_definition']
+}
+
+
+def getStructure(structure, structure_type, text_lines):
     """Return a JSON suitable structure for the VB code"""
     result = []
     for item in structure:
-        children = getStructure(item.elements)
-        result.append([item.line_offset, item.name, item.start_on_line, item.length, children])
+        for pattern in STRUCTURE_TYPES[structure_type]:
+            if fnmatch.fnmatch(item.name, pattern):
+                children = getStructure(item.elements, structure_type, text_lines)
+                result.append([
+                    item.line_offset,
+                    item.name,
+                    text_lines[item.line_offset].lstrip(),
+                    item.start_on_line, item.length,
+                    children])
+                break
+        else:
+            result.extend(getStructure(item.elements, structure_type, text_lines))
     return result

@@ -847,7 +847,7 @@ B =
         client = vb2py.conversionserver.app.test_client()
         result = client.post('/single_code_module', data={
             'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
-            'return-structure': 1,
+            'return-structure': 'all',
         })
         data = json.loads(result.data)
         self.assertIn('structure', data)
@@ -870,10 +870,41 @@ B =
         #
         result = client.post('/single_code_module', data={
             'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
-            'return-structure': 0,
+            'return-structure': 'no',
         })
         data = json.loads(result.data)
         self.assertNotIn('structure', data)
+
+    def testCanGetHighLevelStructure(self):
+        """testCanGetHighLevelStructure: should be able to get high level structure only"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function     
+        Sub doIt2(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Sub  
+        Function doIt3(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function                   
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 'methods',
+        })
+        data = json.loads(result.data)
+        self.assertIn('structure', data)
+        self.assertEqual(3, len(data['structure']))
+        self.assertTrue(data['structure'][0][2].startswith('Function doIt'))
+        self.assertTrue(data['structure'][1][2].startswith('Sub doIt2'))
+        self.assertTrue(data['structure'][2][2].startswith('Function doIt3'))
+        self.assertEqual(1, data['structure'][0][0])
+        self.assertEqual(5, data['structure'][1][0])
+        self.assertEqual(9, data['structure'][2][0])
 
 
 if __name__ == '__main__':
