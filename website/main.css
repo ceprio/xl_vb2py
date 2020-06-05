@@ -81,3 +81,13 @@
 .feather-icon {
     vertical-align: top;
 }
+
+.tree-node-selected {
+    background-color: yellow;
+    color: black;
+}
+
+.error-node {
+    background-color: pink;
+    color: red;
+}

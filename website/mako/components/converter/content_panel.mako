@@ -77,7 +77,7 @@
             for (let i = 0; i < vb_error_lines.length; i++) {
                 let vb_offset = vb_error_lines[i] + selection_offset;
                 let py_offset = py_error_lines[i];
-                html += '<li><span>' +
+                html += '<li data-options="iconCls:\'icon-cancel\'"><span>' +
                         get_content_menu_item(
                                 vbeditor.session.getLine(vb_offset),
                                 vb_offset,

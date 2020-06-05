@@ -20,9 +20,6 @@
         <!-- CSS only -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-        <!-- Main CSS for site -->
-        <link rel="stylesheet" href="main.css">
-
         <!-- Page specific includes -->
         
     <title>vb2py Online Conversion</title>
@@ -43,6 +40,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.3/ace.js"></script>
 
 
+        <!-- Main CSS for site -->
+        <link rel="stylesheet" href="main.css">
     </head>
 
     <body>
@@ -225,7 +224,7 @@ color: #ffffff !important;
             for (let i = 0; i < vb_error_lines.length; i++) {
                 let vb_offset = vb_error_lines[i] + selection_offset;
                 let py_offset = py_error_lines[i];
-                html += '<li><span>' +
+                html += '<li data-options="iconCls:\'icon-cancel\'"><span>' +
                         get_content_menu_item(
                                 vbeditor.session.getLine(vb_offset),
                                 vb_offset,
