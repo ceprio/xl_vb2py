@@ -76,6 +76,7 @@
 <%include file="components/converter/conversion.mako"/>
 <%include file="components/converter/config.mako"/>
 <%include file="components/converter/progress.mako"/>
+<%include file="components/converter/loadfile.mako"/>
 
 </%block>
 

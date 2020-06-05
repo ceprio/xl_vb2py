@@ -3,8 +3,12 @@
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="vb-content-buttons">
 
             <button type="button" class="btn btn-secondary"
-                    data-toggle="tooltip" title="Load a VB file from your computer">
-                <i data-feather="folder" height="20px"></i><span class="button-label"> Load</span>
+                    data-toggle="modal" data-target="#load-file-modal"
+            >
+                <i data-feather="folder" height="20px" data-toggle="tooltip" title="Load a VB file from your computer"></i>
+                <span class="button-label">
+                    &nbsp;Load
+                </span>
             </button>
 
             <button id="paste-button" type="button" class="btn btn-secondary"
