@@ -7,6 +7,13 @@
                 <i data-feather="folder" height="20px"></i><span class="button-label"> Load</span>
             </button>
 
+            <button id="paste-button" type="button" class="btn btn-secondary"
+                    data-toggle="tooltip" title="Paste from clipboard"
+                    style="display: none" onclick="pasteCode()"
+            >
+                <i data-feather="clipboard" height="20px"></i><span class="button-label"> Paste</span>
+            </button>
+
             <button id="ExampleGroup" type="button"
                     class="btn-small btn-secondary dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -94,3 +101,42 @@
         </button>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        navigator.permissions.query({name: 'clipboard-read'}).then(result => {
+            $('#paste-button').show();
+        });
+    });
+
+    function pasteCode() {
+        navigator.permissions.query({name: 'clipboard-read'}).then(result => {
+            // If permission to read the clipboard is granted or if the user will
+            // be prompted to allow it, we proceed.
+
+            if (result.state === 'granted' || result.state === 'prompt') {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        let sel = vbeditor.selection.toJSON();
+                        if (vbeditor.selection.isEmpty()) {
+                            vbeditor.selectAll();
+                        }
+                        vbeditor.insert(text);
+                        vbeditor.selection.fromJSON(sel);
+
+                        if (!DEVELOPMENT) {
+                            gtag('event', 'Paste VB', {
+                                'event_category': 'UI',
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+            } else {
+                alert('Unable to paste from clipboard (probably browser security settings)');
+            }
+        });
+    }
+</script>

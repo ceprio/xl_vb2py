@@ -187,7 +187,7 @@ color: #ffffff !important;
 
     function create_tree_from_structure(structure, vb_error_lines, py_error_lines, selection_offset) {
         html = '<ul id="tree" class="easyui-tree">' +
-                    '<li><span>Errors</span><ul>' +
+                    '<li><span>Parsing Issues</span><ul>' +
                         get_error_nodes(vb_error_lines, py_error_lines, selection_offset) +
                     '</ul></li>' +
                     '<li><span>Structure</span><ul>' +
@@ -241,6 +241,13 @@ color: #ffffff !important;
             <button type="button" class="btn btn-secondary"
                     data-toggle="tooltip" title="Load a VB file from your computer">
                 <i data-feather="folder" height="20px"></i><span class="button-label"> Load</span>
+            </button>
+
+            <button id="paste-button" type="button" class="btn btn-secondary"
+                    data-toggle="tooltip" title="Paste from clipboard"
+                    style="display: none" onclick="pasteCode()"
+            >
+                <i data-feather="clipboard" height="20px"></i><span class="button-label"> Paste</span>
             </button>
 
             <button id="ExampleGroup" type="button"
@@ -342,6 +349,45 @@ color: #ffffff !important;
         </button>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        navigator.permissions.query({name: 'clipboard-read'}).then(result => {
+            $('#paste-button').show();
+        });
+    });
+
+    function pasteCode() {
+        navigator.permissions.query({name: 'clipboard-read'}).then(result => {
+            // If permission to read the clipboard is granted or if the user will
+            // be prompted to allow it, we proceed.
+
+            if (result.state === 'granted' || result.state === 'prompt') {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        let sel = vbeditor.selection.toJSON();
+                        if (vbeditor.selection.isEmpty()) {
+                            vbeditor.selectAll();
+                        }
+                        vbeditor.insert(text);
+                        vbeditor.selection.fromJSON(sel);
+
+                        if (!DEVELOPMENT) {
+                            gtag('event', 'Paste VB', {
+                                'event_category': 'UI',
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+            } else {
+                alert('Unable to paste from clipboard (probably browser security settings)');
+            }
+        });
+    }
+</script>
         <div data-options="region:'east',split:true" style="width:40%" title="Python Code Will Appear Here">
     <div class="btn-toolbar" role="toolbar" aria-label="VB Editor Toolbar" style="padding-bottom: 2px">
         <div class="btn-group btn-group-sm mr-2" role="group" aria-label="py-content-buttons">
