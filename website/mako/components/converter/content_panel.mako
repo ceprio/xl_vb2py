@@ -38,14 +38,18 @@
     }
 
     function create_tree_from_structure(structure, vb_error_lines, py_error_lines, selection_offset) {
-        html = '<ul id="tree" class="easyui-tree">' +
-                    '<li><span>Parsing Issues</span><ul>' +
-                        get_error_nodes(vb_error_lines, py_error_lines, selection_offset) +
-                    '</ul></li>' +
-                    '<li><span>Structure</span><ul>' +
-                        get_tree_nodes(structure) +
-                    '</ul></li>' +
-                '</ul>';
+        html = '<ul id="tree" class="easyui-tree">';
+        if (vb_error_lines !== null) {
+            html += '<li><span>Parsing Issues</span><ul>' +
+                    get_error_nodes(vb_error_lines, py_error_lines, selection_offset) +
+                    '</ul></li>';
+        };
+        if (structure.length !== 0) {
+            html += '<li><span>Structure</span><ul>' +
+                    get_tree_nodes(structure) +
+                    '</ul></li>';
+        };
+        html += '</ul>';
         $('#error-list')[0].innerHTML = html;
         $('#tree').tree();
     }
