@@ -237,9 +237,12 @@ def singleModule(module_type, dot_net_module_type):
     #
     conversion_style = 'unknown'
     return_structure = 'no'
+    return_line_numbers = 0
     extra = ''
     failure_mode = ''
     lines = []
+    structure = []
+    line_lookup = {}
     line_count = -1
     language = 'UNKNOWN'
     version = converter.__version__
@@ -253,6 +256,7 @@ def singleModule(module_type, dot_net_module_type):
         requested_dialect = request.values.get('dialect', 'detect')
         return_structure = request.values.get('return-structure', 'no')
         options = json.loads(request.values.get('options', '[]').strip())
+        return_line_numbers = int(request.values.get('return-line-numbers', '0'))
     except KeyError:
         result = 'No text or style parameter passed'
         status = 'FAILED'
@@ -268,6 +272,10 @@ def singleModule(module_type, dot_net_module_type):
             module_type = dot_net_module_type
             dialect = 'vb.net'
         module_type.classname = class_name
+        #
+        # Set line numbers option
+        if return_line_numbers:
+            Config.setLocalOveride('General', 'ReturnLineNumbers', 'Yes')
         #
         # Remove form stuff if it is there
         stripped_text = removeFormCruft(text)
@@ -309,9 +317,11 @@ def singleModule(module_type, dot_net_module_type):
                 elif failure_mode == 'fail-safe':
                     parsing_stopped_vb, parsing_stopped_py = getErrorLinesBySafeMode(text, result)
                     extra = ' Fail safe mode. %s errors.' % len(parsing_stopped_vb)
-    #
-    if return_structure != 'no':
-        structure = getStructure(module.structure, return_structure, stripped_text.splitlines() + ['', ''])
+            #
+            if return_structure != 'no':
+                structure = getStructure(module.structure, return_structure, stripped_text.splitlines() + ['', ''])
+            if return_line_numbers:
+                line_lookup = module.line_lookup
     #
     app.logger.info('%s | %s[%s] Completed %d lines %s %s (%s) with status %s. Time took %5.2fs%s%s' % (
         correlation_string,
@@ -345,6 +355,8 @@ def singleModule(module_type, dot_net_module_type):
     }
     if return_structure != 'no':
         main_response['structure'] = structure
+    if return_line_numbers:
+        main_response['line_number_lookup'] = line_lookup
     #
     return json.dumps(main_response)
 

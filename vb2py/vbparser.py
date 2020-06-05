@@ -207,16 +207,35 @@ def convertVBtoPythonAndGetModule(vbtext, *args, **kw):
     VBElement.setCurrentAction('Parsing')
     m = parseVB(vbtext, *args, **kw)
     VBElement.setCurrentAction('Generating Python')
-    python = applyPlugins("postProcessPythonText", m.renderAsCode())
+    python_code = m.renderAsCode()
+    if Config['General', 'ReturnLineNumbers'].lower() == 'yes':
+        result = decodeLineNumbers(python_code)
+        python_code, line_lookup = result
+        m.line_lookup = line_lookup
+    python = applyPlugins("postProcessPythonText", python_code)
     VBElement.setCurrentAction('Finishing')
     return python, m
 
 
 def convertVBtoPython(vbtext, *args, **kw):
     """Convert some VB text to Python"""
-    m = parseVB(vbtext, *args, **kw)
-    python = applyPlugins("postProcessPythonText", m.renderAsCode())
-    return python
+    return convertVBtoPython(vbtext, *args, **kw)[0]
+
+
+def decodeLineNumbers(python_code):
+    """Return the cleaned python code and a line_number lookup"""
+    get_line = re.compile(r'!\$VB2PY-(\d+)\$!.*')
+    clean_lines = []
+    lookup = {}
+    for pyline, line in enumerate(python_code.splitlines()):
+        match = get_line.match(line)
+        if match:
+            lookup[pyline] = int(match.group(1))
+            line = re.subn('!\$VB2PY-(\d+)\$!', '', line)[0]
+        clean_lines.append(line)
+    #
+    clean_code = '\n'.join(clean_lines)
+    return clean_code, lookup
 
 
 def applyPlugins(methodname, txt):

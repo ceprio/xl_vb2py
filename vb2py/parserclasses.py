@@ -65,6 +65,7 @@ class VBFailedElement(object):
         self.name = name
         self.text = text
         self.elements = []
+        self.line_offset = 0
 
 
 #
@@ -116,6 +117,8 @@ class VBNamespace(object):
         # This dictionary stores names which are to be substituted if found 
         self.name_substitution = {}
 
+        #
+        self.return_line_numbers = self.checkOptionYesNo("General", "ReturnLineNumbers") == 'Yes'
         #
         char_spec = Config["General", "IndentCharacter"]
         if char_spec == "Space":
@@ -280,7 +283,11 @@ class VBNamespace(object):
 
     def getIndent(self, indent):
         """Return some spaces to do indenting"""
-        return self._indent_char * indent * self._indent_amount
+        if self.return_line_numbers and self.original_element:
+            line = '!$VB2PY-%s$!' % self.original_element.line_offset
+        else:
+            line = ''
+        return line + self._indent_char * indent * self._indent_amount
 
     def getLocalNameFor(self, name):
         """Get the local version of a name
@@ -1449,6 +1456,7 @@ class VBModule(VBCodeBlock):
         self.modulename = modulename
         self.classname = classname
         self.superclasses = superclasses or []
+        self.line_lookup = None
         #
         self.rendering_locals = 0
         self.docstrings = []

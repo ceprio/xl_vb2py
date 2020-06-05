@@ -919,6 +919,67 @@ B =
         self.assertEqual(5, data['structure'][1][0])
         self.assertEqual(9, data['structure'][2][0])
 
+    def testCanGetAllLineNumbers(self):
+        """testCanGetAllLineNumbers: should be able to get all line numbers"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function     
+        Sub doIt2(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Sub  
+        Function doIt3(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function                   
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 'methods', 'return-line-numbers': 1,
+        })
+        data = json.loads(result.data)
+        self.assertIn('line_number_lookup', data)
+        lookup = data['line_number_lookup']
+        self.assertDictEqual(
+            {'5': 1, '6': 1, '7': 2, '8': 3, '9': 1, '11': 5,
+             '12': 6, '13': 7, '15': 9, '16': 9, '17': 10, '18': 11, '19': 9},
+            lookup
+        )
+
+    def testDefaultIsNoLineNumbers(self):
+        """testDefaultIsNoLineNumbers: default should be to not return line numbers"""
+        code = '''
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function     
+        Sub doIt2(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Sub  
+        Function doIt3(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function                   
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 'methods',
+        })
+        data = json.loads(result.data)
+        self.assertNotIn('line_number_lookup', data)
+        #
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 'methods', 'return-line-numbers': 0,
+        })
+        data = json.loads(result.data)
+        self.assertNotIn('line_number_lookup', data)
+
 
 if __name__ == '__main__':
     main()
