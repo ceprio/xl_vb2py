@@ -181,6 +181,10 @@ color: #ffffff !important;
 
     function move_to(vb_line, py_line) {
         vbeditor.scrollToLine(vb_line);
+        vbeditor.selection.clearSelection();
+        vbeditor.moveCursorToPosition({row: vb_line, col: 0});
+        vbeditor.selection.selectLine();
+        
         pyeditor.scrollToLine(py_line);
     }
 
