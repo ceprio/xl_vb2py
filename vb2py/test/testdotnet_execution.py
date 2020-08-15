@@ -120,6 +120,28 @@ tests.extend([
      ),
 ])
 
+in_vb_module_tests.extend([
+    (
+        '''
+        B = 0
+        For A = 1 To 10
+        B = B + A
+        Next
+        ''',
+        {'A': 10, 'B': 55}
+    ),
+    (
+        '''
+        B = 0
+        For A As Integer = 1 To 10
+        B = B + A
+        Next
+        ''',
+        {'A': 10, 'B': 55}
+    )
+])
+
+
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)

@@ -18,15 +18,19 @@ vb_dot_net_tests = []
 
 # Explicit Bare calls with arguments
 tests.extend([
+
 ])
 
-# Imports statements
-vb_dot_net_tests.extend([
-    'Imports A',
-    'Imports A.B.C',
-    'Imports this = A',
-    'Imports this = A.B.C',
-])
+
+# For statements with type declaration
+vb_dot_net_tests.append('''
+    For A As Integer = 1 To 10
+    Next 
+''')
+vb_dot_net_tests.append('''
+    For A As Microsoft.Thing In Some.Collection
+    Next 
+''')
 
 
 class ParsingTest(unittest.TestCase):

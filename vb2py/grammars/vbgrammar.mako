@@ -268,7 +268,14 @@ callable_object ::=
             ?-keyword, implicit_object?, (primary, ((".", wsp*, attribute / range_definition) / parameter_list)*)
 
 object ::=
-             ?-keyword, implicit_object?, recordset_object / (primary, ((wsp*, ".", wsp*, attribute / range_definition) / (wsp*, parameter_list))*)
+            ?-keyword, implicit_object?, recordset_object / (
+                primary, (
+                    (wsp*, ".", wsp*, attribute / range_definition) / (wsp*, parameter_list)
+                )*
+            ), typecast?
+
+typecast ::= (wsp+, 'As', wsp+, object)
+
 
 bare_object ::=
 			 ?-keyword, implicit_object?, primary, (".", wsp*, attribute)*

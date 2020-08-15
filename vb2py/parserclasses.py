@@ -890,7 +890,7 @@ class VBObject(VBNamespace):
         })
 
         self.auto_handlers = (
-            "implicit_object",
+            "implicit_object", "typecast",
         )
 
     def renderAsCode(self, indent=0):
@@ -2987,12 +2987,12 @@ class VBFor(VBCodeBlock):
         #
         self.auto_class_handlers = {
             "expression": (VBExpression, self.expressions),
+            "object": (VBObject, "object"),
             "block": (VBCodeBlock, "block"),  # Used for full 'for'
             "body": (VBCodeBlock, "block"),  # Used for inline 'for'
         }
 
         self.auto_handlers = [
-            "object",
         ]
 
     def renderAsCode(self, indent=0):
@@ -3014,7 +3014,7 @@ class VBFor(VBCodeBlock):
         value of that attribute. We can only do this by a local re-assignment
 
         """
-        name = self.object
+        name = self.object.renderAsCode()
         if "." not in name:
             # Ok, normal case
             self.loopname = name
