@@ -22,7 +22,7 @@ tests.extend([
 ])
 
 
-# For statements with type declaration
+# For and other statements with type declaration
 vb_dot_net_tests.append('''
     For A As Integer = 1 To 10
     Next 
@@ -30,6 +30,14 @@ vb_dot_net_tests.append('''
 vb_dot_net_tests.append('''
     For Each A As Microsoft.Thing In Some.Collection
     Next 
+''')
+vb_dot_net_tests.append('''
+    Select Case X As Integer
+    End Select 
+''')
+vb_dot_net_tests.append('''
+    With Container.Member As Integer
+    End With
 ''')
 
 
