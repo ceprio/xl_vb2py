@@ -9,6 +9,7 @@
     let conversion_show_progress = true;
     let conversion_bar = null;
     let start_time = null;
+    let py_to_vb_lookup = {};
 
     $(document).ready(function () {
         conversion_bar = $('#progress-indicator');
@@ -83,7 +84,7 @@
         $.post(HOST + url, {
             'text': vbtext, 'style': conversion_style, 'class_name': class_name,
             'failure-mode': failure_mode, 'dialect': dialect, 'options': config,
-            'return-structure': 'methods'
+            'return-structure': 'methods', 'return-line-numbers': 1,
         }, function (data) {
             if (!DEVELOPMENT && window.performance) {
                 let end_time = window.performance.now();
@@ -100,6 +101,7 @@
                 pyeditor.session.setValue(data.result);
                 let vb_error_list = $('#error-list')[0];
                 vb_error_list.innerHTML = '';
+                py_to_vb_lookup = data.line_number_lookup;
                 // Watch for parsing failure
                 if (data.parsing_failed) {
                     show_stop_conversion('parsing-failed');
