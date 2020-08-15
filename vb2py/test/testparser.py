@@ -2734,7 +2734,7 @@ vb_dot_net_tests.append('''
     Next 
 ''')
 vb_dot_net_tests.append('''
-    For A As Microsoft.Thing In Some.Collection
+    For Each A As Microsoft.Thing In Some.Collection
     Next 
 ''')
 
