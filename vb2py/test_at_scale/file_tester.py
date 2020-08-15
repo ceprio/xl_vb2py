@@ -56,8 +56,9 @@ class FileTester(unittest.TestCase):
         vb_code = self.getFileText(filename)
         #
         # Some strange preamble seen in some code
-        preamble = '\xef\xbb\xbf'
-        vb_code = vb_code.replace(preamble, '')
+        preambles = ['\xef\xbb\xbf', '\ufeff']
+        for preamble in preambles:
+            vb_code = vb_code.replace(preamble, '')
         #
         # Get the container
         container_lookup = {
@@ -74,7 +75,7 @@ class FileTester(unittest.TestCase):
         result = client.post(
             ('/single_%s_module' % url_part),
             data={
-                'text': vb_code, 'style': 'vb', 'failure_mode': 'line-by-line',
+                'text': vb_code, 'style': 'vb', 'failure-mode': 'line-by-line',
             }
         )
 
@@ -93,7 +94,7 @@ class FileTester(unittest.TestCase):
             result_safe = client.post(
                 ('/single_%s_module' % url_part),
                 data={
-                    'text': vb_code, 'style': 'vb', 'failure_mode': 'fail-safe',
+                    'text': vb_code, 'style': 'vb', 'failure-mode': 'fail-safe',
                 }
             )
             data_safe = json.loads(result_safe.data)
@@ -111,7 +112,7 @@ class FileTester(unittest.TestCase):
             result_safe = client.post(
                 ('/single_%s_module' % url_part),
                 data={
-                    'text': vb_code, 'style': 'vb', 'failure_mode': 'fail-safe',
+                    'text': vb_code, 'style': 'vb', 'failure-mode': 'fail-safe',
                 }
             )
             data_safe = json.loads(result_safe.data)
