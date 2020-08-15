@@ -43,7 +43,7 @@ if __name__ == "__main__":
     files.sort()
     preferentialSort(files, [
         'test/testdotnet.py', 'test/testdotnet_execution.py', 'test/testfailures.py',
-        'test/testdirectives.py',
+        'test/testdirectives.py', 'test/testlanguagedetection.py',
     ])
     #
     total_run = 0

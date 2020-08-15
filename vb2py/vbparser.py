@@ -219,7 +219,7 @@ def convertVBtoPythonAndGetModule(vbtext, *args, **kw):
 
 def convertVBtoPython(vbtext, *args, **kw):
     """Convert some VB text to Python"""
-    return convertVBtoPython(vbtext, *args, **kw)[0]
+    return convertVBtoPythonAndGetModule(vbtext, *args, **kw)[0]
 
 
 def decodeLineNumbers(python_code):
