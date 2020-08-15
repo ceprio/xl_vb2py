@@ -14,12 +14,18 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 tests = []
+vb_dot_net_tests = []
 
 # Explicit Bare calls with arguments
 tests.extend([
-        "Call subr 10, 20, 30",
-        "Call object.method a, b, c+d, e",
-        'Call object.method.method2.method 10, "hello", "goodbye" & name',
+])
+
+# Imports statements
+vb_dot_net_tests.extend([
+    'Imports A',
+    'Imports A.B.C',
+    'Imports this = A',
+    'Imports this = A.B.C',
 ])
 
 
@@ -27,11 +33,11 @@ class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
 
 
-def getTestMethod(vb):
+def getTestMethod(vb, dialect='VB6'):
     """Create a test method"""
     def testMethod(self):
         try:
-            buildParseTree(vb)
+            buildParseTree(vb, dialect=dialect)
         except VBParserError:
             raise Exception("Unable to parse ...\n%s" % vb)
     return testMethod
@@ -40,6 +46,10 @@ def getTestMethod(vb):
 # Add tests to main test class
 for idx in range(len(tests)):
     setattr(ParsingTest, "test%d" % idx, getTestMethod(tests[idx]))
+
+
+for idx in range(len(vb_dot_net_tests)):
+    setattr(ParsingTest, "dot_net_test%d" % idx, getTestMethod(vb_dot_net_tests[idx], dialect='vb.net'))
 
 
 if __name__ == "__main__":

@@ -410,6 +410,16 @@ class VBNamespace(object):
                 module_imports.append(modulename)
             log.info("Registered a new module import: '%s'" % modulename)
 
+    def registerManualImportRequired(self, statement):
+        """Register a need to import via an import statement"""
+        try:
+            module_imports = self.getParentProperty("manual_imports")
+        except NestingError:
+            log.warn("Tried to request a manual  import but couldn't find a suitable container")
+        else:
+            module_imports.append(statement)
+            log.info("Registered a new manual import: '%s'" % statement)
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         return self.getIndent(indent) + "# Unrendered object %s\n" % (self.asString(),)
@@ -593,6 +603,7 @@ class VBCodeBlock(VBNamespace):
         """Initialize the block"""
         super(VBCodeBlock, self).__init__()
         self.blocks = []
+        self.non_rendered_lines = []
         self.auto_class_handlers.update({
             "assignment_statement": (VBAssignment, self.blocks),
             "lset_statement": (VBLSet, self.blocks),
@@ -616,6 +627,7 @@ class VBCodeBlock(VBNamespace):
             "using_statement": (VBUsing, self.blocks),
             "end_statement": (VBEnd, self.blocks),
             "return_statement": (VBReturnStatement, self.blocks),
+            "imports_statement": (VBImports, self.non_rendered_lines),
 
             "for_statement": (VBFor, self.blocks),
             "inline_for_statement": (VBFor, self.blocks),
@@ -1461,6 +1473,7 @@ class VBModule(VBCodeBlock):
         self.rendering_locals = 0
         self.docstrings = []
         self.module_imports = []  # The additional modules we need to import
+        self.manual_imports = []
         #
         # Scoping - cancel all scopes
         self.static = None
@@ -1500,7 +1513,19 @@ class VBModule(VBCodeBlock):
             debug = "\nfrom vb2py.vbdebug import *"
         else:
             debug = ""
-        return "from vb2py.vbfunctions import *%s%s" % (debug, "\n".join(other))
+        imports = "from vb2py.vbfunctions import *%s%s" % (debug, "\n".join(other))
+        #
+        # Now add manual imports
+        if self.manual_imports:
+            imports += '\n\n%s' % self.getWarning(
+                'NotImplemented',
+                'Manual imports - likely to fail as this is not fully implemented yet',
+                crlf=True
+            )
+            for statement in self.manual_imports:
+                imports += statement.renderAsCode()
+        #
+        return imports
 
     def renderDeclarations(self, indent):
         """Render the declarations as code
@@ -3328,6 +3353,37 @@ class VBEnum(VBCodeBlock):
             "\n".join(ret),
         )
 
+
+class VBImports(VBNamespace):
+    """Represents an Import statement for Dot NET"""
+
+    def __init__(self, scope="Private"):
+        """Initialize the assignment"""
+        super(VBImports, self).__init__(scope)
+        self.alias = None
+        self.module_name = None
+        self.auto_class_handlers.update({
+            "aliasname": (VBObject, 'alias'),
+            "object": (VBObject, 'module_name')
+        })
+
+    def finalizeObject(self):
+        """Register an import needed"""
+        self.registerManualImportRequired(self)
+
+    def renderAsCode(self, indent=0):
+        """Render this element as code"""
+        if self.alias:
+            return "%simport %s as %s\n" % (
+                self.getIndent(indent),
+                self.module_name.renderAsCode(),
+                self.alias.renderAsCode()
+            )
+        else:
+            return "%sfrom %s import *\n" % (
+                self.getIndent(indent),
+                self.module_name.renderAsCode(),
+            )
 
 #
 class VBEnumItem(VBCodeBlock):

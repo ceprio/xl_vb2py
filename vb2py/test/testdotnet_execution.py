@@ -2,6 +2,7 @@ from vb2py.test.testframework import *
 import vb2py.utils
 import vb2py.vbparser
 import vb2py.parserclasses
+import sys
 
 in_vb_module_tests = []
 
@@ -99,6 +100,26 @@ in_vb_module_tests.extend([
     ('a = 7\na &= 11', {'a': 3}),
 
 ])
+
+
+class TestModule:
+    path = 1
+
+sys.modules['TestModule'] = TestModule
+
+
+# Imports
+tests.extend([
+    ('Imports TestModule\nClass _MyClassName\na = path\nEnd Class\n',
+     {'b': 1, 'path': 1},
+     '_a = _MyClassName()\nb = _a.a\n',
+     ),
+    ('Imports b = TestModule\nClass _MyClassName\na = b.path\nEnd Class\n',
+     {'b': 1},
+     '_a = _MyClassName()\nb = _a.a\n',
+     ),
+])
+
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
