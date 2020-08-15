@@ -11,3 +11,10 @@ region_block ::=
 
 
 region_block_terminator ::= "#", wsp*, c"End", wsp+, c"Region"
+
+
+imports_statement ::=
+    c"Imports", wsp*, (aliasname, wsp*, '=', wsp*)?, object
+
+aliasname ::=
+    object

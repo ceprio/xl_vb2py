@@ -887,9 +887,3 @@ attribute_statement ::=
 option_statement ::=
 		c"Option", wsp+, atom, (wsp*, atom)*, comment_statement?
 
-
-imports_statement ::=
-    c"Imports", wsp*, (aliasname, wsp*, '=', wsp*)?, object
-
-aliasname ::=
-    object
