@@ -2743,14 +2743,13 @@ vb_dot_net_tests.append('''
 ''')
 vb_dot_net_tests.append('''
     With Container.Member As Integer
-        .Init
-        .IncrementCounter 43
-        With .ChildItem
-            .Refresh
-        End With
     End With
 ''')
 
+
+# Casting for lists
+vb_dot_net_tests.append('Dim X as New List(Of String)')
+vb_dot_net_tests.append('Dim X as New List(Of String.Thing)')
 
 failures = [
 ]

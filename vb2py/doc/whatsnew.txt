@@ -4,6 +4,8 @@
 - Improved **reporting of the line number** that a parsing error occurred on
 - Initial version of **Imports** statement for .NET
 - Fixed issue with floating point numbers **1.0#** not parsing properly
+- Allow (but ignore) typecasting in For statements **For A As Integer**
+- Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.
 
 **0.4.1.2**
 

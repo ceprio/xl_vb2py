@@ -142,7 +142,6 @@ in_vb_module_tests.extend([
 ])
 
 
-
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
 TestClass1 = addTestsTo(BasicTest, tests, dialect='vb.net')

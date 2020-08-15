@@ -419,7 +419,7 @@ preserve_keyword ::=
              c"Preserve", wsp+
 
 array_indicator ::=
-              wsp*, "()"
+              wsp*, "(", (wsp*, "Of", wsp+, object)?, ")"
 
 string_size_definition ::=
 			  wsp*, "*", wsp*, string_size_indicator
