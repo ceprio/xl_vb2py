@@ -82,7 +82,7 @@ binaryinteger ::=
               [0-1]
 
 floatnumber ::=
-             ("-"?, (exponentfloat / pointfloat)) / (integer, "#"), "!"?, "@"?
+             ("-"?, (exponentfloat / pointfloat / integer)), ("!" / "@" / "#")?
 
 <pointfloat> ::=
              (intpart?, fraction) / (intpart, ".")

@@ -77,6 +77,9 @@ tests.extend([
 'a = #11:59:12 AM#',
 'a = #11:59:12#',
 'a = #1/10#',
+'a = 1#',
+'a = 1.#',
+'a = 1.2#',
 'a = 10 Mod 2',
 'a = 1000!',
 'a = "12!12"',
@@ -2723,6 +2726,18 @@ vb_dot_net_tests.extend([
     'Imports this = A',
     'Imports this = A.B.C',
 ])
+
+
+# For statements with type declaration
+vb_dot_net_tests.append('''
+    For A As Integer = 1 To 10
+    Next 
+''')
+vb_dot_net_tests.append('''
+    For A As Microsoft.Thing In Some.Collection
+    Next 
+''')
+
 
 failures = [
 ]
