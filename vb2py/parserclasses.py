@@ -628,6 +628,7 @@ class VBCodeBlock(VBNamespace):
             "end_statement": (VBEnd, self.blocks),
             "return_statement": (VBReturnStatement, self.blocks),
             "imports_statement": (VBImports, self.non_rendered_lines),
+            "try_statement": (VBTry, self.blocks),
 
             "for_statement": (VBFor, self.blocks),
             "inline_for_statement": (VBFor, self.blocks),
@@ -880,6 +881,7 @@ class VBObject(VBNamespace):
         self.primary = None
         self.modifiers = []
         self.implicit_object = None
+        self.typecast = None
 
         self.auto_class_handlers.update({
             "primary": (VBPrimary, "primary"),
@@ -2710,7 +2712,84 @@ class VBFunction(VBSubroutine):
         return ret
 
 
-#
+class VBCatchBlock(VBCodeBlock):
+    """Represents a catch block"""
+
+    def __init__(self, scope="Private"):
+        """Initialise the catch block"""
+        super(VBCatchBlock, self).__init__(scope)
+        #
+        self.object = self.when_clause = self.block = None
+        self.auto_class_handlers = {
+            "object": (VBObject, "object"),
+            "catch_when_clause": (VBExpression, "when_clause"),
+            "catch_block": (VBCodeBlock, "block"),
+        }
+
+    def renderAsCode(self, indent=0):
+        """Render the catch part"""
+        if self.object:
+            object_part = ' %s%s' % (
+                self.object.renderAsCode(indent + 1),
+                self.object.typecast.replace(' As ', ' as ') if self.object.typecast else ''
+            )
+        else:
+            object_part = ''
+        if self.when_clause:
+            block_start = '%sif %s:\n' % (
+                self.getIndent(indent + 1),
+                self.when_clause.renderAsCode()
+            )
+            block_end = '%selse:\n%sraise\n' % (
+                self.getIndent(indent + 1),
+                self.getIndent(indent + 2),
+            )
+            block_indent = indent + 1
+        else:
+            block_start = block_end = ''
+            block_indent = indent
+        if self.block:
+            block_part = self.block.renderAsCode(block_indent + 1)
+        else:
+            block_part = '%spass\n' % self.getIndent(block_indent + 1)
+        #
+        indent_string = self.getIndent(indent)
+        return f'{indent_string}except{object_part}:\n{block_start}{block_part}{block_end}'
+
+
+class VBTry(VBCodeBlock):
+    """Represents a Try ... Catch block"""
+
+    def __init__(self, scope="Private"):
+        """Initialise the Try block"""
+        super(VBTry, self).__init__(scope)
+        #
+        self.try_block = self.finally_block = None
+        self.catch_blocks = []
+        self.auto_class_handlers = {
+            "try_block": (VBCodeBlock, "try_block"),
+            "finally_statement": (VBCodeBlock, "finally_block"),
+            "catch_statement": (VBCatchBlock, self.catch_blocks),
+        }
+
+    def renderAsCode(self, indent=0):
+        """Render the try block"""
+        if self.try_block:
+            try_part = self.try_block.renderAsCode(indent + 1)
+        else:
+            try_part = '%spass\n' % self.getIndent(indent + 1)
+        if self.finally_block:
+            finally_part = self.finally_block.renderAsCode(indent + 1)
+        else:
+            finally_part = '%spass\n' % self.getIndent(indent + 1)
+        #
+        catch_parts = [part.renderAsCode(indent) for part in self.catch_blocks]
+        catch_part = ''.join(catch_parts)
+        indent_string = self.getIndent(indent)
+        #
+        return f'{indent_string}try:\n{try_part}{catch_part}{indent_string}finally:\n{finally_part}'
+
+
 class VBIf(VBCodeBlock):
     """Represents an if block"""
 
