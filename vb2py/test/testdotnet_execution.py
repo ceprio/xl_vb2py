@@ -322,7 +322,7 @@ End Try
 in_vb_module_tests.append(('''
 b = 1
 Try
-    a = 1
+    a = 1 / 0
 Catch 
     a = 2
     Exit Try
