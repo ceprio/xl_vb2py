@@ -759,6 +759,7 @@ class VBVariable(VBNamespace):
         "preserve_keyword",
         "implicit_object",
         "param_array",
+        "typecast",
     ]
 
     skip_handlers = [

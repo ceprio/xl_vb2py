@@ -216,6 +216,8 @@ normal_keyword ::=
 % if dialect == 'vb.net':
     / c"Return" / c"Class" / c"Module" / c"Imports" /
     c"Try" / c"Catch" / "Finally"
+% else:
+    / c"Global"
 % endif
             ), (wsp / line_end)
 
