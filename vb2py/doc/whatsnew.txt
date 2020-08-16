@@ -6,6 +6,7 @@
 - Fixed issue with floating point numbers **1.0#** not parsing properly
 - Allow (but ignore) typecasting in For statements **For A As Integer**
 - Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.
+- Fixed issue with expressions with brackets around a simple object **(this).Value + 10**
 
 **0.4.1.2**
 
