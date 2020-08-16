@@ -2751,6 +2751,14 @@ vb_dot_net_tests.append('''
 vb_dot_net_tests.append('Dim X as New List(Of String)')
 vb_dot_net_tests.append('Dim X as New List(Of String.Thing)')
 
+
+# Brackets and method calls in an expression
+vb_dot_net_tests.append('a = (value).ToString')
+vb_dot_net_tests.append('a = (value).ToString()')
+vb_dot_net_tests.append('a = (value).ToString + "something else"')
+
+
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

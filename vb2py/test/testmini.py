@@ -22,9 +22,10 @@ tests.extend([
 ])
 
 
-# Casting for lists
-vb_dot_net_tests.append('Dim X as New List(Of String)')
-vb_dot_net_tests.append('Dim X as New List(Of String.Thing)')
+# Brackets and method calls in an expression
+vb_dot_net_tests.append('a = (value).ToString')
+vb_dot_net_tests.append('a = (value).ToString()')
+vb_dot_net_tests.append('a = (value).ToString + "something else"')
 
 
 class ParsingTest(unittest.TestCase):
