@@ -47,7 +47,11 @@ block_terminator ::=
               (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
 
 end_terminator ::=
-			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using")) / "END"
+			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using"
+% if dialect == 'vb.net':
+    / c"Try" / c"Catch"
+% endif
+)) / "END"
 
 
 # The inline_if_statement appears here and also as a statement because sometimes the
@@ -142,6 +146,7 @@ compound_statement ::=
              module_definition
 % if dialect == 'vb.net':
     / region_statement
+    / try_statement
 % endif
 
 isolated_single_line ::=
@@ -209,7 +214,8 @@ normal_keyword ::=
 #
 
 % if dialect == 'vb.net':
-    / c"Return" / c"Class" / c"Module" / c"Imports"
+    / c"Return" / c"Class" / c"Module" / c"Imports" /
+    c"Try" / c"Catch" / "Finally"
 % endif
             ), (wsp / line_end)
 
@@ -554,7 +560,11 @@ resume_location ::=
 
 
 exit_statement ::=
-             c"Exit", wsp+, (c"Sub" / c"Function" / c"For" / c"Do" / c"Loop" / c"Property")
+             c"Exit", wsp+, (c"Sub" / c"Function" / c"For" / c"Do" / c"Loop" / c"Property"
+% if dialect == 'vb.net':
+    / c"Try"
+% endif
+)
 
 
 name_statement ::=

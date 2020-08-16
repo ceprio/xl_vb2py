@@ -22,11 +22,104 @@ tests.extend([
 ])
 
 
-# Brackets and method calls in an expression
-vb_dot_net_tests.append('a = (value).ToString')
-vb_dot_net_tests.append('a = (value).ToString()')
-vb_dot_net_tests.append('a = (value).ToString + "something else"')
+# Try statements
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch
+    a = 2
+End Try
+''')
 
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError
+    a = 2
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError
+    a = 2
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError As Err
+    a = 2
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError As Err When B = 2
+    a = 2
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError As Err When B = 2
+    a = 2
+    Exit Try
+    b = 2
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError As Err When B = 2
+    a = 2
+    Exit Try
+    b = 2
+Catch OtherError
+    b = 3
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch ValueError.ThisError As Err When B = 2
+    a = 2
+    Exit Try
+    b = 2
+Catch OtherError
+    b = 3
+Finally
+    b = 4
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+Catch ValueError.ThisError As Err When B = 2
+Catch OtherError
+Finally
+End Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    a = 1
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+    Exit    Try  
+    b = 2
+Catch    OtherError   
+    b = 3
+Finally
+    b = 4
+End     Try
+''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

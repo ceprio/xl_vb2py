@@ -18,3 +18,36 @@ imports_statement ::=
 
 aliasname ::=
     object
+
+
+try_statement ::=
+    try_start_statement,
+    try_block?,
+    catch_statement*,
+    finally_statement?,
+    try_end_statement
+
+
+try_start_statement ::=
+    c"Try", line_end
+
+try_block ::=
+    (?-((label_statement, wsp+)?, (try_end_statement / c"Catch" / c"Finally")), line)+
+
+catch_statement ::=
+    c"Catch", (wsp+, object)?, catch_when_clause?, line_end, catch_block?
+
+catch_when_clause ::=
+    wsp+, c"When", wsp+, expression
+
+catch_block ::=
+    (?-((label_statement, wsp+)?, (try_end_statement / c"Catch" / c"Finally")), line)+
+
+finally_statement ::=
+    c"Finally", line_end, finally_block?
+
+finally_block ::=
+    block
+
+try_end_statement ::=
+    c"End", wsp+, "Try"
