@@ -7,6 +7,7 @@
 - Allow (but ignore) typecasting in For statements **For A As Integer**
 - Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.
 - Fixed issue with expressions with brackets around a simple object **(this).Value + 10**
+- Implemented conversion of .NET **Try ... Catch** blocks
 
 **0.4.1.2**
 

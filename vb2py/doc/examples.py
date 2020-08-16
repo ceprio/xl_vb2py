@@ -131,6 +131,47 @@ ReDim Preserve D(5)
 ReDim C(20)
 
     """],
+
+        ["try", "", """
+'
+' Try ... Catch statements are converted to try ... except blocks
+Try
+    a = 1 / 0
+Catch ZeroDivisionError As Err
+    a = 1000
+Finally
+    b = 1
+End Try
+
+'
+' If an Exit Try is found then an additional try ... exept is created
+' to allow breaking out of the current Except clause
+Try
+    a = 1 / 0
+Catch
+    a = 1000
+    Exit Try
+    b = 2000
+Finally
+    b = 1
+End Try
+
+'
+' If there is a "When" clause then this is implemented as an If block 
+' However, the behaviour is not likely to be identical in Python in the
+' current implementation
+a = 1
+Try
+    a = 1 / 0
+Catch ZeroDivisionError When a = 1
+    a = 1000
+    b = 2000
+Finally
+    b = 1
+End Try
+
+    """],
+
     [None, None, None],
 
     ["sub", "", """
