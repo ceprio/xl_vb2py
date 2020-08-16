@@ -115,6 +115,7 @@ tests.extend(["a = a = 1",
               'a = x Imp b',
 ])
 
+
 # Things that failed
 tests.extend([
             "a = -(x*x)",
@@ -2855,6 +2856,16 @@ Finally
     b = 4
 End     Try
 ''')
+
+# Weird short circuiting
+vb_dot_net_tests.extend([
+    'a = 1 AndAlso 2',
+    'If A AndAlso B Then C = 1',
+    'a = 1 OrElse 2',
+    'If A OrElse B Then C = 1',
+])
+
+
 
 failures = [
 ]

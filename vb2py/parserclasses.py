@@ -1351,6 +1351,8 @@ class VBOperation(VBExpressionPart):
         "or": "or",
         "and": "and",  # TODO: are there any more?
         "and not": "and not",
+        "andalso": "and",
+        "orelse": "or",
         "or not": "or not",
         "isnot": "is not",
         "xor": "^",

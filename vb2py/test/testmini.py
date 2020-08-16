@@ -16,110 +16,14 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 vb_dot_net_tests = []
 
-# Explicit Bare calls with arguments
-tests.extend([
-
-])
-
-
-# Try statements
+# Weird short circuiting
 vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch
-    a = 2
-End Try
+Using f As New Open('/tmp/test.txt', 'w')
+    f.write("Hello")
+End Using
 ''')
 
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError
-    a = 2
-End Try
-''')
 
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError
-    a = 2
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError As Err
-    a = 2
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError As Err When B = 2
-    a = 2
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError As Err When B = 2
-    a = 2
-    Exit Try
-    b = 2
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError As Err When B = 2
-    a = 2
-    Exit Try
-    b = 2
-Catch OtherError
-    b = 3
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch ValueError.ThisError As Err When B = 2
-    a = 2
-    Exit Try
-    b = 2
-Catch OtherError
-    b = 3
-Finally
-    b = 4
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-Catch ValueError.ThisError As Err When B = 2
-Catch OtherError
-Finally
-End Try
-''')
-
-vb_dot_net_tests.append('''
-Try
-    a = 1
-Catch    ValueError.ThisError   As    Err    When   B = 2  
-    a = 2
-    Exit    Try  
-    b = 2
-Catch    OtherError   
-    b = 3
-Finally
-    b = 4
-End     Try
-''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

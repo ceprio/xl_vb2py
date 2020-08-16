@@ -40,6 +40,9 @@ operation ::=
              "+" / "-" / "*" / "/" / "^" / "&&" / "&" / "||" / "\\" / c"Not" / c"Mod" / c"Imp" / compare
 
 compare ::=
+%if dialect == 'vb.net':
+    c"AndAlso" / c"OrElse" /
+%endif
              (c"And Not") / c"Or Not" / c"Or" / c"And" / c"Xor" / "=" / "<=" / ">=" / "<>" / "<" / ">" / c"IsNot" / c"Is" / c"Like"
 
 sign ::=

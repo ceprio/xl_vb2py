@@ -8,6 +8,7 @@
 - Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.
 - Fixed issue with expressions with brackets around a simple object **(this).Value + 10**
 - Implemented conversion of .NET **Try ... Catch** blocks
+- Implemented conversion of **AndAlso** and **OrElse** comparisons in .NET
 
 **0.4.1.2**
 
