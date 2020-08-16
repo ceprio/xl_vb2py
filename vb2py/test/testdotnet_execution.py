@@ -273,14 +273,18 @@ End Try
 in_vb_module_tests.append(('''
 b = 1
 Try
-    a = 1 / 0
-Catch ZeroDivisionError As Err When b = 2
-    a = 2
-Catch
-    a = 3
+    Try
+        a = 1 / 0
+    Catch ZeroDivisionError As Err When b = 2
+        a = 2
+    Catch
+        a = 3
+    End Try
+Catch ZeroDivisionError
+    a = 4
 End Try
 ''', {
-    'a': 3, 'b': 1,
+    'a': 4, 'b': 1,
 }))
 
 
