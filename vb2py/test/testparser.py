@@ -2866,6 +2866,11 @@ vb_dot_net_tests.extend([
 ])
 
 
+# String Array initialisation
+vb_dot_net_tests.extend([
+    'Dim cydiashsh As String() = New String() {","}',
+])
+
 
 failures = [
 ]

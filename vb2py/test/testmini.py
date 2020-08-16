@@ -16,12 +16,11 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 vb_dot_net_tests = []
 
-# Weird short circuiting
-vb_dot_net_tests.append('''
-Using f As New Open('/tmp/test.txt', 'w')
-    f.write("Hello")
-End Using
-''')
+
+# String Array initialisation
+vb_dot_net_tests.extend([
+    'Dim cydiashsh As String() = New String() {","}',
+])
 
 
 

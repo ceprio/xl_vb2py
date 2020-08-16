@@ -4,7 +4,7 @@
 
 
 expression ::=
-             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, par_expression,
+             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, (par_expression, initializer_list_literal?),
              (operation, par_expression)*) / line_expression
 
 
@@ -19,7 +19,8 @@ attributes ::=
     point / (l_bracket, expression, r_bracket) / list_literal / base_expression
 % endif
 
-
+initializer_list_literal ::=
+    list_literal
 
 base_expression ::=
 			  simple_expr, (operation, simple_expr)?

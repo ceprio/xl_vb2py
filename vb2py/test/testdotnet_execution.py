@@ -303,7 +303,7 @@ in_vb_module_tests.append(('''
 b = 1
 Try
     a = 1
-Catch 
+Catch
     a = 2
 Finally
     b = 2
@@ -315,7 +315,7 @@ in_vb_module_tests.append(('''
 b = 1
 Try
     a = 1 / 0
-Catch 
+Catch
     a = 2
 Finally
     b = 2
@@ -327,7 +327,7 @@ in_vb_module_tests.append(('''
 b = 1
 Try
     a = 1 / 0
-Catch 
+Catch
     a = 2
     Exit Try
     a = 3
@@ -338,6 +338,27 @@ End Try
     'a': 2, 'b': 2
 }))
 
+
+# Array initialization
+in_vb_module_tests.append(('''
+    Dim _A As String() = New String() {"1", "2", "3"}
+    a = _A(0)
+    b = _A(1)
+    c = _A(2)
+''', {
+    'a': '1', 'b': '2', 'c': '3',
+}))
+
+in_vb_module_tests.append(('''
+    Function _ReturnIt(Array, Index)
+        Return Array(Index)
+    End Function
+    a = _ReturnIt(New String() {"1", "2", "3"}, 0)
+    b = _ReturnIt(New String() {"1", "2", "3"}, 1)
+    c = _ReturnIt(New String() {"1", "2", "3"}, 2)
+''', {
+    'a': '1', 'b': '2', 'c': '3',
+}))
 
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)

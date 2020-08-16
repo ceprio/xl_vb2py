@@ -1134,6 +1134,7 @@ class VBExpression(VBNamespace):
         super(VBExpression, self).__init__(scope)
         self.parts = []
         self.new_keyword = None
+        self.initializer_list_literal = None
         self.auto_class_handlers.update({
             "sign": (VBExpressionPart, self.parts),
             "pre_not": (VBExpressionPart, self.parts),
@@ -1142,6 +1143,7 @@ class VBExpression(VBNamespace):
             "operation": (VBOperation, self.parts),
             "pre_named_argument": (VBExpressionPart, self.parts),
             "pre_typeof": (VBUnrendered, self.parts),
+            "initializer_list_literal": (VBListLiteral, "initializer_list_literal"),
         })
         self.operator_groupings = []  # operators who requested regrouping (eg 'a Like b' -> 'Like(a,b)')
 
@@ -1154,7 +1156,9 @@ class VBExpression(VBNamespace):
         # code is very brittle but it might be a reasonable 80/20 solution.
         # We basically look to see if their has been a call
         if self.new_keyword:
-            if not code.strip().endswith(')'):
+            if self.initializer_list_literal:
+                code = 'VBArray.createFromData(%s)' % self.initializer_list_literal.renderAsCode()
+            elif not code.strip().endswith(')'):
                 code += '()'
         #
         return code
