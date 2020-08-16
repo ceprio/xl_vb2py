@@ -144,7 +144,7 @@ Finally
 End Try
 
 '
-' If an Exit Try is found then an additional try ... exept is created
+' If an Exit Try is found then an additional try ... except is created
 ' to allow breaking out of the current Except clause
 Try
     a = 1 / 0
