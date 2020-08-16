@@ -491,6 +491,14 @@ class _VBFiles:
 VBFiles = _VBFiles()
 
 
+class VBExitTry(Exception):
+    """A fake exception used to break out of Catch clauses
+
+    This enables the "Exit Try" statement to work properly in Python.
+
+    """
+
+
 class _App:
     """Represents the App object in VB"""
 

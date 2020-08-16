@@ -663,9 +663,33 @@ class VBCodeBlock(VBNamespace):
         # Watch out for the block not containing any statements (could be all comments!)
         if not self.containsStatements():
             self.blocks.append(VBPass())
+        if self.containsExitTry():
+            fake_try = '%stry:\n' % self.getIndent(indent)
+            fake_except = '%sexcept VBExitTry:\n%spass\n' % (
+                self.getIndent(indent),
+                self.getIndent(indent + 1),
+            )
+            block_indent = indent + 1
+        else:
+            fake_try = ''
+            fake_except = ''
+            block_indent = indent
         #
-        return "".join([block.renderAsCode(indent) for block in self.blocks])
+        code_block = "".join([block.renderAsCode(block_indent) for block in self.blocks])
+        return f'{fake_try}{code_block}{fake_except}'
 
+    def containsExitTry(self):
+        """Return True if this block includes an 'Exit Try'
+
+        Exit Try is not directly supported in Python so we have to pull some
+        trick of inserting a fake try block to catch it.
+
+        """
+        for block in self.blocks:
+            if isinstance(block, VBExitStatement) and block.getExitType() == 'Try':
+                return True
+        else:
+            return False
 
 #
 class VBUnrenderedBlock(VBCodeBlock):
@@ -2224,18 +2248,25 @@ class VBExplicitCall(VBCodeBlock):
 class VBExitStatement(VBConsumer):
     """Represents an exit statement"""
 
+    def getExitType(self):
+        """Return the exit type"""
+        return self.element.text.split(' ')[-1]
+
     def renderAsCode(self, indent=0):
         """Render this element as code"""
         indenter = self.getIndent(indent)
-        if self.element.text == "Exit Function":
+        exit_type = self.getExitType()
+        if exit_type == "Function":
             return "%sreturn %s\n" % (indenter, Config["Functions", "ReturnVariableName"])
-        elif self.element.text == "Exit Sub":
+        elif exit_type == "Sub":
             return "%sreturn\n" % indenter
-        elif self.element.text == "Exit Property":
+        elif exit_type == "Property":
             if self.getParentProperty("property_decorator_type") == "Get":
                 return "%sreturn %s\n" % (indenter, Config["Functions", "ReturnVariableName"])
             else:
                 return "%sreturn\n" % indenter
+        elif exit_type == 'Try':
+            return "%sraise VBExitTry\n" % indenter
         else:
             return "%sbreak\n" % indenter
 
