@@ -2953,6 +2953,13 @@ vb_dot_net_tests.append(
 )
 
 
+# Closures
+vb_dot_net_tests.extend([
+    'a = GetProcess().Any(Function(x) x.id = id)',
+    'a = GetProcess().Any(Function(x) x.id = id, 10, Function() 123)',
+    'Dim F = Function(x, y) x + y',
+])
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

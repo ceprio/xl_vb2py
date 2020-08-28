@@ -391,6 +391,46 @@ in_vb_module_tests.append(('''
     'a': '1', 'b': '2', 'c': '3',
 }))
 
+# Closures
+in_vb_module_tests.append(('''
+    Dim _A = Function(x) x*2
+    b = _A(10)
+''', {
+    'b': 20
+}))
+
+in_vb_module_tests.append(('''
+    Dim _A = Function(x) x*2
+    b = _B(_A, 10)
+    
+    Function _B(x, y)
+        Return x(y)
+    End Function
+''', {
+    'b': 20
+}))
+
+in_vb_module_tests.append(('''
+    b = _B(Function(x, y) x+y, 10, 20)
+    
+    Function _B(x, y, z)
+        Return x(y, z)
+    End Function
+''', {
+    'b': 30
+}))
+
+in_vb_module_tests.append(('''
+    b = _B(Function() 10)
+    
+    Function _B(x)
+        Return x()
+    End Function
+''', {
+    'b': 10
+}))
+
+
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
 TestClass1 = addTestsTo(BasicTest, tests, dialect='vb.net')

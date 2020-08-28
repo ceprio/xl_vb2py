@@ -54,3 +54,6 @@ try_end_statement ::=
 
 throw_statement ::=
     c"Throw", wsp+, expression
+
+closure ::=
+    c"Function", wsp*, formal_param_list?, wsp*, expression

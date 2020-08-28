@@ -13,6 +13,7 @@
 - Implemented Using when has an "=" rather than an "As"
 - Implemented **Exit While** statement
 - Implemented automatic continuations when within bracketted lists **(a, b, \n c)**
+- Fixed parsing of enums with types **Enum X As Integer**
 
 **0.4.1.2**
 

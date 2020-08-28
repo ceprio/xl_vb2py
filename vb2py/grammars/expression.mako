@@ -10,7 +10,7 @@ expression ::=
 
 par_expression ::=
 % if dialect == 'vb.net':
-    point / (l_bracket, expression, r_bracket, (attributes, wsp*)?) / list_literal / base_expression
+    closure / point / (l_bracket, expression, r_bracket, (attributes, wsp*)?) / list_literal / base_expression
 
 attributes ::=
     ".", atom

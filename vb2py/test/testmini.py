@@ -17,48 +17,15 @@ tests = []
 
 # Nested do  loop with line numbers
 
-tests.extend([
-"""
-Enum thing
-    _one = 1
-    _two = 2
-    _three = 3
-    _four = 4
-End Enum
-""",
-"""
-Enum thing
-    _one
-    _two
-    _three
-    _four
-End Enum
-""",
-"""
-Public Enum Stats
-xStrength = 1
-Endurance
-xIntelligence
-Agility
-Spirit
-Stat_count
-End Enum
-""",
-    """
-Public Enum Stats As Integer
-xStrength = 1
-Endurance
-xIntelligence
-Agility
-Spirit
-Stat_count
-End Enum
-"""
-])
-
+tests.extend
 vb_dot_net_tests = []
 
-
+# Closures
+vb_dot_net_tests.extend([
+    'a = GetProcess().Any(Function(x) x.id = id)',
+    'a = GetProcess().Any(Function(x) x.id = id, 10, Function() 123)',
+    'Dim F = Function(x, y) x + y',
+])
 
 
 class ParsingTest(unittest.TestCase):
