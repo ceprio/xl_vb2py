@@ -1077,19 +1077,28 @@ class VBUsing(VBNamespace):
         #
         self.identifier = None
         self.block = None
-        self.expression = None
+        self.type = None
+        self.initial_value = None
         #
         self.auto_class_handlers.update({
-            "block": (VBCodeBlock, "block"),
-            "expression": (VBExpression, "expression"),
+            "using_block": (VBCodeBlock, "block"),
+            "identifier": (VBVariableDefinition, "identifier"),
+            "using_type_definition": (VBObject, "type"),
+            "object_initial_value": (VBExpression, "initial_value"),
         })
 
     def renderAsCode(self, indent=0):
         """Render this attribute"""
-        code_block = self.block.renderAsCode(indent + 1) if self.block else '%spass\n' % self.getIndent(indent + 1)
+        code_block = self.block.renderAsCode(indent + 1) if (self.block and self.block.renderAsCode()) else '%spass\n' % self.getIndent(indent + 1)
+        #
+        if self.initial_value:
+            value = self.initial_value.renderAsCode()
+        else:
+            value = self.type.renderAsCode()
+        #
         return '%swith %s as %s:\n%s' % (
             self.getIndent(indent),
-            self.expression.renderAsCode(),
+            value,
             self.identifier,
             code_block,
         )

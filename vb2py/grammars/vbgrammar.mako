@@ -342,13 +342,17 @@ external_declaration ::=
 
 
 using_statement ::=
-        using_start_statement, block?, using_end_statement
+        using_start_statement, using_block?, using_end_statement
+
+using_block ::= block
 
 using_start_statement ::=
-        label_definition?, "Using", wsp+, identifier, wsp+, (c"As" / "="), wsp+, expression, line_end
+        label_definition?, "Using", wsp+, identifier, using_type_definition?, object_initial_value?
 
 using_end_statement ::=
         label_definition?, "End", wsp+, "Using"
+
+using_type_definition ::= wsp+, c"As", wsp+, object
 
 label_definition ::=
         label_statement, (wsp+ / line_end)
