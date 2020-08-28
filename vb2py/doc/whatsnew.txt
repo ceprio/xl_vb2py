@@ -11,6 +11,7 @@
 - Implemented conversion of **AndAlso** and **OrElse** comparisons in .NET
 - Implemented initialization of new array variables within an expression in .NET
 - Implemented Using when has an "=" rather than an "As"
+- Implemented **Exit While** statement
 
 **0.4.1.2**
 

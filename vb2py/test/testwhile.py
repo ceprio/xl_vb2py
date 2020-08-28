@@ -47,6 +47,17 @@ Do While a<=10
 Loop
 """, {"a" : 2, "b" : 1}))
 
+# Simple while loop with exit while
+tests.append(("""
+a = 1
+b = 0
+While a<=10
+    b = b + a
+    a = a + 1
+    Exit While
+End While
+""", {"a" : 2, "b" : 1}))
+
 # Nested Do While Loop
 tests.append(("""
 a = 0

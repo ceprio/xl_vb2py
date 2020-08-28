@@ -562,7 +562,7 @@ resume_location ::=
 
 
 exit_statement ::=
-             c"Exit", wsp+, (c"Sub" / c"Function" / c"For" / c"Do" / c"Loop" / c"Property"
+             c"Exit", wsp+, (c"Sub" / c"Function" / c"For" / c"Do" / c"Loop" / c"Property" / c"While"
 % if dialect == 'vb.net':
     / c"Try"
 % endif

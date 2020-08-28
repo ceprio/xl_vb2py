@@ -266,6 +266,12 @@ Wend ' other nasty comment
 """,
 
 """
+While A = 1
+    Exit While
+End While
+""",
+
+"""
 Select Case a ' nasty comment
 Case 10 ' oops
     b=1

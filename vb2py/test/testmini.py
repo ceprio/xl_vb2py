@@ -16,15 +16,15 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 # Nested do  loop with line numbers
-
+tests.append('''
+While A = 1
+    Exit While
+End While
+''')
 
 vb_dot_net_tests = []
 
 
-vb_dot_net_tests.append('''
-Using A = client.Open("asas")
-End Using
-''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
