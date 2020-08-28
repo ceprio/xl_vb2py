@@ -345,7 +345,7 @@ using_statement ::=
         using_start_statement, block?, using_end_statement
 
 using_start_statement ::=
-        label_definition?, "Using", wsp+, identifier, wsp+, c"As", wsp+, expression, line_end
+        label_definition?, "Using", wsp+, identifier, wsp+, (c"As" / "="), wsp+, expression, line_end
 
 using_end_statement ::=
         label_definition?, "End", wsp+, "Using"

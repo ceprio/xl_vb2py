@@ -2692,6 +2692,7 @@ Using client as New WebClient
 End Using
 """)
 
+
 tests.append("If IsMissing (oDoc) Then oDoc = ThisComponent")
 tests.append('If NOT oDoc.SupportsService ("com.sun.star.sheet.SpreadsheetDocument") Then Exit Function')
 tests.append('If (iSheet>= oSheets.getCount ()) Then Exit Function')
@@ -2907,6 +2908,12 @@ vb_dot_net_tests.append("""
 vb_dot_net_tests.extend([
     'Dim cydiashsh As String() = New String() {","}',
 ])
+
+# Using with an equals
+vb_dot_net_tests.append('''
+Using A = client.Open("asas")
+End Using
+''')
 
 
 failures = [
