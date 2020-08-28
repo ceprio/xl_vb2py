@@ -2467,17 +2467,6 @@ tests.append("""
         Loop 
 """)
 
-# Nested do  loop with line numbers
-vb_dot_net_tests.append("""
-        a = 0
-        Do Until a< 10
-            g = 10
-            a = a + 1
-            Do While a <10
-                doit
-112         Loop 
-111        Loop 
-""")
 
 # simple type
 tests.append("""
@@ -2884,7 +2873,7 @@ vb_dot_net_tests.append("""
             g = 10
             a = a + 1
             Do While a <10
-                doit
+                doit = 1
 112         Loop 
 111        Loop 
 """)
