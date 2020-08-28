@@ -21,11 +21,18 @@ tests.extend
 vb_dot_net_tests = []
 
 # Closures
-vb_dot_net_tests.extend([
-    'a = GetProcess().Any(Function(x) x.id = id)',
-    'a = GetProcess().Any(Function(x) x.id = id, 10, Function() 123)',
-    'Dim F = Function(x, y) x + y',
-])
+# Decorators
+
+# Using with an equals
+vb_dot_net_tests.append('''
+Using A As Integer = client.Open("asas")
+End Using
+''')
+vb_dot_net_tests.append('''
+Using A As Integer = New client.Open("asas")
+End Using
+''')
+
 
 
 class ParsingTest(unittest.TestCase):

@@ -246,7 +246,7 @@ module_definition_end_line ::=
 
 
 decorator ::=
-        "<", wsp*, qualified_object, wsp*, ">"
+        "<", wsp*, qualified_object, wsp*, ">", wsp*
 
 
 
@@ -738,6 +738,9 @@ sub_definition ::=
              sub_start_definition, sub_block?, sub_end_definition
 
 sub_start_definition ::=
+%if dialect == 'vb.net':
+    decorator?,
+%endif
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
              formal_param_list?, handler_definition?, line_end_or_colon
 
@@ -773,6 +776,9 @@ fn_definition ::=
              fn_start_definition, fn_block?, fn_end_definition
 
 fn_start_definition ::=
+%if dialect == 'vb.net':
+    decorator?,
+%endif
              label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Function", wsp+, identifier, wsp*,
              formal_param_list?, type_definition?, line_end_or_colon
 

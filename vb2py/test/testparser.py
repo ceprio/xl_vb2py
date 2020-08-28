@@ -2931,6 +2931,16 @@ Using A = client.Open("asas")
 End Using
 ''')
 
+# Using with an equals
+vb_dot_net_tests.append('''
+Using A As Integer = client.Open("asas")
+End Using
+''')
+vb_dot_net_tests.append('''
+Using A As Integer = New client.Open("asas")
+End Using
+''')
+
 # Implicit line continuations
 vb_dot_net_tests.append(
     '''MessageBox(
@@ -2959,6 +2969,29 @@ vb_dot_net_tests.extend([
     'a = GetProcess().Any(Function(x) x.id = id, 10, Function() 123)',
     'Dim F = Function(x, y) x + y',
 ])
+
+# Decorators
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Function X(Y)
+    End Function
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        <DllImport("some dll.dll")> _
+        Function X(Y)
+        End Function
+    End Class
+''')
+
 
 failures = [
 ]

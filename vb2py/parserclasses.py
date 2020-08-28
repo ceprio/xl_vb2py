@@ -2598,6 +2598,7 @@ class VBSubroutine(VBCodeBlock):
         self.shared = None
         self.handler_definition = None
         self.param_arrays_name = None
+        self.decorator = None
         #
         self.auto_class_handlers.update({
             "formal_param": (VBVariable, self.parameters),
@@ -2611,6 +2612,7 @@ class VBSubroutine(VBCodeBlock):
             "static",
             "shared",
             "handler_definition",
+            "decorator",
         ]
 
         self.skip_handlers = [
@@ -2626,6 +2628,14 @@ class VBSubroutine(VBCodeBlock):
                 "UntranslatedCode", "Handler not translated: %s\n" % self.handler_definition, indent)
         else:
             warning = ''
+        if self.decorator:
+            decorator_warning = self.getWarning(
+                'UntranslatedCode',
+                '.NET Decorators not supported: %s' % self.decorator,
+                indent,
+            ) + '\n'
+        else:
+            decorator_warning = ''
         #
         code_block = self.block.renderAsCode(indent + 1)
         locals = [declaration.renderAsCode(indent + 1) for declaration in self.block.locals]
@@ -2635,8 +2645,9 @@ class VBSubroutine(VBCodeBlock):
             decorator = '%s@classmethod\n' % self.getIndent(indent)
         else:
             decorator = ''
-        ret = "\n%s%s%sdef %s(%s):\n%s%s%s%s" % (
+        ret = "\n%s%s%s%sdef %s(%s):\n%s%s%s%s" % (
             warning,
+            decorator_warning,
             decorator,
             self.getIndent(indent),
             self.getParentProperty("enforcePrivateName")(self),
@@ -2721,6 +2732,14 @@ class VBFunction(VBSubroutine):
 
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
+        if self.decorator:
+            decorator_warning = self.getWarning(
+                'UntranslatedCode',
+                '.NET Decorators not supported: %s' % self.decorator,
+                indent,
+            ) + '\n'
+        else:
+            decorator_warning = ''
         #
         # See if we are using return statements
         just_use_return = self.checkOptionYesNo("Functions", "JustUseReturnStatement") == "Yes"
@@ -2756,7 +2775,8 @@ class VBFunction(VBSubroutine):
         else:
             last_return = 'return %s' % return_var
         #
-        ret = "\n%s%sdef %s(%s):\n%s%s%s%s%s%s%s\n" % (
+        ret = "\n%s%s%sdef %s(%s):\n%s%s%s%s%s%s%s\n" % (
+            decorator_warning,
             decorator,
             self.getIndent(indent),
             self.getParentProperty("enforcePrivateName")(self),
