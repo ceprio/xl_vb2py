@@ -629,6 +629,7 @@ class VBCodeBlock(VBNamespace):
             "return_statement": (VBReturnStatement, self.blocks),
             "imports_statement": (VBImports, self.non_rendered_lines),
             "try_statement": (VBTry, self.blocks),
+            "throw_statement": (VBThrow, self.blocks),
 
             "for_statement": (VBFor, self.blocks),
             "inline_for_statement": (VBFor, self.blocks),
@@ -2816,7 +2817,7 @@ class VBTry(VBCodeBlock):
             try_part = self.try_block.renderAsCode(indent + 1)
         else:
             try_part = '%spass\n' % self.getIndent(indent + 1)
-        if self.finally_block:
+        if self.finally_block and self.finally_block.renderAsCode():
             finally_part = self.finally_block.renderAsCode(indent + 1)
         else:
             finally_part = '%spass\n' % self.getIndent(indent + 1)
@@ -2826,6 +2827,26 @@ class VBTry(VBCodeBlock):
         indent_string = self.getIndent(indent)
         #
         return f'{indent_string}try:\n{try_part}{catch_part}{indent_string}finally:\n{finally_part}'
+
+
+class VBThrow(VBCodeBlock):
+    """Represents a Throw line"""
+
+    def __init__(self, scope="Private"):
+        """Initialise the Throw statement"""
+        super(VBThrow, self).__init__(scope)
+        #
+        self.expression = None
+        self.auto_class_handlers = {
+            "expression": (VBExpression, "expression"),
+        }
+
+    def renderAsCode(self, indent=0):
+        """Render the throw"""
+        return '{}raise {}\n'.format(
+            self.getIndent(indent),
+            self.expression.renderAsCode()
+        )
 
 
 class VBIf(VBCodeBlock):

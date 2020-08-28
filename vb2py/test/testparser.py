@@ -2858,6 +2858,30 @@ Finally
 End     Try
 ''')
 
+vb_dot_net_tests.append('''
+Try
+    Throw ValueError
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    Throw New ValueError
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    Throw New ValueError("this is an error")
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
+
 # Weird short circuiting
 vb_dot_net_tests.extend([
     'a = 1 AndAlso 2',

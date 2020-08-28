@@ -123,7 +123,7 @@ valid_statement ::=
 			   end_statement /
 			   seek_statement
 % if dialect == 'vb.net':
-    / return_statement / imports_statement
+    / return_statement / imports_statement / throw_statement
 % endif
 )
 
@@ -215,7 +215,7 @@ normal_keyword ::=
 
 % if dialect == 'vb.net':
     / c"Return" / c"Class" / c"Module" / c"Imports" /
-    c"Try" / c"Catch" / "Finally"
+    c"Try" / c"Catch" / c"Finally" / c"Throw"
 % else:
     / c"Global"
 % endif

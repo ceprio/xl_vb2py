@@ -338,6 +338,37 @@ End Try
     'a': 2, 'b': 2
 }))
 
+in_vb_module_tests.append(('''
+b = 1
+Try
+    a = 1
+    Throw New ValueError("This is an error")
+Catch ValueError
+    a = 2
+Finally 
+    
+End Try
+''', {
+    'a': 2, 'b': 1
+}))
+
+in_vb_module_tests.append(('''
+b = 1
+Try
+    Try
+        a = 1
+        Throw New IndexError("This is an error")
+    Catch ValueError
+        a = 2
+    Finally 
+        b = 3
+    End Try
+Catch
+End Try
+''', {
+    'a': 1, 'b': 3
+}))
+
 
 # Array initialization
 in_vb_module_tests.append(('''

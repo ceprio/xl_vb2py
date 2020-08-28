@@ -21,18 +21,29 @@ tests = []
 vb_dot_net_tests = []
 
 
-# String Array initialisation
-vb_dot_net_tests.append("""
-        a = 0
-        Do Until a< 10
-            g = 10
-            a = a + 1
-            Do While a <10
-                doit()
-112         Loop 
-111        Loop 
-""")
+vb_dot_net_tests.append('''
+Try
+    Throw ValueError
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
 
+vb_dot_net_tests.append('''
+Try
+    Throw New ValueError
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
+
+vb_dot_net_tests.append('''
+Try
+    Throw New ValueError("this is an error")
+Catch    ValueError.ThisError   As    Err    When   B = 2  
+    a = 2
+End     Try
+''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

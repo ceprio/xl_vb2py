@@ -52,3 +52,5 @@ finally_block ::=
 try_end_statement ::=
     c"End", wsp+, "Try"
 
+throw_statement ::=
+    c"Throw", wsp+, expression
