@@ -14,14 +14,24 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 
 tests = []
+
+# Nested do  loop with line numbers
+
+
 vb_dot_net_tests = []
 
 
 # String Array initialisation
-vb_dot_net_tests.extend([
-    'Dim cydiashsh As String() = New String() {","}',
-])
-
+vb_dot_net_tests.append("""
+        a = 0
+        Do Until a< 10
+            g = 10
+            a = a + 1
+            Do While a <10
+                doit()
+112         Loop 
+111        Loop 
+""")
 
 
 class ParsingTest(unittest.TestCase):

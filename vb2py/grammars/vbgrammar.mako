@@ -601,7 +601,7 @@ do_end_statement ::=
                 label_definition?, c"Loop", (post_until_clause / post_while_clause)?
 
 
-do_block ::= (?-(c"Loop", (wsp/line_end)), line)+
+do_block ::= (?-(label_definition?, c"Loop", (wsp/line_end)), line)+
 
 while_clause ::=
                 (wsp+, c"While", wsp+, expression)

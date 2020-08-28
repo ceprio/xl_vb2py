@@ -2467,6 +2467,18 @@ tests.append("""
         Loop 
 """)
 
+# Nested do  loop with line numbers
+vb_dot_net_tests.append("""
+        a = 0
+        Do Until a< 10
+            g = 10
+            a = a + 1
+            Do While a <10
+                doit
+112         Loop 
+111        Loop 
+""")
+
 # simple type
 tests.append("""
 Type myType
@@ -2864,6 +2876,18 @@ vb_dot_net_tests.extend([
     'a = 1 OrElse 2',
     'If A OrElse B Then C = 1',
 ])
+
+# Nested do  loop with line numbers
+vb_dot_net_tests.append("""
+        a = 0
+        Do Until a< 10
+            g = 10
+            a = a + 1
+            Do While a <10
+                doit
+112         Loop 
+111        Loop 
+""")
 
 
 # String Array initialisation

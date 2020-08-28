@@ -206,6 +206,18 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParses(text)
 
+    def testDoWithLabel(self):
+        """testDoWithLabel: do loop with a label"""
+        text = '''
+            Do While a <10
+                doi = 1
+112         Loop 
+        '''
+        self._setUnsafe()
+        self.assertParses(text)
+        self._setSafe()
+        self.assertParses(text)
+
     def testBadlyFormedWith(self):
         """testBadlyFormedWith: badly formed with should work"""
         text = '''
