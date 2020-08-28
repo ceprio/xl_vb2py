@@ -16,15 +16,33 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 # Nested do  loop with line numbers
-tests.append('''
-While A = 1
-    Exit While
-End While
-''')
+
 
 vb_dot_net_tests = []
 
 
+# Implicit line continuations
+vb_dot_net_tests.append(
+    '''MessageBox(
+    "This is on another line")
+    '''
+)
+
+vb_dot_net_tests.append(
+    '''MessageBox("This is on the same line",
+    "This is on another line")
+    '''
+)
+
+vb_dot_net_tests.append(
+    '''MessageBox(   
+    "This is on the same line",
+    
+    "This is on another line", b, 
+    c, d+10, 
+    e)
+    '''
+)
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

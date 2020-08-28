@@ -8,6 +8,12 @@ blank_line ::= wsp*, NEWLINE
 <wsp> ::=
             (continuation / " " / "\t")
 
+<in_list_wsp> ::= (wsp
+%if dialect == 'vb.net':
+    / NEWLINE
+%endif
+    )
+
 <keyword_boundary> ::= wsp+ / ?"("
 
 # Also includes the hack for a unicode marker

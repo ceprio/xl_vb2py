@@ -12,6 +12,7 @@
 - Implemented initialization of new array variables within an expression in .NET
 - Implemented Using when has an "=" rather than an "As"
 - Implemented **Exit While** statement
+- Implemented automatic continuations when within bracketted lists **(a, b, \n c)**
 
 **0.4.1.2**
 

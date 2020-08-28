@@ -534,7 +534,7 @@ list ::=
              "(", bare_list, ")"
 
 bare_list ::=
-              (wsp*, positional_item*, bare_list_item?)
+              (in_list_wsp*, positional_item*, bare_list_item?)
 
 call ::=
              ?-keyword, object, parameter_list?
@@ -552,7 +552,7 @@ addressof ::=
 			 c"AddressOf", wsp+
 
 list_separator ::=
-        "," / ";"
+        in_list_wsp*, "," / ";", in_list_wsp*
 
 resume_statement ::=
         label_definition?, c"Resume", (wsp+, resume_location)?
@@ -748,7 +748,8 @@ sub_end_definition ::=
              label_definition?, c"End Sub"
 
 formal_param_list ::=
-             "(", wsp*, formal_param?, (wsp*, ",", wsp*, formal_param)*, wsp*, ")"
+             "(", in_list_wsp*, formal_param?, (in_list_wsp*, ",", in_list_wsp*, formal_param)*, in_list_wsp*, ")"
+
 
 formal_param ::=
              optional?, passing_semantics?, param_array?, (object / identifier), array_indicator?, type_definition?, default_value?

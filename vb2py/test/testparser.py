@@ -2921,6 +2921,27 @@ Using A = client.Open("asas")
 End Using
 ''')
 
+# Implicit line continuations
+vb_dot_net_tests.append(
+    '''MessageBox(
+    "This is on another line")
+    '''
+)
+vb_dot_net_tests.append(
+    '''MessageBox("This is on the same line",
+    "This is on another line")
+    '''
+)
+vb_dot_net_tests.append(
+    '''MessageBox(   
+    "This is on the same line",
+    
+    "This is on another line", b, 
+    c, d+10, 
+    e)
+    '''
+)
+
 
 failures = [
 ]
