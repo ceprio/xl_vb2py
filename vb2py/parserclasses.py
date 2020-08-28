@@ -1220,6 +1220,7 @@ class VBParExpression(VBNamespace):
             "sign": (VBExpressionPart, self.parts),
             "list_literal": (VBListLiteral, self.parts),
             "attributes": (VBExpressionAttribute, self.parts),
+            "closure": (VBClosure, self.parts),
         })
 
         self.l_bracket = self.r_bracket = ""
@@ -1250,6 +1251,25 @@ class VBParExpression(VBNamespace):
             idx = self.parts.index(item)
             rh, lh = self.parts.pop(idx + 1), self.parts.pop(idx - 1)
             item.rh, item.lh = rh, lh
+
+
+class VBClosure(VBExpression):
+    """A closure from .NET"""
+
+    def __init__(self, scope="Private"):
+        """Initialize"""
+        super(VBClosure, self).__init__(scope)
+        self.parameters = []
+        self.auto_class_handlers.update({
+            "formal_param": (VBVariable, self.parameters),
+        })
+
+    def renderAsCode(self, indent=0):
+        """Render the closure"""
+        params = [param.renderAsCode() for param in self.parameters]
+        param_text = ', '.join(params)
+        expression_text = super(VBClosure, self).renderAsCode()
+        return f'(lambda {param_text}: {expression_text})'
 
 
 class VBListLiteral(VBParExpression):

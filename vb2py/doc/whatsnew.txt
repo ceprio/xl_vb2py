@@ -14,6 +14,7 @@
 - Implemented **Exit While** statement
 - Implemented automatic continuations when within bracketted lists **(a, b, \n c)**
 - Fixed parsing of enums with types **Enum X As Integer**
+- Implemented closure functions for .NET **Dim X = Function(x) x*2**
 
 **0.4.1.2**
 
