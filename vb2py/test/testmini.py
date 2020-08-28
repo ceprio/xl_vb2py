@@ -17,32 +17,49 @@ tests = []
 
 # Nested do  loop with line numbers
 
+tests.extend([
+"""
+Enum thing
+    _one = 1
+    _two = 2
+    _three = 3
+    _four = 4
+End Enum
+""",
+"""
+Enum thing
+    _one
+    _two
+    _three
+    _four
+End Enum
+""",
+"""
+Public Enum Stats
+xStrength = 1
+Endurance
+xIntelligence
+Agility
+Spirit
+Stat_count
+End Enum
+""",
+    """
+Public Enum Stats As Integer
+xStrength = 1
+Endurance
+xIntelligence
+Agility
+Spirit
+Stat_count
+End Enum
+"""
+])
 
 vb_dot_net_tests = []
 
 
-# Implicit line continuations
-vb_dot_net_tests.append(
-    '''MessageBox(
-    "This is on another line")
-    '''
-)
 
-vb_dot_net_tests.append(
-    '''MessageBox("This is on the same line",
-    "This is on another line")
-    '''
-)
-
-vb_dot_net_tests.append(
-    '''MessageBox(   
-    "This is on the same line",
-    
-    "This is on another line", b, 
-    c, d+10, 
-    e)
-    '''
-)
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

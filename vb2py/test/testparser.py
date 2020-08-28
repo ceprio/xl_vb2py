@@ -957,6 +957,16 @@ Agility
 Spirit
 Stat_count
 End Enum
+""",
+    """
+Public Enum Stats As Integer
+xStrength = 1
+Endurance
+xIntelligence
+Agility
+Spirit
+Stat_count
+End Enum
 """
 ])
 

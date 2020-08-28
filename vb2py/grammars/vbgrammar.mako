@@ -863,7 +863,7 @@ enumeration_definition ::=
         enumeration_start_statement, enumeration_body, enumeration_end_statement
 
 enumeration_start_statement ::=
-        (scope, wsp+)?, c"Enum", wsp, identifier, line_end
+        (scope, wsp+)?, c"Enum", wsp, identifier, (wsp*, c"As", expression)?, line_end
 
 enumeration_body ::=
         (blank_line / enumeration_line)*
