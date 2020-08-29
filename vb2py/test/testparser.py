@@ -2991,6 +2991,28 @@ vb_dot_net_tests.append('''
         End Function
     End Class
 ''')
+# With no continuation marker
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Function X(Y)
+    End Function
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Class MyThing
+        <DllImport("some dll.dll")> 
+        Function X(Y)
+        End Function
+    End Class
+''')
+
 # Using with an equals
 vb_dot_net_tests.append('''
 Sub X(a, <[In]()> b)

@@ -22,18 +22,61 @@ vb_dot_net_tests = []
 
 # Closures
 # Decorators
+# Decorators
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Function X(Y)
+    End Function
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        <DllImport("some dll.dll")> _
+        Function X(Y)
+        End Function
+    End Class
+''')
+# With no continuation marker
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Function X(Y)
+    End Function
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> 
+    Class MyThing
+        <DllImport("some dll.dll")> 
+        Function X(Y)
+        End Function
+    End Class
+''')
 
+# Using with an equals
 vb_dot_net_tests.append('''
-    Protected Overrides Sub DoIt()
-    End Sub
+Sub X(a, <[In]()> b)
+End Sub
 ''')
 vb_dot_net_tests.append('''
-    Protected  Sub DoIt()
-    End Sub
+Function X(a, <[In]()> b)
+End Function
 ''')
 vb_dot_net_tests.append('''
-     Overrides Sub DoIt()
-    End Sub
+Function X(a, <[In](), Out()> b)
+End Function
 ''')
 
 

@@ -249,7 +249,7 @@ module_definition_end_line ::=
 
 
 decorator ::=
-        "<", wsp*, qualified_object, wsp*, ">", wsp*
+        "<", wsp*, qualified_object, wsp*, ">", wsp*, line_end?
 
 
 
