@@ -1778,9 +1778,8 @@ class VBClassModule(VBModule):
                 return "%s%s" % (prefix, self.enforcePrivateName(obj))
         raise UnresolvableName("Name '%s' is not known in this namespace" % name)
 
-    def assignParent(self, parent):
-        """Set our parent"""
-        super(VBClassModule, self).assignParent(parent)
+    def finalizeObject(self):
+        """Finish setup of this object"""
         self.identifier = self.classname
         self.registerAsGlobal()
 
@@ -2721,13 +2720,12 @@ class VBSubroutine(VBCodeBlock):
         else:
             return ""
 
-    def assignParent(self, *args, **kw):
-        """Assign our parent
+    def finalizeObject(self):
+        """Finalize setup
 
-            We can use this opportunity to now determine if we are a global
+        We can use this opportunity to now determine if we are a global
 
-            """
-        super(VBSubroutine, self).assignParent(*args, **kw)
+        """
         #
         # Check if we will be considered a global for the project
         if hasattr(self, "parent"):
@@ -3646,13 +3644,8 @@ class VB2PYDirective(VBCodeBlock):
             raise DirectiveError("Directive not understood: '%s'" % self.directive_type)
         return ""
 
-    def assignParent(self, *args, **kw):
-        """Assign our parent
-
-            We can use this opportunity to now determine if we are a global
-
-            """
-        super(VB2PYDirective, self).assignParent(*args, **kw)
+    def finalizeObject(self):
+        """Finalize this object"""
         #
         # Check if we are a global level option - if se we set it now
         if self.directive_type == "GlobalSet":
