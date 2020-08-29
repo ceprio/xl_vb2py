@@ -321,7 +321,7 @@ Seek #2, 1
 Print #2, "Here at the begining"
 Close #2
     """],
-    ["using", "", """"
+    ["using", "", """
 '
 ' Using blocks are mapped to with blocks.
 Using A As Object.Value
