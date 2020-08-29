@@ -12,7 +12,7 @@
             </button>
 
             <button id="paste-button" type="button" class="btn btn-secondary"
-                    data-toggle="tooltip" title="Paste from clipboard"
+                    data-toggle="tooltip" title="Paste and convert from clipboard"
                     style="display: none" onclick="pasteCode()"
             >
                 <i data-feather="clipboard" height="20px"></i><span class="button-label"> Paste</span>
@@ -122,18 +122,17 @@
             if (result.state === 'granted' || result.state === 'prompt') {
                 navigator.clipboard.readText()
                     .then(text => {
-                        let sel = vbeditor.selection.toJSON();
-                        if (vbeditor.selection.isEmpty()) {
-                            vbeditor.selectAll();
-                        }
+                        vbeditor.selectAll();
                         vbeditor.insert(text);
-                        vbeditor.selection.fromJSON(sel);
+                        vbeditor.selection.clearSelection();
 
                         if (!DEVELOPMENT) {
                             gtag('event', 'Paste VB', {
                                 'event_category': 'UI',
                             });
                         }
+
+                        convert_code('All');
                     })
                     .catch(err => {
                         console.error('Failed to read clipboard contents: ', err);

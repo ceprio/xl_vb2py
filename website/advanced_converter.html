@@ -255,7 +255,7 @@ color: #ffffff !important;
             </button>
 
             <button id="paste-button" type="button" class="btn btn-secondary"
-                    data-toggle="tooltip" title="Paste from clipboard"
+                    data-toggle="tooltip" title="Paste and convert from clipboard"
                     style="display: none" onclick="pasteCode()"
             >
                 <i data-feather="clipboard" height="20px"></i><span class="button-label"> Paste</span>
@@ -378,18 +378,17 @@ color: #ffffff !important;
             if (result.state === 'granted' || result.state === 'prompt') {
                 navigator.clipboard.readText()
                     .then(text => {
-                        let sel = vbeditor.selection.toJSON();
-                        if (vbeditor.selection.isEmpty()) {
-                            vbeditor.selectAll();
-                        }
+                        vbeditor.selectAll();
                         vbeditor.insert(text);
-                        vbeditor.selection.fromJSON(sel);
+                        vbeditor.selection.clearSelection();
 
                         if (!DEVELOPMENT) {
                             gtag('event', 'Paste VB', {
                                 'event_category': 'UI',
                             });
                         }
+
+                        convert_code('All');
                     })
                     .catch(err => {
                         console.error('Failed to read clipboard contents: ', err);
@@ -661,7 +660,7 @@ Finally
 End Try
 
 '
-' If an Exit Try is found then an additional try ... exept is created
+' If an Exit Try is found then an additional try ... except is created
 ' to allow breaking out of the current Except clause
 Try
     a = 1 / 0

@@ -136,7 +136,14 @@ color: #ffffff !important;
                                                 <p>&nbsp;-&nbsp;Allow (but ignore) typecasting in For statements **For A As Integer**</p>
                                                 <p>&nbsp;-&nbsp;Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.</p>
                                                 <p>&nbsp;-&nbsp;Fixed issue with expressions with brackets around a simple object **(this).Value + 10**</p>
-                                                <p>&nbsp;-&nbsp;Implemented conversion of .NET **Try ... Catch** blocks</p>
+                                                <p>&nbsp;-&nbsp;Implemented conversion of **Try ... Catch** blocks in .NET</p>
+                                                <p>&nbsp;-&nbsp;Implemented conversion of **AndAlso** and **OrElse** comparisons in .NET</p>
+                                                <p>&nbsp;-&nbsp;Implemented initialization of new array variables within an expression in .NET</p>
+                                                <p>&nbsp;-&nbsp;Implemented Using when has an "=" rather than an "As"</p>
+                                                <p>&nbsp;-&nbsp;Implemented **Exit While** statement</p>
+                                                <p>&nbsp;-&nbsp;Implemented automatic continuations when within bracketted lists **(a, b, \n c)**</p>
+                                                <p>&nbsp;-&nbsp;Fixed parsing of enums with types **Enum X As Integer**</p>
+                                                <p>&nbsp;-&nbsp;Implemented closure functions for .NET **Dim X = Function(x) x*2**</p>
                                         </li>
                                         <li class="list-group-item">
                                             <h4>0.4.1.2</h4>
