@@ -45,6 +45,17 @@
                 <i data-feather="chevron-right" height="20px"></i><span class="button-label"> Selection</span>
             </button>
         </div>
+
+            <select class="form-control-sm col-sm-3" id="dialect">
+                                        <option selected="" value="detect">Auto detect</option>
+                                        <option value="VB6">VB6</option>
+                                        <option value="VB.NET">VB.NET</option>
+                                        <option value="VBA">VBA (Excel)</option>
+                                        <option value="VBScript">VB Script</option>
+                                    </select>
+
+
+
     </div>
     <div id="vbcode" class="vbcode">
         VBCode
