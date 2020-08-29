@@ -11,6 +11,8 @@ class TestImports(unittest.TestCase):
         #
         self.utils.assignParent(self.proj)
         self.cls.assignParent(self.proj)
+        self.utils.finalizeObject()
+        self.cls.finalizeObject()
         #
         utils = vb2py.vbparser.parseVB("""
         Public Function Fact(x)
