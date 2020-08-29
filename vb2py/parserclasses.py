@@ -631,6 +631,7 @@ class VBCodeBlock(VBNamespace):
             "try_statement": (VBTry, self.blocks),
             "throw_statement": (VBThrow, self.blocks),
             "inherits_statement": (VBInherits, self.blocks),
+            "expression": (VBExpressionStatement, self.blocks),
 
             "for_statement": (VBFor, self.blocks),
             "inline_for_statement": (VBFor, self.blocks),
@@ -1187,6 +1188,17 @@ class VBExpression(VBNamespace):
             idx = self.parts.index(item)
             rh, lh = self.parts.pop(idx + 1), self.parts.pop(idx - 1)
             item.rh, item.lh = rh, lh
+
+
+class VBExpressionStatement(VBExpression):
+    """A statement that is a simple expression"""
+
+    def renderAsCode(self, indent=0):
+        """Render as a line of code"""
+        return '{}{}\n'.format(
+            self.getIndent(indent),
+            super(VBExpressionStatement, self).renderAsCode(0)
+        )
 
 
 class VBExpressionAttribute(VBObject):

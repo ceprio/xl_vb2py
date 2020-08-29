@@ -123,7 +123,8 @@ valid_statement ::=
 			   end_statement /
 			   seek_statement
 % if dialect == 'vb.net':
-    / return_statement / imports_statement / throw_statement / inherits_statement
+    / return_statement / imports_statement / throw_statement / inherits_statement /
+    expression
 % endif
 )
 
