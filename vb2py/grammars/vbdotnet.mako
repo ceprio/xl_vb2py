@@ -57,3 +57,6 @@ throw_statement ::=
 
 closure ::=
     c"Function", wsp*, formal_param_list?, wsp*, expression
+
+inherits_statement ::=
+    c"Inherits", wsp*, object, (wsp*, ",", wsp*, object, wsp*)*

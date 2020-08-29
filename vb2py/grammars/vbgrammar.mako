@@ -123,7 +123,7 @@ valid_statement ::=
 			   end_statement /
 			   seek_statement
 % if dialect == 'vb.net':
-    / return_statement / imports_statement / throw_statement
+    / return_statement / imports_statement / throw_statement / inherits_statement
 % endif
 )
 
@@ -186,7 +186,9 @@ isolated_single_line ::=
             goto_statement /
             class_definition_start_line /
             class_definition_end_line
-            # non_vb
+%if dialect == 'vb.net':
+    / return_statement / imports_statement / throw_statement / inherits_statement
+%endif
 
 
 
@@ -215,7 +217,7 @@ normal_keyword ::=
 
 % if dialect == 'vb.net':
     / c"Return" / c"Class" / c"Module" / c"Imports" /
-    c"Try" / c"Catch" / c"Finally" / c"Throw"
+    c"Try" / c"Catch" / c"Finally" / c"Throw" / c"Inherits"
 % else:
     / c"Global"
 % endif

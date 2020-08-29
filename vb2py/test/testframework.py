@@ -7,6 +7,7 @@ import unittest
 from unittest import main
 from vb2py.vbparser import convertVBtoPython
 import vb2py.vbfunctions as vbfunctions
+import vb2py.vbclasses as vbclasses
 import vb2py.vbfunctions
 import vb2py.parserclasses
 
@@ -40,8 +41,10 @@ def BasicTest():
 def getTestMethod(vb, result, test_code=None, config=None):
     """Create a test method"""
     def testMethod(self):
-        local_dict = {"convertVBtoPython" : convertVBtoPython,
-                      "vbfunctions" : vbfunctions}
+        local_dict = {"convertVBtoPython": convertVBtoPython,
+                      "vbfunctions": vbfunctions,
+                      "vbclasses": vbclasses,
+                      }
         #
         if config:
             for section, name, value in config:

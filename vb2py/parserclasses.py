@@ -332,8 +332,8 @@ class VBNamespace(object):
         """Handle an object which creates a sub object"""
         v = obj_class(self.local_default_scope)
         v.original_element = element
-        v.processElement(element)
         v.assignParent(self)
+        v.processElement(element)
         v.finalizeObject()
         #
         # Assume that we are supposed to add this to a list of items
@@ -630,6 +630,7 @@ class VBCodeBlock(VBNamespace):
             "imports_statement": (VBImports, self.non_rendered_lines),
             "try_statement": (VBTry, self.blocks),
             "throw_statement": (VBThrow, self.blocks),
+            "inherits_statement": (VBInherits, self.blocks),
 
             "for_statement": (VBFor, self.blocks),
             "inline_for_statement": (VBFor, self.blocks),
@@ -1820,6 +1821,11 @@ class VBDotNetClass(VBNamespace):
 
     expected_dialect = 'vb.net'
 
+    def __init__(self, *args, **kw):
+        """Initialise the class"""
+        super(VBDotNetClass, self).__init__(*args, **kw)
+        self.inherits = None
+
     def finalizeObject(self):
         """Do final processing"""
         super(VBDotNetClass, self).finalizeObject()
@@ -1835,7 +1841,6 @@ class VBDotNetClass(VBNamespace):
             ) + '\n'
         else:
             return ''
-
 
 #
 class VBCodeModule(VBModule):
@@ -3666,6 +3671,25 @@ class VBPass(VBCodeBlock):
 
 
 #
+class VBInherits(VBCodeBlock):
+    """Represents an inhertis statement"""
+
+    def __init__(self, *args, **kw):
+        """Initialize"""
+        super(VBInherits, self).__init__(*args, **kw)
+        self.objects = []
+        self.rendering_locals = False  # Needed to render the objects
+        self.auto_class_handlers.update({
+            'object': (VBObject, self.objects)
+        })
+
+    def finalizeObject(self):
+        """Finalise this statement"""
+        super(VBInherits, self).finalizeObject()
+        superclasses = self.getParentProperty('superclasses')
+        superclasses.extend([item.renderAsCode() for item in self.objects])
+
+
 class VBRenderDirect(VBCodeBlock):
     """Represents a pre-rendered statement"""
 

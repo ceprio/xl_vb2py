@@ -3005,6 +3005,25 @@ Function X(a, <[In](), Out()> b)
 End Function
 ''')
 
+# Inherits
+vb_dot_net_tests.append('''
+    Class MyThing
+    Inherits This.That.Other
+    
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    Class MyThing
+    Inherits This.That.Other, Same, OneThing
+    
+        Function X(Y)
+        End Function
+    End Class
+''')
+
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

@@ -23,40 +23,24 @@ vb_dot_net_tests = []
 # Closures
 # Decorators
 
-# Decorators
 vb_dot_net_tests.append('''
-    <System.This.That()> _
     Class MyThing
+    Inherits This.That.Other
+    
         Function X(Y)
         End Function
     End Class
 ''')
 vb_dot_net_tests.append('''
-    <System.This.That()> _
-    Function X(Y)
-    End Function
-''')
-vb_dot_net_tests.append('''
-    <System.This.That()> _
     Class MyThing
-        <DllImport("some dll.dll")> _
+    Inherits This.That.Other, Same, OneThing
+    
         Function X(Y)
         End Function
     End Class
 ''')
-# Using with an equals
-vb_dot_net_tests.append('''
-Sub X(a, <[In]()> b)
-End Sub
-''')
-vb_dot_net_tests.append('''
-Function X(a, <[In]()> b)
-End Function
-''')
-vb_dot_net_tests.append('''
-Function X(a, <[In](), Out()> b)
-End Function
-''')
+
+
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

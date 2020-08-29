@@ -431,6 +431,42 @@ in_vb_module_tests.append(('''
 }))
 
 
+# Inheritance
+tests.append(('''
+    Class _Test
+        Inherits vbclasses.VBArray
+        
+        C = 1
+    End Class
+    
+
+   
+''', {
+    'a': 0
+}, '''
+
+    
+    _a = _Test(0)
+    a = len(_a)
+'''))
+
+tests.append(('''
+    Class _Test
+        Inherits vbclasses.VBArray, vbclasses._DebugClass
+        
+        C = 1
+    End Class
+    
+''', {
+    'a': 0, 'b': True,
+}, '''
+    
+    _b = _Test(0)
+    a = len(_b)
+    b = _b._logger is None
+'''))
+
+
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
 TestClass1 = addTestsTo(BasicTest, tests, dialect='vb.net')
