@@ -919,6 +919,40 @@ B =
         self.assertEqual(5, data['structure'][1][0])
         self.assertEqual(9, data['structure'][2][0])
 
+    def testCanGetHighLevelStructureWithDecorators(self):
+        """testCanGetHighLevelStructureWithDecorators: should be able to get high level structure with decorators"""
+        code = '''
+        <DllImport("1")> _
+        Function doIt(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function     
+        <DllImport("2")> _
+        Sub doIt2(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Sub  
+        <DllImport("3")> _
+        Function doIt3(X)
+            Dim A As Integer = 20
+            doIt = 123
+        End Function                   
+        '''
+        client = vb2py.conversionserver.app.test_client()
+        result = client.post('/single_code_module', data={
+            'text': code, 'style': 'vb', 'failure-mode': 'fail-safe',
+            'return-structure': 'methods', 'dialect': 'VB.NET'
+        })
+        data = json.loads(result.data)
+        self.assertIn('structure', data)
+        self.assertEqual(3, len(data['structure']))
+        self.assertTrue(data['structure'][0][2].startswith('Function doIt'))
+        self.assertTrue(data['structure'][1][2].startswith('Sub doIt2'))
+        self.assertTrue(data['structure'][2][2].startswith('Function doIt3'))
+        self.assertEqual(1, data['structure'][0][0])
+        self.assertEqual(6, data['structure'][1][0])
+        self.assertEqual(11, data['structure'][2][0])
+
     def testCanGetAllLineNumbers(self):
         """testCanGetAllLineNumbers: should be able to get all line numbers"""
         code = '''

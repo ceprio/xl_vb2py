@@ -488,10 +488,16 @@ def getStructure(structure, structure_type, text_lines):
         for pattern in STRUCTURE_TYPES[structure_type]:
             if fnmatch.fnmatch(item.name, pattern):
                 children = getStructure(item.elements, structure_type, text_lines)
+                definition_name = text_lines[item.line_offset].lstrip()
+                #
+                # Watch out in case there is a decorator
+                if definition_name.startswith('<') and item.line_offset + 1 < len(text_lines):
+                    definition_name = text_lines[item.line_offset + 1].lstrip()
+                #
                 result.append([
                     item.line_offset,
                     item.name,
-                    removeScopes(text_lines[item.line_offset].lstrip()),
+                    removeScopes(definition_name),
                     item.start_on_line, item.length,
                     children])
                 break

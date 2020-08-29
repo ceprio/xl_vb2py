@@ -15,6 +15,7 @@
 - Implemented automatic continuations when within bracketted lists **(a, b, \n c)**
 - Fixed parsing of enums with types **Enum X As Integer**
 - Implemented closure functions for .NET **Dim X = Function(x) x*2**
+- Fixed parsing of passing semantics decorators for .NET **Sub A(<[In]()> x)**
 
 **0.4.1.2**
 
