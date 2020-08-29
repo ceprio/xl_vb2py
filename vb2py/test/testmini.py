@@ -32,7 +32,14 @@ vb_dot_net_tests.append('''
 Using A As Integer = New client.Open("asas")
 End Using
 ''')
-
+vb_dot_net_tests.append('''
+Using A As New client.Open("asas")
+End Using
+''')
+vb_dot_net_tests.append('''
+Using A As New client
+End Using
+''')
 
 
 class ParsingTest(unittest.TestCase):

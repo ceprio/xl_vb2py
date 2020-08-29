@@ -352,7 +352,7 @@ using_start_statement ::=
 using_end_statement ::=
         label_definition?, "End", wsp+, "Using"
 
-using_type_definition ::= wsp+, c"As", wsp+, object
+using_type_definition ::= wsp+, c"As", wsp+, (c"New", wsp+)?, object
 
 label_definition ::=
         label_statement, (wsp+ / line_end)
