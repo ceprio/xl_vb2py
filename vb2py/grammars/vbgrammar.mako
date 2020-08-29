@@ -768,7 +768,11 @@ handler_definition ::=
             wsp+, c"Handles", wsp+, expression
 
 passing_semantics ::=
-             (c"ByVal" / c"ByRef"), wsp+
+             (c"ByVal" / c"ByRef" / passing_decorator), wsp+
+
+
+passing_decorator ::= "<", (in_list_wsp*, "[", object, "]")?, in_list_wsp*, object?, "()"?, in_list_wsp*, ">"
+
 
 param_array ::=
             c"ParamArray", wsp+

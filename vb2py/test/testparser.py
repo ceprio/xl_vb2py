@@ -2991,7 +2991,15 @@ vb_dot_net_tests.append('''
         End Function
     End Class
 ''')
-
+# Using with an equals
+vb_dot_net_tests.append('''
+Sub X(a, <[In]()> b)
+End Sub
+''')
+vb_dot_net_tests.append('''
+Function X(a, <[In]()> b)
+End Function
+''')
 
 failures = [
 ]

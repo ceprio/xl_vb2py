@@ -23,24 +23,36 @@ vb_dot_net_tests = []
 # Closures
 # Decorators
 
+# Decorators
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Function X(Y)
+    End Function
+''')
+vb_dot_net_tests.append('''
+    <System.This.That()> _
+    Class MyThing
+        <DllImport("some dll.dll")> _
+        Function X(Y)
+        End Function
+    End Class
+''')
 # Using with an equals
 vb_dot_net_tests.append('''
-Using A As Integer = client.Open("asas")
-End Using
+Sub X(a, <[In]()> b)
+End Sub
 ''')
 vb_dot_net_tests.append('''
-Using A As Integer = New client.Open("asas")
-End Using
+Function X(a, <[In]()> b)
+End Function
 ''')
-vb_dot_net_tests.append('''
-Using A As New client.Open("asas")
-End Using
-''')
-vb_dot_net_tests.append('''
-Using A As New client
-End Using
-''')
-
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""

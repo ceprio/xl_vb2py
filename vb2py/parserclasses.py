@@ -747,7 +747,6 @@ class VBExpressionObjectPart(VBNamespace):
 
 class VBVariable(VBNamespace):
     """Handles a VB Variable"""
-
     #
     auto_handlers = [
         "scope",
@@ -761,6 +760,7 @@ class VBVariable(VBNamespace):
         "implicit_object",
         "param_array",
         "typecast",
+        "passing_semantics",
     ]
 
     skip_handlers = [
@@ -786,6 +786,7 @@ class VBVariable(VBNamespace):
         self.unsized_definition = None
         self.expression_object_parts = []
         self.initial_value = None
+        self.passing_semantics = None
 
         self.auto_class_handlers = {
             "expression": (VBExpression, "expression"),
@@ -2630,6 +2631,29 @@ class VBSubroutine(VBCodeBlock):
 
         self.rendering_locals = 0
 
+    def getDecoratorWarnings(self, indent):
+        """Return all the warnings for decorators"""
+        warnings = []
+        if self.decorator:
+            warnings.append(self.getWarning(
+                'UntranslatedCode',
+                '.NET Decorators not supported: %s' % self.decorator,
+                indent,
+                crlf=True
+            ))
+        #
+        for param in self.parameters:
+            if param.passing_semantics:
+                warnings.append(self.getWarning(
+                    'UntranslatedCode',
+                    'Argument Passing Semantics / Decorators not supported: %s - %s' % (
+                        param.renderAsCode(), param.passing_semantics),
+                    indent,
+                    crlf=True
+                ))
+        #
+        return ''.join(warnings)
+
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
         if self.handler_definition:
@@ -2637,14 +2661,8 @@ class VBSubroutine(VBCodeBlock):
                 "UntranslatedCode", "Handler not translated: %s\n" % self.handler_definition, indent)
         else:
             warning = ''
-        if self.decorator:
-            decorator_warning = self.getWarning(
-                'UntranslatedCode',
-                '.NET Decorators not supported: %s' % self.decorator,
-                indent,
-            ) + '\n'
-        else:
-            decorator_warning = ''
+        #
+        decorator_warning = self.getDecoratorWarnings(indent)
         #
         code_block = self.block.renderAsCode(indent + 1)
         locals = [declaration.renderAsCode(indent + 1) for declaration in self.block.locals]
@@ -2741,14 +2759,7 @@ class VBFunction(VBSubroutine):
 
     def renderAsCode(self, indent=0):
         """Render this subroutine"""
-        if self.decorator:
-            decorator_warning = self.getWarning(
-                'UntranslatedCode',
-                '.NET Decorators not supported: %s' % self.decorator,
-                indent,
-            ) + '\n'
-        else:
-            decorator_warning = ''
+        decorator_warning = self.getDecoratorWarnings(indent)
         #
         # See if we are using return statements
         just_use_return = self.checkOptionYesNo("Functions", "JustUseReturnStatement") == "Yes"
