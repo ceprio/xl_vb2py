@@ -491,10 +491,27 @@ def getStructure(structure, structure_type, text_lines):
                 result.append([
                     item.line_offset,
                     item.name,
-                    text_lines[item.line_offset].lstrip(),
+                    removeScopes(text_lines[item.line_offset].lstrip()),
                     item.start_on_line, item.length,
                     children])
                 break
         else:
             result.extend(getStructure(item.elements, structure_type, text_lines))
     return result
+
+
+def removeScopes(line):
+    """Return a VB line with the scopes removed
+
+    This helps in the structure explorer, where the scopes get in the way
+    and make the line appear very long.
+
+    """
+    potentials = [
+        "Sub ", "Function ", "Property ",
+    ]
+    for item in potentials:
+        if item in line:
+            return '{}{}'.format(item, line.split(item, 1)[1])
+    else:
+        return line
