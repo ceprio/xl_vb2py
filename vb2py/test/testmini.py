@@ -15,69 +15,40 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Nested do  loop with line numbers
+tests.extend([
+'a = 10',
+'a = 20+30',
+'a = "hello there"',
+'a = 10',
+'a = Array(10,20)',
+'a = myfunction.mymethod(10)',
+'a = &HFF',
+'a = &HFF00000L',
+'a = &HFF&',
+'a = #1/10/2000#',
+'a = #1/10/2000 11:59#',
+'a = #1/10/2000 11:59:12#',
+'a = #1/10/2000 11:59:12 PM#',
+'a = #1/10/2000 11:59:12 AM#',
+'a = #11:59:12 AM#',
+'a = #11:59:12#',
+'a = #1/10#',
+'a = 1#',
+'a = 1.#',
+'a = 1.2#',
+'a = 10 Mod 2',
+'a = 1000!',
+'a = "12!12"',
+'a = "=VLOOKUP(RC[-4],[Temp2.xlsx]Sheet1!C3C55,38,0)"',
+'Range("X1").Select\nActiveWorkbook.Names.Add Name:="scrollx1", RefersToR1C1:="=OFFSET(All_logs!R2C19:R120C19,All_logs!R1C22,0,All_logs!R1C24,1)"',
+])
 
 tests.extend
 vb_dot_net_tests = []
 
 # Closures
 # Decorators
-# Decorators
-vb_dot_net_tests.append('''
-    <System.This.That()> _
-    Class MyThing
-        Function X(Y)
-        End Function
-    End Class
-''')
-vb_dot_net_tests.append('''
-    <System.This.That()> _
-    Function X(Y)
-    End Function
-''')
-vb_dot_net_tests.append('''
-    <System.This.That()> _
-    Class MyThing
-        <DllImport("some dll.dll")> _
-        Function X(Y)
-        End Function
-    End Class
-''')
-# With no continuation marker
-vb_dot_net_tests.append('''
-    <System.This.That()> 
-    Class MyThing
-        Function X(Y)
-        End Function
-    End Class
-''')
-vb_dot_net_tests.append('''
-    <System.This.That()> 
-    Function X(Y)
-    End Function
-''')
-vb_dot_net_tests.append('''
-    <System.This.That()> 
-    Class MyThing
-        <DllImport("some dll.dll")> 
-        Function X(Y)
-        End Function
-    End Class
-''')
 
-# Using with an equals
-vb_dot_net_tests.append('''
-Sub X(a, <[In]()> b)
-End Sub
-''')
-vb_dot_net_tests.append('''
-Function X(a, <[In]()> b)
-End Function
-''')
-vb_dot_net_tests.append('''
-Function X(a, <[In](), Out()> b)
-End Function
-''')
 
 
 class ParsingTest(unittest.TestCase):

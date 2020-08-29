@@ -68,6 +68,7 @@ tests.extend([
 'a = Array(10,20)',
 'a = myfunction.mymethod(10)',
 'a = &HFF',
+'a = &HFF00000L',
 'a = &HFF&',
 'a = #1/10/2000#',
 'a = #1/10/2000 11:59#',

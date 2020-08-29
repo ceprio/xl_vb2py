@@ -67,7 +67,7 @@ decimalinteger ::=
              digit+
 
 hexinteger ::=
-             "&", "H"?, hexdigit+, "&"?
+             "&", "H"?, hexdigit+, "&"?, "L"?
 
 octinteger ::=
              ("&O" / "0"), octdigit+, "&"?
