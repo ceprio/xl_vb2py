@@ -771,7 +771,10 @@ passing_semantics ::=
              (c"ByVal" / c"ByRef" / passing_decorator), wsp+
 
 
-passing_decorator ::= "<", (in_list_wsp*, "[", object, "]")?, in_list_wsp*, object?, "()"?, in_list_wsp*, ">"
+passing_decorator ::= "<", decorated_argument, (",", in_list_wsp*, decorated_argument)?, ">"
+
+
+decorated_argument ::= in_list_wsp*, ("[", object, "]")?, in_list_wsp*, object?, "()"?, in_list_wsp*
 
 
 param_array ::=

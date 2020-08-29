@@ -53,6 +53,10 @@ vb_dot_net_tests.append('''
 Function X(a, <[In]()> b)
 End Function
 ''')
+vb_dot_net_tests.append('''
+Function X(a, <[In](), Out()> b)
+End Function
+''')
 
 class ParsingTest(unittest.TestCase):
     """Holder class which gets built into a whole test case"""
