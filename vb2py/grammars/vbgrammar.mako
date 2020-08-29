@@ -422,6 +422,9 @@ type ::=
 
 scope ::=
              c"Global" / c"Private" / c"Public" / c"Static" / c"Friend" / c"Partial"
+%if dialect == 'vb.net':
+    / c"Protected"
+%endif
 
 value ::=
              literal
@@ -747,7 +750,7 @@ sub_start_definition ::=
 %if dialect == 'vb.net':
     decorator?,
 %endif
-             label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Sub", wsp+, identifier, wsp*,
+             label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, overrides?, c"Sub", wsp+, identifier, wsp*,
              formal_param_list?, handler_definition?, line_end_or_colon
 
 sub_block ::=
@@ -792,7 +795,7 @@ fn_start_definition ::=
 %if dialect == 'vb.net':
     decorator?,
 %endif
-             label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, c"Function", wsp+, identifier, wsp*,
+             label_definition?, (scope, wsp*)?, ((static / shared), wsp*)?, overrides?, c"Function", wsp+, identifier, wsp*,
              formal_param_list?, type_definition?, line_end_or_colon
 
 fn_end_definition ::=
@@ -814,6 +817,10 @@ static ::=
 
 shared ::=
             "Shared", wsp+
+
+overrides ::=
+            "Overrides", wsp+
+
 
 property_definition ::=
              property_start_definition,

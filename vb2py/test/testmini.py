@@ -24,22 +24,17 @@ vb_dot_net_tests = []
 # Decorators
 
 vb_dot_net_tests.append('''
-    Class MyThing
-    Inherits This.That.Other
-    
-        Function X(Y)
-        End Function
-    End Class
+    Protected Overrides Sub DoIt()
+    End Sub
 ''')
 vb_dot_net_tests.append('''
-    Class MyThing
-    Inherits This.That.Other, Same, OneThing
-    
-        Function X(Y)
-        End Function
-    End Class
+    Protected  Sub DoIt()
+    End Sub
 ''')
-
+vb_dot_net_tests.append('''
+     Overrides Sub DoIt()
+    End Sub
+''')
 
 
 class ParsingTest(unittest.TestCase):

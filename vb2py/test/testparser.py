@@ -3023,6 +3023,20 @@ vb_dot_net_tests.append('''
     End Class
 ''')
 
+# Protected and Overrides
+vb_dot_net_tests.append('''
+    Protected Overrides Sub DoIt()
+    End Sub
+''')
+vb_dot_net_tests.append('''
+    Protected  Sub DoIt()
+    End Sub
+''')
+vb_dot_net_tests.append('''
+     Overrides Sub DoIt()
+    End Sub
+''')
+
 
 failures = [
 ]
