@@ -17,25 +17,14 @@ tests = []
 
 vb_dot_net_tests = []
 
-# Partial classes etc
+# Namespace
 vb_dot_net_tests.append('''
-    Partial Class MyThing
-        Function X(Y)
-        End Function
-    End Class
+    Namespace Bob.Evans
+        Class A
+        End Class
+    End Namespace
 ''')
-vb_dot_net_tests.append('''
-    Partial Friend Class MyThing
-        Function X(Y)
-        End Function
-    End Class
-''')
-vb_dot_net_tests.append('''
-    Friend Class MyThing
-        Function X(Y)
-        End Function
-    End Class
-''')
+
 
 
 

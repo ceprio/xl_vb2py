@@ -60,3 +60,17 @@ closure ::=
 
 inherits_statement ::=
     c"Inherits", wsp*, object, (wsp*, ",", wsp*, object, wsp*)*
+
+namespace_statement ::=
+    namespace_start_statement,
+    namespace_block,
+    namespace_end_statement
+
+namespace_start_statement ::=
+    wsp*, c"Namespace", wsp+, object
+
+namespace_block ::=
+    block?
+
+namespace_end_statement ::=
+    wsp*, c"End", wsp+, c"Namespace", wsp*

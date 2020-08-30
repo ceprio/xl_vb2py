@@ -3098,6 +3098,15 @@ vb_dot_net_tests.append('''
     End Class
 ''')
 
+# Namespace
+vb_dot_net_tests.append('''
+    Namespace Bob.Evans
+        Class A
+        End Class
+    End Namespace
+''')
+
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

@@ -148,6 +148,7 @@ compound_statement ::=
 % if dialect == 'vb.net':
     / region_statement
     / try_statement
+    / namespace_statement
 % endif
 
 isolated_single_line ::=
@@ -189,6 +190,7 @@ isolated_single_line ::=
             class_definition_end_line
 %if dialect == 'vb.net':
     / return_statement / imports_statement / throw_statement / inherits_statement
+    / namespace_start_statement / namespace_end_statement
 %endif
 
 
@@ -218,7 +220,8 @@ normal_keyword ::=
 
 % if dialect == 'vb.net':
     / c"Return" / c"Class" / c"Module" / c"Imports" /
-    c"Try" / c"Catch" / c"Finally" / c"Throw" / c"Inherits"
+    c"Try" / c"Catch" / c"Finally" / c"Throw" / c"Inherits" /
+    c"Namespace"
 % else:
     / c"Global"
 % endif
@@ -230,11 +233,11 @@ class_definition ::=
 
 
 class_definition_start_line ::=
-            wsp*, (decorator, wsp*)?, (scope, wsp+)*, c"Class", wsp+, identifier, line_end
+            wsp*, (decorator, wsp*)?, (scope, wsp+)*, c"Class", wsp+, identifier
 
 
 class_definition_end_line ::=
-            wsp*, c"End Class", line_end
+            wsp*, c"End Class"
 
 
 module_definition ::=
