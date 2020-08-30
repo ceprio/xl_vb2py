@@ -1140,6 +1140,7 @@ class VBExpression(VBNamespace):
 
     auto_handlers = [
         "new_keyword",
+        "addressof",
     ]
 
     def __init__(self, scope="Private"):
@@ -1147,6 +1148,7 @@ class VBExpression(VBNamespace):
         super(VBExpression, self).__init__(scope)
         self.parts = []
         self.new_keyword = None
+        self.addressof = None
         self.initializer_list_literal = None
         self.auto_class_handlers.update({
             "sign": (VBExpressionPart, self.parts),
@@ -1173,6 +1175,8 @@ class VBExpression(VBNamespace):
                 code = 'VBArray.createFromData(%s)' % self.initializer_list_literal.renderAsCode()
             elif not code.strip().endswith(')'):
                 code += '()'
+        if self.addressof:
+            code = 'AddressOf(%s)' % code
         #
         return code
 

@@ -16,15 +16,16 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 tests = []
 
 # Simple assignments
-tests.append("""
-a = 10
-b = 20+30
-c = "hello there"
-oneVal = 10
-twoVals = Array(10,20)
-functioncall = myfunction.mymethod(10)
-a = this._30that
-""")
+tests.extend([
+        "a = fn(AddressOf fn)",
+        "a = fn(a, b, c, AddressOf fn)",
+        "a = fn(a, AddressOf b, AddressOf c, AddressOf fn)",
+        "a = fn(a, AddressOf b.m.m, AddressOf c.k.l, AddressOf fn)",
+        "a = AddressOf b",
+        "DoIt AddressOf b",
+        "DoIt AddressOf b, That",
+        "DoIt This, AddressOf b",
+])
 
 vb_dot_net_tests = []
 

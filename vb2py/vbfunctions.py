@@ -840,6 +840,16 @@ def VB2PY_ERROR(text):
     raise Exception('VB2PY conversion error: %s' % text)
 
 
+def AddressOf(obj):
+    """Return the AddressOf a variable
+
+    This does not work in Python and likely the code using it is going to need significant
+    work so we just throw an error here.
+
+    """
+    raise NotImplementedError('AddressOf does not work in Python and code will likely need refactoring')
+
+
 Abs = abs
 Asc = AscB = AscW = ord
 Chr = ChrB = ChrW = chr

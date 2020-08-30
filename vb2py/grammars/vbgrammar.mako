@@ -556,7 +556,7 @@ missing_positional ::=
              wsp*
 
 bare_list_item ::=
-			 addressof?, expression
+			 expression
 
 addressof ::=
 			 c"AddressOf", wsp+

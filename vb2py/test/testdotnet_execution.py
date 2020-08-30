@@ -467,6 +467,26 @@ tests.append(('''
 '''))
 
 
+# AddressOf should raise NotImplemented
+in_vb_module_tests.append(('''
+    a = 0
+    b = 0
+    Try
+        b = AddressOf a
+    Catch NotImplementedError
+        a = 1
+    End Try
+    Try
+        b = int(AddressOf a)
+    Catch NotImplementedError
+        b = 1
+    End Try
+    
+''', {
+    'a': 1, 'b': 1,
+}))
+
+
 import vb2py.vbparser
 vb2py.vbparser.log.setLevel(0)
 TestClass1 = addTestsTo(BasicTest, tests, dialect='vb.net')

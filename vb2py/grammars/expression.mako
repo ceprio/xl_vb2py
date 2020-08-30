@@ -4,7 +4,7 @@
 
 
 expression ::=
-             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, sign?, (par_expression, initializer_list_literal?),
+             (pre_named_argument?, passing_semantics?, new_keyword?, pre_operator?, addressof?, sign?, (par_expression, initializer_list_literal?),
              (operation, par_expression)*) / line_expression
 
 
