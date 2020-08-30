@@ -11,7 +11,7 @@
 
 
 identifier ::= 
-        (safe_letter/("_", safe_letter)), (safe_letter / digit / "_")*, type_marker?
+        (safe_letter/"_"), (safe_letter / digit / "_")*, type_marker?
 
 
 type_marker ::=

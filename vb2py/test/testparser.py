@@ -28,7 +28,9 @@ c = "hello there"
 oneVal = 10
 twoVals = Array(10,20)
 functioncall = myfunction.mymethod(10)
+a = this._30that
 """)
+
 
 # Set type assignments
 tests.append("""
