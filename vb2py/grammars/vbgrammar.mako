@@ -230,7 +230,7 @@ class_definition ::=
 
 
 class_definition_start_line ::=
-            wsp*, (decorator, wsp*)?, (scope, wsp)?, c"Class", wsp+, identifier, line_end
+            wsp*, (decorator, wsp*)?, (scope, wsp+)*, c"Class", wsp+, identifier, line_end
 
 
 class_definition_end_line ::=

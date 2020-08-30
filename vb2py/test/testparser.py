@@ -3078,6 +3078,26 @@ vb_dot_net_tests.extend([
         "DoIt This, AddressOf b",
 ])
 
+# Partial classes etc
+vb_dot_net_tests.append('''
+    Partial Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    Partial Friend Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    Friend Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+
 failures = [
 ]
 # -- end -- << Parsing tests >>

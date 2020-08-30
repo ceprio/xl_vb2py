@@ -15,30 +15,27 @@ Config.setLocalOveride("General", "ReportPartialConversion", "No")
 
 tests = []
 
-# Simple assignments
-tests.extend([
-        "a = fn(AddressOf fn)",
-        "a = fn(a, b, c, AddressOf fn)",
-        "a = fn(a, AddressOf b, AddressOf c, AddressOf fn)",
-        "a = fn(a, AddressOf b.m.m, AddressOf c.k.l, AddressOf fn)",
-        "a = AddressOf b",
-        "DoIt AddressOf b",
-        "DoIt AddressOf b, That",
-        "DoIt This, AddressOf b",
-])
-
 vb_dot_net_tests = []
 
-vb_dot_net_tests.extend([
-        "a = fn(AddressOf fn)",
-        "a = fn(a, b, c, AddressOf fn)",
-        "a = fn(a, AddressOf b, AddressOf c, AddressOf fn)",
-        "a = fn(a, AddressOf b.m.m, AddressOf c.k.l, AddressOf fn)",
-        "a = AddressOf b",
-        "DoIt AddressOf b",
-        "DoIt AddressOf b, That",
-        "DoIt This, AddressOf b",
-])
+# Partial classes etc
+vb_dot_net_tests.append('''
+    Partial Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    Partial Friend Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
+vb_dot_net_tests.append('''
+    Friend Class MyThing
+        Function X(Y)
+        End Function
+    End Class
+''')
 
 
 
