@@ -18,6 +18,7 @@
 - Fixed parsing of passing semantics decorators for .NET **Sub A(<[In]()> x)**
 - Implemented **Inherits** for .NET
 - Fixed parsing of identifiers starting with **_<digit>**
+- Parse .NET **Namespace** out but don't do anything with it yet
 
 **0.4.1.2**
 
