@@ -1,3 +1,10 @@
+** August 30, 2020 - Significant .NET improvements **
+
+There are a large number of improvements in handling of VB.NET
+conversion. There is still some way to go just to parse and convert the
+code, let alone get the standard library to work. However, these updates should help in getting some of the main structures
+converted for VB.NET projects.
+
 ** May 30, 2020 - New Website **
 
 The website has been revamped and cleaned up. This makes

@@ -47,9 +47,9 @@ block_terminator ::=
               (end_terminator / c"ElseIf" / c"Else" / c"Case" / c"Next"), (wsp+ / line_end)
 
 end_terminator ::=
-			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using"
+			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using" /c"Select" / c"With"
 % if dialect == 'vb.net':
-    / c"Try" / c"Catch" / c"Class"
+    / c"Try" / c"Catch" / c"Class" / c"Module" / c"Namespace" / c"Get" / c"Set"
 % endif
 )) / "END"
 
