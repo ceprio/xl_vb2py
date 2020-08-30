@@ -29,8 +29,16 @@ tests.extend([
 
 vb_dot_net_tests = []
 
-# Closures
-# Decorators
+vb_dot_net_tests.extend([
+        "a = fn(AddressOf fn)",
+        "a = fn(a, b, c, AddressOf fn)",
+        "a = fn(a, AddressOf b, AddressOf c, AddressOf fn)",
+        "a = fn(a, AddressOf b.m.m, AddressOf c.k.l, AddressOf fn)",
+        "a = AddressOf b",
+        "DoIt AddressOf b",
+        "DoIt AddressOf b, That",
+        "DoIt This, AddressOf b",
+])
 
 
 
