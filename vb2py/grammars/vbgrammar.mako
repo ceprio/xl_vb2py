@@ -49,7 +49,7 @@ block_terminator ::=
 end_terminator ::=
 			 (c"End", wsp+, (c"If" / c"Function" / c"Subroutine" / c"Property" /c"Using"
 % if dialect == 'vb.net':
-    / c"Try" / c"Catch"
+    / c"Try" / c"Catch" / c"Class"
 % endif
 )) / "END"
 
@@ -242,7 +242,7 @@ class_definition_start_line ::=
 
 
 class_definition_end_line ::=
-            wsp*, c"End Class"
+            wsp*, c"End", wsp+, "Class"
 
 
 module_definition ::=
