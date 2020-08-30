@@ -181,6 +181,30 @@ class TestSafeMode(TestGrammarModes):
         self._setSafe()
         self.assertParsesAndContains(text, 'DoIt()', 0)
 
+    def testImplicitCallParameters(self):
+        """testImplicitCallParameters: implicit call with parameters should work"""
+        text = 'DoIt 10'
+        self._setUnsafe()
+        self.assertParsesAndContains(text, 'DoIt(10)', 0)
+        self._setSafe()
+        self.assertParsesAndContains(text, 'DoIt(10)', 0)
+        self._setDotNet()
+        self._setUnsafe()
+        self.assertParsesAndContains(text, 'DoIt(Integer(10))', 0)
+        self._setSafe()
+        self.assertParsesAndContains(text, 'DoIt(Integer(10))', 0)
+        #
+        self.assertParsesAndContains('DoIt AddressOf x', 'DoIt(AddressOf(x))', 0)
+
+    def testExplicitCall(self):
+        """testExplicitCall: explicit call should work"""
+        text = 'CType(Me.NewSizeUpDown, System.ComponentModel.ISupportInitialize).BeginInit()'
+        self._setDotNet()
+        self._setUnsafe()
+        self.assertParsesAndContains(text, 'BeginInit()', 0)
+        self._setSafe()
+        self.assertParsesAndContains(text, 'BeginInit()', 0)
+
     def testDoubleElseIf(self):
         """testDoubleElseIf: safe mode with double elseif should work"""
         text = '''

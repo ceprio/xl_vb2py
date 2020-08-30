@@ -2783,6 +2783,10 @@ vb_dot_net_tests.append('a = (value).ToString')
 vb_dot_net_tests.append('a = (value).ToString()')
 vb_dot_net_tests.append('a = (value).ToString + "something else"')
 
+# Complex explicit calls
+vb_dot_net_tests.append('Do.It(10).Again()')
+vb_dot_net_tests.append('Do.It(10, 10).Again(20)')
+
 # Try statements
 vb_dot_net_tests.append('''
 Try

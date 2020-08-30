@@ -63,7 +63,12 @@ line ::=
 
 line_body ::=
 % if dialect == 'vb.net':
-    (explicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?)))  / inline_if_statement / implicit_call_statement)
+    (explicit_call_statement / ((compound_statement / valid_statement), (line_end / (colon, line_end?)))  / inline_if_statement / implicit_call_statement
+    % if mode == 'safe':
+        / untranslated_text)
+    % else:
+        )
+    % endif
 % else:
     (explicit_call_statement / implicit_call_statement / ((compound_statement / single_statement), (line_end / (colon, line_end?)))  / inline_if_statement)
 % endif
@@ -123,8 +128,8 @@ valid_statement ::=
 			   end_statement /
 			   seek_statement
 % if dialect == 'vb.net':
-    / return_statement / imports_statement / throw_statement / inherits_statement /
-    expression
+    / return_statement / imports_statement / throw_statement / inherits_statement
+    # /    expression
 % endif
 )
 
@@ -539,7 +544,7 @@ implicit_call_statement ::=
 % endif
 
 explicit_call_statement ::=
-            label_definition?, ?-keyword, (qualified_object, (line_end / colon))
+            label_definition?, ?-keyword, (qualified_object, (".", qualified_object)*, (line_end / colon))
 
 inline_implicit_call ::=
             ?-keyword, (simple_expr, bare_list)

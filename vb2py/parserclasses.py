@@ -1221,12 +1221,14 @@ class VBParExpression(VBNamespace):
     auto_handlers = [
         "l_bracket",
         "r_bracket",
+        "addressof",
     ]
 
     def __init__(self, scope="Private"):
         """Initialize"""
         super(VBParExpression, self).__init__(scope)
         self.parts = []
+        self.addressof = None
         self.named_argument = ""
         self.auto_class_handlers.update({
             "integer": (VBExpressionPart, self.parts),
@@ -1262,6 +1264,8 @@ class VBParExpression(VBNamespace):
         else:
             arg = ""
         ascode = " ".join([item.renderAsCode(indent) for item in self.parts])
+        if self.addressof:
+            ascode = 'AddressOf(%s)' % ascode
         return "%s%s%s%s" % (arg, self.l_bracket, ascode, self.r_bracket)
 
     def checkForOperatorGroupings(self):
@@ -2281,11 +2285,11 @@ class VBExplicitCall(VBCodeBlock):
         """Initialize the assignment"""
         super(VBExplicitCall, self).__init__(scope)
         self.parameters = []
-        self.object = None
+        self.objects = []
         self.auto_class_handlers = ({
             "expression": (VBParExpression, self.parameters),
             "missing_positional": (VBMissingPositional, self.parameters),
-            "qualified_object": (VBObject, "object")
+            "qualified_object": (VBObject, self.objects)
         })
 
     def renderAsCode(self, indent=0):
@@ -2296,10 +2300,12 @@ class VBExplicitCall(VBCodeBlock):
             # in the call. These should be encapsulated in the object. 
             raise VBParserError('Unexpected parameters (%s) in explicit call' % self.parameters)
         #
-        self.object.am_on_lhs = 1
+        for obj in self.objects:
+            obj.am_on_lhs = 1
+        objects_part = '.'.join(obj.renderAsCode() for obj in self.objects)
         #
         return "%s%s\n" % (self.getIndent(indent),
-                           self.object.renderAsCode())
+                           objects_part)
 
 
 #

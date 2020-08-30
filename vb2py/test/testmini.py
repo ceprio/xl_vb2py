@@ -17,13 +17,9 @@ tests = []
 
 vb_dot_net_tests = []
 
-# Namespace
-vb_dot_net_tests.append('''
-    Namespace Bob.Evans
-        Class A
-        End Class
-    End Namespace
-''')
+# Complex explicit calls
+vb_dot_net_tests.append('Do.It(10).Again()')
+vb_dot_net_tests.append('Do.It(10, 10).Again(20)')
 
 
 
