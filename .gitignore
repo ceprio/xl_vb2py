@@ -1,0 +1,13 @@
+/gunicorn.access.log
+/gunicorn.error.log
+/gunicorn.main.log
+/vb2py/settings.ini
+/vb2py/.continuation.txt
+/vb2py/test_at_scale/testing.db-journal
+/build/lib/vb2py/
+/vb2py/vb2Py.egg-info/
+/vb2Py.egg-info/
+/dist/
+/vb2py/submitted_files/2020-05-30 13:42:57 code.vb
+.project
+.pydevproject
