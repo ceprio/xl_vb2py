@@ -31,7 +31,7 @@ class Collection(dict):
         # self.insertOrder is used as the relative index when the collection
         # is treated as an array.
         # It is also used as the dictionary key for entries that have no
-        # assigned key. This always works because VB keys can only be strings. 
+        # assigned key. This always works because VB keys can only be strings.
         self.insertOrder = 1
 
     def __setitem__(self, Key, Item):
@@ -127,7 +127,7 @@ class Collection(dict):
     def Item(self, Key):
         """Get an item from the collection"""
         return self.__getitem__(Key)
-    # -- end -- << Collection Methods >>    
+    # -- end -- << Collection Methods >>
 
 
 if __name__ == '__main__':
@@ -168,32 +168,42 @@ Time = _TimeClass()
 
 
 class VBString(str):
+
     @property
     def Length(self):
         return len(self)
 
 
-class Integer(int):
+class VBStub():
+
+    def __radd__(self, other):
+        if isinstance(other, str):
+            return other + str(self)
+        else:
+            return other + self
+
+
+class Integer(int, VBStub):
     """Python version of VB's integer"""
 
 
-class Single(float):
+class Single(float, VBStub):
     """Python version of VB's Single"""
 
 
-class Double(float):
+class Double(float, VBStub):
     """Python version of VB's Double"""
 
 
-class Long(int):
+class Long(int, VBStub):
     """Python version of VB's Long"""
 
 
-class Boolean(int):
+class Boolean(int, VBStub):
     """Python version of VB's Boolean"""
 
 
-class Byte(int):
+class Byte(int, VBStub):
     """Python version of VB's Byte"""
 
 
@@ -201,7 +211,7 @@ class Object(object):
     """Python version of VB's Object"""
 
 
-class Variant(float):
+class Variant(float, VBStub):
     """Python version of VB's Variant"""
 
 
@@ -339,7 +349,6 @@ class VBArray(list):
                 self.__init__((self._min, self._max), self.init_type)
 
 
-
 class _VBFiles:
     """A class to control all interfaces to the file system
 
@@ -432,7 +441,7 @@ class _VBFiles:
                         buffer += char
         finally:
             self._lock.release()
-        #	
+        #
         if number == 1:
             return vars[0]
         else:
